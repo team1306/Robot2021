@@ -1,6 +1,13 @@
 # Robot2020 
 Team 1306 Repository for the 2020 First RISE game.
 
+# Conventions
+For the purposes of the code and documentation:
+*   "Front" shall be defined as the side of the robot with the shooter
+*   "Left" shall be the side of the robot on the left-hand side when the same direction as front
+*   "Right" shall be the other side
+
+
 ## File Purposes
 *   `Main.java` - Entry point. Little change ever needed.
 *   `Constants.java` - As the name implies, stores the constants we need for the robot. These are usually the port numbers for connecting to the rio or the CAN id's, and if we need to define color values or something similar it would go here. PID or encoder values assosciated with a specific subsystem, however, go to that subsystem.
@@ -23,5 +30,5 @@ Located in /commands
 Located in /utils
 Files meant to ease the implementation of a variety of other files
 *   `UserInput.java` - Contains the [functional interfaces](https://www.geeksforgeeks.org/functional-interfaces-java/) for passing llamdas to commands to grab user inputs
-    *   `Analog` - returns a -1 to 1 value
-    *   `Digital` - returns a boolean
+    *   `UserAnalog` - returns a -1 to 1 value
+    *   `UserDigital` - returns a boolean

@@ -9,9 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.UserDrive;
 import frc.robot.subsystems.DriveTrain;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.UserAnalog;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -22,9 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_DriveTrain = new DriveTrain();
-
-  private final UserDrive m_autoCommand = new UserDrive(m_DriveTrain);
+  private final DriveTrain driveTrain = new DriveTrain();
+  private final Command autoCommand;
+  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -32,6 +33,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    autoCommand=null;
   }
 
   /**
@@ -41,6 +43,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    UserAnalog driveRight = () -> { return 0; };
+    UserAnalog driveLeft  = () -> { return 0; };
+    UserDrive teleopDrive = new UserDrive(driveTrain, driveRight, driveLeft);
   }
 
   /**
@@ -50,6 +55,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return autoCommand;
   }
 }

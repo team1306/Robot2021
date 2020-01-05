@@ -10,9 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveTrain extends SubsystemBase {
-  /**
-   * Creates a new ExampleSubsystem.
-   */
+
   public DriveTrain() {
 
   }
@@ -20,5 +18,9 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void tankDrive(double leftVel,double rightVel){
+    
   }
 }
