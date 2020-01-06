@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import frc.robot.Constants;
+import frc.robot.utils.PIDSetup;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -39,32 +40,8 @@ public class DriveTrain extends SubsystemBase {
     rightFollower.follow(rightLeader);
     leftFollower.follow(leftLeader);
     // initalize PID settings
-    // right sensor configuration
-    rightLeader.configFactoryDefault();
-    rightLeader.configSelectedFeedbackSensor(kSensorType, kLoopType, kTimeout);
-    rightLeader.configNominalOutputForward(0, kTimeout);// nominal = minimum output
-    rightLeader.configNominalOutputReverse(0, kTimeout);
-    rightLeader.configPeakOutputForward(1, kTimeout);// peak = maximum output
-    rightLeader.configPeakOutputReverse(1, kTimeout);
-    rightLeader.setSensorPhase(false);
-    // left sensor configuration
-    leftLeader.configFactoryDefault();
-    leftLeader.configSelectedFeedbackSensor(kSensorType, kLoopType, kTimeout);
-    leftLeader.configNominalOutputForward(0, kTimeout);// nominal = minimum output
-    leftLeader.configNominalOutputReverse(0, kTimeout);
-    leftLeader.configPeakOutputForward(1, kTimeout);// peak = maximum output
-    leftLeader.configPeakOutputReverse(1, kTimeout);
-    leftLeader.setSensorPhase(false);
-    leftFollower.setInverted(true);
-    leftLeader.setInverted(true);
-    // right PID configuration
-    rightLeader.config_kP(kLoopType, kP, kTimeout);
-    rightLeader.config_kI(kLoopType, kI, kTimeout);
-    rightLeader.config_kD(kLoopType, kD, kTimeout);
-    // left PID configuration
-    leftLeader.config_kP(kLoopType, kP, kTimeout);
-    leftLeader.config_kI(kLoopType, kI, kTimeout);
-    leftLeader.config_kD(kLoopType, kD, kTimeout);
+    PIDSetup.IntializePID(rightLeader, kP, kI, kD, 0, 1, kSensorType, kLoopType, kTimeout);
+    PIDSetup.IntializePID(leftLeader , kP, kI, kD, 0, 1, kSensorType, kLoopType, kTimeout);
   }
 
   @Override

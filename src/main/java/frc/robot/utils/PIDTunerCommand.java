@@ -154,6 +154,7 @@ public class PIDTunerCommand extends CommandBase {
         velEntry.setDouble(0);
         velocityOutputs.add(velEntry);
         positionOutputs.add(posEntry);
+
     }
 
     // Static utilities

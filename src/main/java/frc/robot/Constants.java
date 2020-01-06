@@ -26,10 +26,10 @@ public final class Constants {
     public static final int K_DRIVE_RIGHT_FRONT_ID = 03;
     public static final int K_DRIVE_RIGHT_BACK_ID = 04;
 
-    public static final int K_SHOOTER_LAUNCH_ID = 05;
+    public static final int K_SHOOTER_FlYWHEEL_ID = 05;
 
     // PWM Ports
-    public static final int K_SPARK_CHANNEL = 0;
+    public static final int K_SHOOTER_KICKER_SPARK=0;
 
     // DIO Ports
     public static final int K_DIST_SWITCH = 0;

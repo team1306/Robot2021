@@ -32,3 +32,5 @@ Files meant to ease the implementation of a variety of other files
     *   `UserAnalog` - returns a -1 to 1 value
     *   `UserDigital` - returns a boolean
 *   `PIDTunerCommand` - A command to harness the ShuffleBoard for tuning PID gains for different subsystems throughout the season.
+*   `PIDSetup.java` - A tool for easing the implementation of PID loops by controlling verbosity and fixing errors in one spot.
+*   `Encoder.java` - A location for managing the unit transformations for different types of encoders.
