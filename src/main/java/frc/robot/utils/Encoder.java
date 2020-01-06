@@ -2,12 +2,12 @@ package frc.robot.utils;
 
 public class Encoder {
 
-    public static final Encoder Grayhill25 = new Encoder(25);
-    public static final Encoder Grayhill32 = new Encoder(32);
-    public static final Encoder Grayhill50 = new Encoder(50);
-    public static final Encoder Grayhill64 = new Encoder(64);
-    public static final Encoder Grayhill128 = new Encoder(128);
-    public static final Encoder Grayhill256 = new Encoder(256);
+    public static final Encoder Grayhill25 = new Encoder(4*25);
+    public static final Encoder Grayhill32 = new Encoder(4*32);
+    public static final Encoder Grayhill50 = new Encoder(4*50);
+    public static final Encoder Grayhill64 = new Encoder(4*64);
+    public static final Encoder Grayhill128 = new Encoder(4*128);
+    public static final Encoder Grayhill256 = new Encoder(4*256);
 
 
 

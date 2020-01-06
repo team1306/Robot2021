@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import frc.robot.Constants;
+import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDSetup;
 
 public class DriveTrain extends SubsystemBase {
 
   private final TalonSRX rightLeader;
   private final TalonSRX leftLeader;
+  private final Encoder enc = Encoder.Grayhill256;
 
   // PID Tuning constants
   private static final int kLoopType = 0;// 0 = closed loop, 1 = auxilary closed loop
@@ -63,16 +65,16 @@ public class DriveTrain extends SubsystemBase {
    * @param leftVel  - the RPM velocity for the left half of the robot
    */
   public void velocityDrive(double rightVel, double leftVel) {
-    rightLeader.set(ControlMode.Velocity, rightVel);
-    leftLeader.set(ControlMode.Velocity, leftVel);
+    rightLeader.set(ControlMode.Velocity, enc.RPMtoPIDVelocity(rightVel));
+    leftLeader.set(ControlMode.Velocity, enc.RPMtoPIDVelocity(leftVel));
   }
 
   public double getRightRPM() {
-    return rightLeader.getSelectedSensorVelocity(kLoopType);
+    return enc.PIDVelocityToRPM(rightLeader.getSelectedSensorVelocity(kLoopType));
   }
 
   public double getLeftRPM() {
-    return leftLeader.getSelectedSensorVelocity(kLoopType);
+    return enc.PIDVelocityToRPM(leftLeader.getSelectedSensorVelocity(kLoopType));
   }
 
   public void setPID(double kP, double kI, double kD) {

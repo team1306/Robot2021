@@ -14,7 +14,7 @@ public class Shooter extends SubsystemBase {
 
     private final TalonSRX flywheel;
     private final Spark kicker;
-    private final Encoder flywheelEnc=Encoder.Grayhill128;
+    private final Encoder flywheelEnc=Encoder.Grayhill256;
 
     private final int kP = 0;
     private final int kI = 0;
