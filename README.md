@@ -29,8 +29,9 @@ Located in /commands
 Located in /utils
 Files meant to ease the implementation of a variety of other files
 *   `UserInput.java` - Contains the [functional interfaces](https://www.geeksforgeeks.org/functional-interfaces-java/) for passing llamdas to commands to grab user inputs
-    *   `UserAnalog` - returns a -1 to 1 value
+    *   `UserAnalog` - returns a -1 to 1 value. These bounds are not checked: be sure the bounds are enforced for reliable results.
     *   `UserDigital` - returns a boolean
 *   `PIDTunerCommand` - A command to harness the ShuffleBoard for tuning PID gains for different subsystems throughout the season.
 *   `PIDSetup.java` - A tool for easing the implementation of PID loops by controlling verbosity and fixing errors in one spot.
 *   `Encoder.java` - A location for managing the unit transformations for different types of encoders.
+*   `Controller.java` - A list of all the XBox Controller mappings, as well as access methods for creating simple user inputs

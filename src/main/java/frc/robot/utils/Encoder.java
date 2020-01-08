@@ -1,15 +1,13 @@
 package frc.robot.utils;
 
 public class Encoder {
-
-    public static final Encoder Grayhill25 = new Encoder(4*25);
-    public static final Encoder Grayhill32 = new Encoder(4*32);
-    public static final Encoder Grayhill50 = new Encoder(4*50);
-    public static final Encoder Grayhill64 = new Encoder(4*64);
-    public static final Encoder Grayhill128 = new Encoder(4*128);
-    public static final Encoder Grayhill256 = new Encoder(4*256);
-
-
+    // unused/unowned and removed from public list for clarity
+    // public static final Encoder Grayhill25 = new Encoder(4 * 25);
+    // public static final Encoder Grayhill32 = new Encoder(4 * 32);
+    // public static final Encoder Grayhill50 = new Encoder(4 * 50);
+    // public static final Encoder Grayhill64 = new Encoder(4 * 64);
+    // public static final Encoder Grayhill128 = new Encoder(4 * 128);
+    public static final Encoder Grayhill256 = new Encoder(4 * 256);
 
     /*
      * Reference for what position and velocities pid is looking for: In Velocity
@@ -31,7 +29,7 @@ public class Encoder {
      * @return vel - the corresponding pulser per 100ms
      */
     public double RPMtoPIDVelocity(double rpm) {
-        return pulses * rpm * 600.0 / msPerMin;
+        return rpm * pulses * 100 / msPerMin;
     }
 
     /**
@@ -41,7 +39,7 @@ public class Encoder {
      * @return rpm
      */
     public double PIDVelocityToRPM(double vel) {
-        return pulses * vel * msPerMin / 100;
+        return vel * msPerMin / (100 * pulses);
     }
 
     public double pulsesToRotations(double pulses) {

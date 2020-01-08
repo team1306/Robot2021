@@ -54,10 +54,6 @@ public class DriveTrain extends SubsystemBase {
   public void tankDrive(double rightOutput, double leftOutput) {
     rightLeader.set(ControlMode.PercentOutput, rightOutput);
     leftLeader.set(ControlMode.PercentOutput, leftOutput);
-    System.out.println("Commanded output: " + leftOutput);
-    System.out.println("Actual Output:" + leftLeader.getMotorOutputPercent() + ", Right Percent: "
-        + rightLeader.getMotorOutputPercent());
-
   }
 
   /**

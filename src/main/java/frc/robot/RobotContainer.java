@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.UserDrive;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Shooter;
+import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 
 /**
@@ -23,7 +25,8 @@ import frc.robot.utils.UserAnalog;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain driveTrain = new DriveTrain();
+  private final DriveTrain driveTrain;
+  private final Shooter shooter;
   private final Command autoCommand;
   
 
@@ -32,6 +35,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+    driveTrain = new DriveTrain();
+    shooter = new Shooter();
     configureButtonBindings();
     autoCommand=null;
   }
@@ -43,9 +48,13 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    UserAnalog driveRight = () -> { return 0; };
-    UserAnalog driveLeft  = () -> { return 0; };
+    Controller.init();
+    UserAnalog driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+    UserAnalog driveLeft  = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
     UserDrive teleopDrive = new UserDrive(driveTrain, driveRight, driveLeft);
+
+    //PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, 0, 1, false, FeedbackDevice.QuadEncoder, shooter.flywheel);
+    //Robot.testCommand = tuneShooter;
   }
 
   /**

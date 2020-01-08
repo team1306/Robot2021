@@ -22,8 +22,8 @@ public class UserDrive extends CommandBase {
 
   /**
    * @param driveTrain - the robot's DriveTrain instance
-   * @param driveRight - the user input llambda for getting the right velocity
-   * @param driveLeft  - the user input llambda for getting the left velocity
+   * @param driveRight - the user input llambda for getting the right % output
+   * @param driveLeft  - the user input llambda for getting the left % output
    */
   public UserDrive(DriveTrain driveTrain, UserAnalog driveRight, UserAnalog driveLeft) {
     this.driveTrain = driveTrain;

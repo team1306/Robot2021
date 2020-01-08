@@ -22,9 +22,9 @@ public class PIDSetup {
         c.configFactoryDefault(timeout);
         c.configSelectedFeedbackSensor(sensorType, slotIdx, timeout);
         c.configNominalOutputForward(minOutput, timeout);// nominal = minimum output
-        c.configNominalOutputReverse(minOutput, timeout);
+        c.configNominalOutputReverse(-minOutput, timeout);
         c.configPeakOutputForward(maxOutput, timeout);// peak = maximum output
-        c.configPeakOutputReverse(maxOutput, timeout);
+        c.configPeakOutputReverse(-maxOutput, timeout);
 
         c.config_kP(slotIdx, kP);
         c.config_kI(slotIdx, kI);
