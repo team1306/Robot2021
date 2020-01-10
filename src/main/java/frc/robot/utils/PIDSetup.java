@@ -2,6 +2,9 @@ package frc.robot.utils;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 
 public class PIDSetup {
     /**
@@ -29,5 +32,15 @@ public class PIDSetup {
         c.config_kP(slotIdx, kP);
         c.config_kI(slotIdx, kI);
         c.config_kD(slotIdx, kD);
+    }
+
+    public static void IntializePIDSpark(CANSparkMax spark, double kP, double kI, double kD, double maxOutput,
+            Encoder encoder) {
+        CANPIDController c = spark.getPIDController();
+        c.setP(kP);
+        c.setI(kI);
+        c.setD(kD);
+        c.setOutputRange(-maxOutput, maxOutput);
+        c.setFeedbackDevice(spark.getEncoder(EncoderType.kQuadrature, (int) encoder.rotationsToPulses(1)));
     }
 }

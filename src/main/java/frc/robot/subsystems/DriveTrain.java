@@ -7,25 +7,27 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDSetup;
 
 public class DriveTrain extends SubsystemBase {
 
-  private final TalonSRX rightLeader;
-  private final TalonSRX leftLeader;
+  private final CANSparkMax rightLeader;
+  private final CANSparkMax leftLeader;
+  private final CANEncoder rightEnc;
+  private final CANEncoder leftEnc;
   private final Encoder enc = Encoder.Grayhill256;
 
   // PID Tuning constants
-  private static final int kLoopType = 0;// 0 = closed loop, 1 = auxilary closed loop
-  private static final FeedbackDevice kSensorType = FeedbackDevice.QuadEncoder;
-  private static final int kTimeout = 0; // Set to any positive non-0 number to check success
   private static final double kP = 0.3;
   private static final double kI = 0.01;
   private static final double kD = 0;
@@ -33,17 +35,25 @@ public class DriveTrain extends SubsystemBase {
   public DriveTrain() {
     // initialize motor controllers
     // right
-    rightLeader = new TalonSRX(Constants.K_DRIVE_RIGHT_FRONT_ID);
-    TalonSRX rightFollower = new TalonSRX(Constants.K_DRIVE_RIGHT_BACK_ID);
+    rightLeader = new CANSparkMax(Constants.K_DRIVE_RIGHT_FRONT_ID, MotorType.kBrushless);
+    CANSparkMax rightFollower1 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
+    CANSparkMax rightFollower2 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
     // left
-    leftLeader = new TalonSRX(Constants.K_DRIVE_LEFT_FRONT_ID);
-    TalonSRX leftFollower = new TalonSRX(Constants.K_DRIVE_LEFT_BACK_ID);
+    leftLeader = new CANSparkMax(Constants.K_DRIVE_LEFT_FRONT_ID, MotorType.kBrushless);
+    CANSparkMax leftFollower1 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
+    CANSparkMax leftFollower2 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
     // set follow
-    rightFollower.follow(rightLeader);
-    leftFollower.follow(leftLeader);
+    rightFollower1.follow(rightLeader);
+    rightFollower2.follow(rightLeader);
+
+    leftFollower1.follow(leftLeader);
+    leftFollower2.follow(leftLeader);
     // initalize PID settings
-    PIDSetup.IntializePID(rightLeader, kP, kI, kD, 0, 1, kSensorType, kLoopType, kTimeout);
-    PIDSetup.IntializePID(leftLeader , kP, kI, kD, 0, 1, kSensorType, kLoopType, kTimeout);
+    PIDSetup.IntializePIDSpark(rightLeader, kP, kI, kD, 1, enc);
+    PIDSetup.IntializePIDSpark(leftLeader, kP, kI, kD, 1, enc);
+    // get encoders
+    rightEnc = rightLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
+    leftEnc = leftLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
   }
 
   @Override
@@ -52,8 +62,8 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double rightOutput, double leftOutput) {
-    rightLeader.set(ControlMode.PercentOutput, rightOutput);
-    leftLeader.set(ControlMode.PercentOutput, leftOutput);
+    rightLeader.set(rightOutput);
+    leftLeader.set(leftOutput);
   }
 
   /**
@@ -61,26 +71,40 @@ public class DriveTrain extends SubsystemBase {
    * @param leftVel  - the RPM velocity for the left half of the robot
    */
   public void velocityDrive(double rightVel, double leftVel) {
-    rightLeader.set(ControlMode.Velocity, enc.RPMtoPIDVelocity(rightVel));
-    leftLeader.set(ControlMode.Velocity, enc.RPMtoPIDVelocity(leftVel));
+    rightLeader.getPIDController().setReference(rightVel, ControlType.kVelocity);
+    leftLeader.getPIDController().setReference(leftVel, ControlType.kVelocity);
   }
 
   public double getRightRPM() {
-    return enc.PIDVelocityToRPM(rightLeader.getSelectedSensorVelocity(kLoopType));
+    return rightEnc.getVelocity();
+  }
+
+  /**
+   * @return rotations
+   */
+  public double getRightPos() {
+    return rightEnc.getPosition();
   }
 
   public double getLeftRPM() {
-    return enc.PIDVelocityToRPM(leftLeader.getSelectedSensorVelocity(kLoopType));
+    return leftEnc.getVelocity();
+  }
+
+  /**
+   * @return rotations
+   */
+  public double getLeftPos() {
+    return leftEnc.getPosition();
   }
 
   public void setPID(double kP, double kI, double kD) {
     // right PID configuration
-    rightLeader.config_kP(kLoopType, kP, kTimeout);
-    rightLeader.config_kI(kLoopType, kI, kTimeout);
-    rightLeader.config_kD(kLoopType, kD, kTimeout);
+    rightLeader.getPIDController().setP(kP);
+    rightLeader.getPIDController().setI(kI);
+    rightLeader.getPIDController().setD(kD);
     // left PID configuration
-    leftLeader.config_kP(kLoopType, kP, kTimeout);
-    leftLeader.config_kI(kLoopType, kI, kTimeout);
-    leftLeader.config_kD(kLoopType, kD, kTimeout);
+    leftLeader.getPIDController().setP(kP);
+    leftLeader.getPIDController().setI(kI);
+    leftLeader.getPIDController().setD(kD);
   }
 }

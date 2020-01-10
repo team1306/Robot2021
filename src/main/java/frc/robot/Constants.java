@@ -20,16 +20,18 @@ package frc.robot;
 public final class Constants {
 
     // CAN ids
-    public static final int K_DRIVE_LEFT_FRONT_ID = 01;
-    public static final int K_DRIVE_LEFT_BACK_ID = 02;
+    public static final int K_DRIVE_LEFT_FRONT_ID   = 01;
+    public static final int K_DRIVE_LEFT_MIDDLE_ID  = 02;
+    public static final int K_DRIVE_LEFT_BACK_ID    = 03;
 
-    public static final int K_DRIVE_RIGHT_FRONT_ID = 03;
-    public static final int K_DRIVE_RIGHT_BACK_ID = 04;
+    public static final int K_DRIVE_RIGHT_FRONT_ID  = 04;
+    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 05;
+    public static final int K_DRIVE_RIGHT_BACK_ID   = 06;
 
-    public static final int K_SHOOTER_FlYWHEEL_ID = 05;
+    public static final int K_SHOOTER_FlYWHEEL_ID   = 07;
 
     // PWM Ports
-    public static final int K_SHOOTER_KICKER_SPARK=0;
+    public static final int K_SHOOTER_KICKER_SPARK  = 0;
 
     // DIO Ports
     public static final int K_DIST_SWITCH = 0;
