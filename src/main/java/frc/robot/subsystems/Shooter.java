@@ -12,7 +12,7 @@ import frc.robot.utils.PIDSetup;
 
 public class Shooter extends SubsystemBase {
 
-    private final TalonSRX flywheel;
+    public final TalonSRX flywheel;
     private final Spark kicker;
     private final Encoder flywheelEnc=Encoder.Grayhill256;
 

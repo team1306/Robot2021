@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   public static Command autoCommand;
   public static Command testCommand = null;
 
-  private RobotContainer m_robotContainer;
+  private static RobotContainer m_robotContainer;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -111,9 +111,10 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    try{
-    CommandScheduler.getInstance().schedule(testCommand);
-    }catch(NullPointerException e){
+    try {
+      CommandScheduler.getInstance().schedule(testCommand);
+      System.out.println("Executing test command");
+    } catch (NullPointerException e) {
       System.out.println("No test command, doing normal routine.");
     }
   }

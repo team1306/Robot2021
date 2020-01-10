@@ -9,6 +9,7 @@ public class Encoder {
     // public static final Encoder Grayhill128 = new Encoder(4 * 128);
     public static final Encoder Grayhill256 = new Encoder(4 * 256);
 
+    public static final Encoder VersaPlanetary = new Encoder(4 * 1024);
     /*
      * Reference for what position and velocities pid is looking for: In Velocity
      * mode, output value is in position change / 100ms. In Position mode, output

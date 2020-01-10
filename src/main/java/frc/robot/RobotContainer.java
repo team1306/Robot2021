@@ -7,13 +7,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.UserDrive;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Controller;
+import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
 
 /**
@@ -26,7 +29,7 @@ import frc.robot.utils.UserAnalog;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain driveTrain;
-  private final Shooter shooter;
+  public final Shooter shooter;
   private final Command autoCommand;
   
 
@@ -35,10 +38,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    driveTrain = new DriveTrain();
+    //driveTrain = new DriveTrain();
     shooter = new Shooter();
     configureButtonBindings();
     autoCommand=null;
+    driveTrain=null;
   }
 
   /**
@@ -49,12 +53,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Controller.init();
-    UserAnalog driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
-    UserAnalog driveLeft  = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-    UserDrive teleopDrive = new UserDrive(driveTrain, driveRight, driveLeft);
+    //UserAnalog driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+    //UserAnalog driveLeft  = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+    //UserDrive teleopDrive = new UserDrive(driveTrain, driveRight, driveLeft);
 
-    //PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, 0, 1, false, FeedbackDevice.QuadEncoder, shooter.flywheel);
-    //Robot.testCommand = tuneShooter;
+    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder, shooter.flywheel);
+    Robot.testCommand = tuneShooter;
   }
 
   /**

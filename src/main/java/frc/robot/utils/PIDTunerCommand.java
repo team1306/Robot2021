@@ -7,7 +7,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class PIDTunerCommand extends CommandBase {
@@ -16,8 +17,8 @@ public class PIDTunerCommand extends CommandBase {
     // Fixed variables
     private FeedbackDevice sensorType;
     private ControlMode outputMode;
-    private double minOut;
-    private double maxOut;
+    private double minOut = -1;
+    private double maxOut = 1;
 
     // changing variables
     private boolean swapPhase;
@@ -26,7 +27,7 @@ public class PIDTunerCommand extends CommandBase {
     private double D = 0;
     private double goalVal = 0;
     // NetworkTable fields
-    private NetworkTableInstance table;
+    private ShuffleboardTab table;
     private NetworkTableEntry phaseEntry;
     private NetworkTableEntry pEntry;
     private NetworkTableEntry iEntry;
@@ -40,7 +41,6 @@ public class PIDTunerCommand extends CommandBase {
      * the Shuffleboard and networktables with variables for goal value, P,I,D,
      * value outputs, and sensor phase.
      * 
-     * Networktable paths are located under "PIDTuner/~"
      * 
      * @param controlMode - currently one of either Position or Velocity
      * @param minOutput   - the minimum percent output of the motor when going
@@ -58,31 +58,22 @@ public class PIDTunerCommand extends CommandBase {
      */
     public PIDTunerCommand(ControlMode controlMode, double minOutput, double maxOutput, boolean invertPhase,
             FeedbackDevice sensorType, BaseMotorController controller, BaseMotorController... controllers) {
-        // validate parameters
-        if (!(controlMode == ControlMode.Velocity || controlMode == ControlMode.Position)) {
-            printErr("ControlMode not one of Position or Velocity");
-            outputMode = ControlMode.Disabled;
-        } else {
-            this.outputMode = controlMode;
-        }
-        if (minOutput >= maxOutput || minOutput < 0 || maxOutput > 1) {
-            printErr("Invalid Min/Max motor output");
-        } else {
-            this.minOut = minOutput;
-            this.maxOut = maxOutput;
-        }
+        this.outputMode = controlMode;
+        this.minOut = minOutput;
+        this.maxOut = maxOutput;
         this.swapPhase = invertPhase;
         this.sensorType = sensorType;
         // intialize network table elements
-        table = NetworkTableInstance.getDefault();
-        phaseEntry = table.getEntry("PIDTuner/SensorPhase");
-        pEntry = table.getEntry("PIDTuner/P-gain");
-        iEntry = table.getEntry("PIDTuner/I-gain");
-        dEntry = table.getEntry("PIDTuner/D-gain");
-        goalEntry = table.getEntry("PIDTuner/GoalValue");
+        table = Shuffleboard.getTab("Tuner");
+        phaseEntry = table.add("SensorPhase", invertPhase).getEntry();
+        pEntry = table.add("P-gain", 0).getEntry();
+        iEntry = table.add("I-gain", 0).getEntry();
+        dEntry = table.add("D-gain", 0).getEntry();
+        goalEntry = table.add("GoalValue", 0).getEntry();
         // Go through each motor controller and set up the tuner
         this.controllers = new ArrayList<BaseMotorController>();
         this.positionOutputs = new ArrayList<NetworkTableEntry>();
+        this.velocityOutputs = new ArrayList<NetworkTableEntry>();
         intializeMotorController(controller);
         for (int i = 0; i < controllers.length; i++) {
             intializeMotorController(controllers[i]);
@@ -95,6 +86,7 @@ public class PIDTunerCommand extends CommandBase {
         pEntry.setDouble(P);
         iEntry.setDouble(I);
         dEntry.setDouble(D);
+        System.out.println("Values Updating");
     }
 
     private void updateOutputs() {
@@ -139,17 +131,12 @@ public class PIDTunerCommand extends CommandBase {
 
     private void intializeMotorController(BaseMotorController c) {
         // remove unwanted extra settings that could cause issues
-        c.configFactoryDefault();
-        c.configSelectedFeedbackSensor(sensorType);
-        c.configNominalOutputForward(minOut);// nominal = minimum output
-        c.configNominalOutputReverse(minOut);
-        c.configPeakOutputForward(maxOut);// peak = maximum output
-        c.configPeakOutputReverse(maxOut);
+        PIDSetup.IntializePID(c, 0, 0, 0, minOut, maxOut, sensorType, 0, 0);
 
         String name = "Motor" + controllers.size();
         controllers.add(c);
-        NetworkTableEntry posEntry = table.getEntry(name + "Position");
-        NetworkTableEntry velEntry = table.getEntry(name + "Velocity");
+        NetworkTableEntry posEntry = table.add(name + "Position", 0).getEntry();
+        NetworkTableEntry velEntry = table.add(name + "Velocity", 0).getEntry();
         posEntry.setDouble(0);
         velEntry.setDouble(0);
         velocityOutputs.add(velEntry);
@@ -157,18 +144,23 @@ public class PIDTunerCommand extends CommandBase {
 
     }
 
-    // Static utilities
-    private static void printErr(String msg) {
-        System.err.print("PIDTuner error: " + msg);
-    }
+    int dash = 0;
 
     public void execute() {
-        grabUserInputs();
-        for (int i = 0; i < controllers.size(); i++) {
-            BaseMotorController c = controllers.get(i);
-            c.set(outputMode, goalVal);
+        System.out.println("Executing PID Tuner");
+        if (dash == 0) {
+            double oldVal = goalVal;
+            grabUserInputs();
+            updateOutputs();
+            if (!(oldVal == goalVal)) {
+                for (int i = 0; i < controllers.size(); i++) {
+                    BaseMotorController c = controllers.get(i);
+                    c.set(outputMode, goalVal);
+                }
+            }
         }
-        updateOutputs();
+        dash = (dash + 1) % 10;
+
     }
 
     public boolean isFinished() {
