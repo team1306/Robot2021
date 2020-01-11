@@ -33,6 +33,10 @@ public class Shooter extends SubsystemBase {
         flywheel.set(ControlMode.Velocity, flywheelEnc.RPMtoPIDVelocity(rpm));
     }
 
+    public void setFlywheelPercent(double percent){
+        flywheel.set(ControlMode.PercentOutput, percent);
+    }
+
     public double getRPM(){
         return flywheelEnc.PIDVelocityToRPM(flywheel.getSelectedSensorVelocity());
     }
