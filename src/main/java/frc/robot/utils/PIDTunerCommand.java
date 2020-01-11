@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -32,7 +34,7 @@ public class PIDTunerCommand extends CommandBase {
     private NetworkTableEntry pEntry;
     private NetworkTableEntry iEntry;
     private NetworkTableEntry dEntry;
-    private NetworkTableEntry goalEntry;
+    private NetworkTableEntry valueEntry;
     private ArrayList<NetworkTableEntry> velocityOutputs;
     private ArrayList<NetworkTableEntry> positionOutputs;
 
@@ -63,13 +65,20 @@ public class PIDTunerCommand extends CommandBase {
         this.maxOut = maxOutput;
         this.swapPhase = invertPhase;
         this.sensorType = sensorType;
-        // intialize network table elements
+
+        // intialize network table elements and add listeners
         table = Shuffleboard.getTab("Tuner");
         phaseEntry = table.add("SensorPhase", invertPhase).getEntry();
         pEntry = table.add("P-gain", 0).getEntry();
         iEntry = table.add("I-gain", 0).getEntry();
         dEntry = table.add("D-gain", 0).getEntry();
-        goalEntry = table.add("GoalValue", 0).getEntry();
+        valueEntry = table.add("GoalValue", 0).getEntry();
+        phaseEntry.addListener(this::phaseListener, EntryListenerFlags.kUpdate);
+        pEntry.addListener(this::pListener, EntryListenerFlags.kUpdate);
+        iEntry.addListener(this::iListener, EntryListenerFlags.kUpdate);
+        dEntry.addListener(this::dListener, EntryListenerFlags.kUpdate);
+        valueEntry.addListener(this::valueListener, EntryListenerFlags.kUpdate);
+
         // Go through each motor controller and set up the tuner
         this.controllers = new ArrayList<BaseMotorController>();
         this.positionOutputs = new ArrayList<NetworkTableEntry>();
@@ -81,54 +90,105 @@ public class PIDTunerCommand extends CommandBase {
         pushTableEntries();
     }
 
+    /**
+     * Initialze the entries with default values and push to networkTables
+     */
     private void pushTableEntries() {
         phaseEntry.setBoolean(swapPhase);
         pEntry.setDouble(P);
         iEntry.setDouble(I);
         dEntry.setDouble(D);
-        System.out.println("Values Updating");
     }
 
+    /**
+     * Update the graphs of position and velocity for the dashboard for each motor
+     */
     private void updateOutputs() {
         for (int i = 0; i < controllers.size(); i++) {
             BaseMotorController c = controllers.get(i);
             NetworkTableEntry posEntry = positionOutputs.get(i);
-            NetworkTableEntry velEntry = positionOutputs.get(i);
+            NetworkTableEntry velEntry = velocityOutputs.get(i);
             posEntry.setDouble(c.getSelectedSensorPosition());
             velEntry.setDouble(c.getSelectedSensorVelocity());
         }
     }
 
-    private void grabUserInputs() {
-        P = pEntry.getDouble(0);
-        D = dEntry.getDouble(0);
-        swapPhase = phaseEntry.getBoolean(swapPhase);
-        goalVal = goalEntry.getDouble(0);
-        double uI = iEntry.getDouble(0); // Want to be carefull when swapping I due to built up integral values
-        if (uI > I) {
-            resetIntegrals();
-            I = uI;
+    /**
+     * Listens to an update to the sensor phase and sets accordingly
+     * 
+     * @param note supplied by the entry when event triggered
+     */
+    private void phaseListener(EntryNotification note) {
+        swapPhase = note.value.getBoolean();
+        for (int i = 0; i < controllers.size(); i++) {
+            BaseMotorController c = controllers.get(i);
+            c.setSensorPhase(swapPhase);
         }
-        updateMotorGains();
+
     }
 
-    private void updateMotorGains() {
+    /**
+     * Listenes to the changes in p-value and updates the motor controllers to match
+     * 
+     * @param note supplied by the entry when update triggered
+     */
+    private void pListener(EntryNotification note) {
+        P = note.value.getDouble();
         for (int i = 0; i < controllers.size(); i++) {
             BaseMotorController c = controllers.get(i);
             c.config_kP(0, P);
+        }
+    }
+
+    /**
+     * Listens to change in the i-value and updates motor controllers to match.
+     * Since accumulations in the integral can cause wild variations when the
+     * I-value is changed, clears the accumulator first.
+     * 
+     * @param note supplied by the entry when update triggered
+     */
+    private void iListener(EntryNotification note) {
+        I = note.value.getDouble();
+        for (int i = 0; i < controllers.size(); i++) {
+            BaseMotorController c = controllers.get(i);
+            c.setIntegralAccumulator(0);
             c.config_kI(0, I);
+        }
+    }
+
+    /**
+     * Listents to the change in d-value and updates controllers
+     * 
+     * @param note supplied by the entry when update triggered
+     */
+    private void dListener(EntryNotification note) {
+        D = note.value.getDouble();
+        for (int i = 0; i < controllers.size(); i++) {
+            BaseMotorController c = controllers.get(i);
             c.config_kD(0, D);
         }
     }
 
-    private void resetIntegrals() {
+    /**
+     * Listens to the change in the goal output (position or velocity, depending on
+     * outputMode) and sets all controllers to match.
+     * 
+     * @param note supplied by the entry when update triggered
+     */
+    private void valueListener(EntryNotification note) {
+        goalVal = note.value.getDouble();
         for (int i = 0; i < controllers.size(); i++) {
             BaseMotorController c = controllers.get(i);
-            // no idea how to actually do this, use a hack
-            c.set(ControlMode.PercentOutput, c.getMotorOutputPercent());
+            c.set(outputMode, goalVal);
         }
     }
 
+    /**
+     * Sets up the PID settings for a motor controller and adds the relevent
+     * listeners, lists, and outputs.
+     * 
+     * @param c - motor controller to initialize
+     */
     private void intializeMotorController(BaseMotorController c) {
         // remove unwanted extra settings that could cause issues
         PIDSetup.IntializePID(c, 0, 0, 0, minOut, maxOut, sensorType, 0, 0);
@@ -144,20 +204,12 @@ public class PIDTunerCommand extends CommandBase {
 
     }
 
-    int dash = 0;
+    private int dash = 0;
 
     public void execute() {
-        System.out.println("Executing PID Tuner");
+        //every 10 executions update graphs
         if (dash == 0) {
-            double oldVal = goalVal;
-            grabUserInputs();
             updateOutputs();
-            if (!(oldVal == goalVal)) {
-                for (int i = 0; i < controllers.size(); i++) {
-                    BaseMotorController c = controllers.get(i);
-                    c.set(outputMode, goalVal);
-                }
-            }
         }
         dash = (dash + 1) % 10;
 
