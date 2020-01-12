@@ -18,6 +18,7 @@ import frc.robot.commands.JoystickFlywheel;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Controller;
+import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
 
@@ -69,12 +70,13 @@ public class RobotContainer {
     flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
   }
 
-  private void configureCommands(){
-    //drive
+  private void configureCommands() {
+    // drive
 
-    //shooter
-    JoystickFlywheel testShooter = new JoystickFlywheel(shooter,flywheelSpeed);
-    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder, new SubsystemBase[]{shooter}, shooter.flywheel);
+    // shooter
+    JoystickFlywheel testShooter = new JoystickFlywheel(shooter, flywheelSpeed);
+    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder,
+        new SubsystemBase[] { shooter }, Encoder.VersaPlanetary, shooter.flywheel);
     Robot.testCommand = tuneShooter;
   }
 

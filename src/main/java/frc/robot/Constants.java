@@ -39,4 +39,7 @@ public final class Constants {
     // Analog Ports
     public static final int K_DIST_SENSOR = 0;
 
+    // Robot information
+    public static final int K_TRACK_WIDTH_METERS=1;//fill out
+    public static final double K_WHEEL_RADIUS_INCHES = 8;
 }

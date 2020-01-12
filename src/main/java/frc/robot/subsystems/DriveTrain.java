@@ -7,12 +7,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -24,12 +27,18 @@ public class DriveTrain extends SubsystemBase {
   private final CANSparkMax leftLeader;
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
-  private final Encoder enc = Encoder.Grayhill256;
 
-  // PID Tuning constants
-  private static final double kP = 0.3;
-  private static final double kI = 0.01;
-  private static final double kD = 0;
+  private final Encoder enc = Encoder.Grayhill256;
+  private final AHRS gyro;
+
+  // PID velocity constants
+  private static final double kVP = 0.3;
+  private static final double kVI = 0.01;
+  private static final double kVD = 0;
+  // PID rotation constants
+  private static final double kRP = 0;
+  private static final double kRI = 0;
+  private static final double kRD = 0;
 
   public DriveTrain() {
     // initialize motor controllers
@@ -48,11 +57,13 @@ public class DriveTrain extends SubsystemBase {
     leftFollower1.follow(leftLeader);
     leftFollower2.follow(leftLeader);
     // initalize PID settings
-    PIDSetup.IntializePIDSpark(rightLeader, kP, kI, kD, 1, enc);
-    PIDSetup.IntializePIDSpark(leftLeader, kP, kI, kD, 1, enc);
+    PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, enc);
+    PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, enc);
     // get encoders
     rightEnc = rightLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
     leftEnc = leftLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
+
+    gyro = new AHRS();
   }
 
   @Override
@@ -105,5 +116,28 @@ public class DriveTrain extends SubsystemBase {
     leftLeader.getPIDController().setP(kP);
     leftLeader.getPIDController().setI(kI);
     leftLeader.getPIDController().setD(kD);
+  }
+
+  /**
+   * Turns by rotations relative to current location
+   */
+  public void positionDrive(double rightRotations, double leftRotations) {
+    double goalRight = rightRotations + getRightPos();
+    double goalLeft = leftRotations + getLeftPos();
+    rightLeader.getPIDController().setReference(enc.rotationsToPulses(goalRight), ControlType.kPosition);
+    leftLeader.getPIDController().setReference(enc.rotationsToPulses(goalLeft), ControlType.kPosition);
+
+  }
+
+  public double metersToRotations(double meters) {
+    return meters * 100 / (2.54 * Constants.K_WHEEL_RADIUS_INCHES * Math.PI);
+  }
+
+  public double feetToRotations(double feet) {
+    return feet * 12 / (Constants.K_WHEEL_RADIUS_INCHES * Math.PI);
+  }
+
+  public double rotationsToFeet(double rotations) {
+    return rotations * Constants.K_WHEEL_RADIUS_INCHES * Math.PI / 12;
   }
 }

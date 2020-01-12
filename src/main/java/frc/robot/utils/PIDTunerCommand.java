@@ -22,7 +22,7 @@ public class PIDTunerCommand extends CommandBase {
     private ControlMode outputMode;
     private double minOut = -1;
     private double maxOut = 1;
-
+    private final Encoder encoder;
     // changing variables
     private boolean swapPhase;
     private double P = 0;
@@ -60,9 +60,10 @@ public class PIDTunerCommand extends CommandBase {
      * @param controllers - Option other controllers to test the same PID on
      */
     public PIDTunerCommand(ControlMode controlMode, double minOutput, double maxOutput, boolean invertPhase,
-            FeedbackDevice sensorType, SubsystemBase[] requirements, BaseMotorController controller,
+            FeedbackDevice sensorType, SubsystemBase[] requirements,Encoder encoder, BaseMotorController controller,
             BaseMotorController... controllers) {
         this.outputMode = controlMode;
+        this.encoder=encoder;
         this.minOut = minOutput;
         this.maxOut = maxOutput;
         this.swapPhase = invertPhase;
@@ -112,9 +113,8 @@ public class PIDTunerCommand extends CommandBase {
             BaseMotorController c = controllers.get(i);
             NetworkTableEntry posEntry = positionOutputs.get(i);
             NetworkTableEntry velEntry = velocityOutputs.get(i);
-            posEntry.setDouble(c.getSelectedSensorPosition());
-            velEntry.setDouble(c.getSelectedSensorVelocity());
-            System.out.println("Updating outputs. Vel: "+c.getSelectedSensorVelocity());
+            posEntry.setDouble(encoder.pulsesToRotations(c.getSelectedSensorPosition()));
+            velEntry.setDouble(encoder.PIDVelocityToRPM(c.getSelectedSensorVelocity()));
         }
     }
 
@@ -188,6 +188,12 @@ public class PIDTunerCommand extends CommandBase {
      */
     private void valueListener(EntryNotification note) {
         goalVal = note.value.getDouble();
+        if(outputMode.equals(ControlMode.Velocity)){
+            goalVal=encoder.RPMtoPIDVelocity(goalVal);
+        }else if(outputMode.equals(ControlMode.Position)){
+            goalVal=encoder.rotationsToPulses(goalVal);
+        }
+
         if (isScheduled()) {
             for (int i = 0; i < controllers.size(); i++) {
                 BaseMotorController c = controllers.get(i);
