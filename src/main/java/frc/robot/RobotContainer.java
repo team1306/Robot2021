@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.JoystickFlywheel;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
@@ -73,7 +74,7 @@ public class RobotContainer {
 
     //shooter
     JoystickFlywheel testShooter = new JoystickFlywheel(shooter,flywheelSpeed);
-    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder, shooter.flywheel);
+    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder, new SubsystemBase[]{shooter}, shooter.flywheel);
     Robot.testCommand = tuneShooter;
   }
 

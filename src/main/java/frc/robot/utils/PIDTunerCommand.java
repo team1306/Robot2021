@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PIDTunerCommand extends CommandBase {
 
@@ -59,12 +60,15 @@ public class PIDTunerCommand extends CommandBase {
      * @param controllers - Option other controllers to test the same PID on
      */
     public PIDTunerCommand(ControlMode controlMode, double minOutput, double maxOutput, boolean invertPhase,
-            FeedbackDevice sensorType, BaseMotorController controller, BaseMotorController... controllers) {
+            FeedbackDevice sensorType, SubsystemBase[] requirements, BaseMotorController controller,
+            BaseMotorController... controllers) {
         this.outputMode = controlMode;
         this.minOut = minOutput;
         this.maxOut = maxOutput;
         this.swapPhase = invertPhase;
         this.sensorType = sensorType;
+
+        addRequirements(requirements);
 
         // intialize network table elements and add listeners
         table = Shuffleboard.getTab("Tuner");
@@ -110,6 +114,7 @@ public class PIDTunerCommand extends CommandBase {
             NetworkTableEntry velEntry = velocityOutputs.get(i);
             posEntry.setDouble(c.getSelectedSensorPosition());
             velEntry.setDouble(c.getSelectedSensorVelocity());
+            System.out.println("Updating outputs. Vel: "+c.getSelectedSensorVelocity());
         }
     }
 
@@ -124,6 +129,7 @@ public class PIDTunerCommand extends CommandBase {
             BaseMotorController c = controllers.get(i);
             c.setSensorPhase(swapPhase);
         }
+        System.out.println("Listening to phase entry");
 
     }
 
@@ -138,6 +144,7 @@ public class PIDTunerCommand extends CommandBase {
             BaseMotorController c = controllers.get(i);
             c.config_kP(0, P);
         }
+        System.out.println("Listening to p entry");
     }
 
     /**
@@ -154,6 +161,8 @@ public class PIDTunerCommand extends CommandBase {
             c.setIntegralAccumulator(0);
             c.config_kI(0, I);
         }
+        System.out.println("Listening to i entry");
+
     }
 
     /**
@@ -167,6 +176,8 @@ public class PIDTunerCommand extends CommandBase {
             BaseMotorController c = controllers.get(i);
             c.config_kD(0, D);
         }
+        System.out.println("Listening to d entry");
+
     }
 
     /**
@@ -177,10 +188,16 @@ public class PIDTunerCommand extends CommandBase {
      */
     private void valueListener(EntryNotification note) {
         goalVal = note.value.getDouble();
-        for (int i = 0; i < controllers.size(); i++) {
-            BaseMotorController c = controllers.get(i);
-            c.set(outputMode, goalVal);
+        if (isScheduled()) {
+            for (int i = 0; i < controllers.size(); i++) {
+                BaseMotorController c = controllers.get(i);
+                c.set(outputMode, goalVal);
+                c.setIntegralAccumulator(0);
+                System.out.println("Setting motor to goal " + goalVal);
+            }
         }
+        System.out.println("Listening to goal entry");
+
     }
 
     /**
@@ -207,7 +224,7 @@ public class PIDTunerCommand extends CommandBase {
     private int dash = 0;
 
     public void execute() {
-        //every 10 executions update graphs
+        // every 10 executions update graphs
         if (dash == 0) {
             updateOutputs();
         }
