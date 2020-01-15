@@ -16,7 +16,7 @@ For the purposes of the code and documentation:
 #### Subsystems 
 Located in /subsystems
 *   `Drivetrain.java`
-*   `Intake.java` - Controls the intake AND the handoff to the indexer
+*   `Intake.java` - Controls the intake AND the indexer
 *   `Shooter.java` - Indexer and shooter, NOT including aiming- that's from the command
 *   `Spinner.java` - Mechanism and sensors for manipulating the control panel
 *   `Climber.java`
@@ -24,6 +24,10 @@ Located in /subsystems
 #### Commands
 Located in /commands
 *   `UserDrive.java` - Drive with user input
+*   `IntakeCommand.java` - Intake based on user input and index based on sensor input
+*   `VisionCommand.java` - Stitch together the other vision commands into a single SequentialCommandGroup
+  * `VisionPosition.java` - Turn to the appropriate angle based on vision
+  * `VisionShoot.java` - Launch balls and manage shooter velocity
 
 #### Utils
 Located in /utils
