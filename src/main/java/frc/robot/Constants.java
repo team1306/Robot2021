@@ -31,9 +31,10 @@ public final class Constants {
     public static final int K_SHOOTER_FlYWHEEL_ID   = 07;  //like
                                                           //this
     // PWM Ports
-    public static final int K_SHOOTER_KICKER_SPARK  = 0;
-    public static final int K_INTAKE_GRABBER_SPARK  = 1;
-    public static final int K_INTAKE_INDEXER_SPARK  = 2;
+    public static final int K_SHOOTER_KICKER_SPARK   = 0;
+    public static final int K_INTAKE_AXEL_MAIN_SPARK = 1;
+    public static final int K_INTAKE_AXEL_LEFT_SPARK = 2;
+    public static final int K_INTAKE_INDEXER_SPARK   = 3;
 
     // DIO Ports
     public static final int K_INTAKE_INDEX_SWITCH   = 0;
@@ -43,5 +44,5 @@ public final class Constants {
 
     // Robot information
     public static final int K_TRACK_WIDTH_METERS=1;//fill out
-    public static final double K_WHEEL_RADIUS_INCHES = 8;
+    public static final double K_WHEEL_RADIUS_INCHES = 4;
 }

@@ -23,6 +23,7 @@ import frc.robot.utils.Controller;
 import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -37,13 +38,17 @@ public class RobotContainer {
 
   private final DriveTrain driveTrain;
   public final Shooter shooter;
-  public final Intake intake;  
+  public final Intake intake;
 
   // user controlls
   private UserAnalog driveRight;
   private UserAnalog driveLeft;
+
   private UserAnalog flywheelSpeed;
+
   private UserAnalog intakeSpeed;
+  private UserDigital isIntakeStuck;
+
   // inputs
 
   /**
@@ -73,7 +78,9 @@ public class RobotContainer {
     // UserAnalog driveLeft = Controller.simpleAxis(Controller.PRIMARY,
     // Controller.AXIS_LY);
     flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-    intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER),1,0);
+
+    intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);
+    isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
   }
 
   private void configureCommands() {
@@ -85,8 +92,8 @@ public class RobotContainer {
         new SubsystemBase[] { shooter }, Encoder.VersaPlanetary, shooter.flywheel);
     Robot.testCommand = tuneShooter;
 
-    //intake
-    IntakeCommand intakeCommand = new IntakeCommand(intake, intakeSpeed);
+    // intake
+    IntakeCommand intakeCommand = new IntakeCommand(intake, intakeSpeed, isIntakeStuck);
   }
 
   /**
