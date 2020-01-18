@@ -36,6 +36,10 @@ public final class Constants {
     public static final int K_INTAKE_AXEL_LEFT_SPARK = 2;
     public static final int K_INTAKE_INDEXER_SPARK   = 3;
 
+    //PCM ports
+    public static final int K_SHOOTER_HOOD_UP_SOLENOID  = 0;
+    public static final int K_SHOOTER_HOOD_DWN_SOLENOID = 1;
+
     // DIO Ports
     public static final int K_INTAKE_INDEX_SWITCH   = 0;
 
@@ -45,4 +49,14 @@ public final class Constants {
     // Robot information
     public static final int K_TRACK_WIDTH_METERS=1;//fill out
     public static final double K_WHEEL_RADIUS_INCHES = 4;
+
+    public static final double K_SHOOTER_RADIUS_INCHES = 4;
+    //angles from horizontal
+    public static final double K_ANGLE_SHORT_DEGREES   = 65;
+    public static final double K_ANGLE_LONG_DEGREES    = 20;
+    public static final double K_SHOOTER_HEIGHT_FT     = 3.5;
+
+
+    //field information
+    public static final double K_TARGET_HEIGHT_FT = 8.15;
 }
