@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
@@ -15,7 +14,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -29,7 +27,7 @@ public class DriveTrain extends SubsystemBase {
   private final CANEncoder leftEnc;
 
   private final Encoder enc = Encoder.Grayhill256;
-  private final AHRS gyro;
+  public final AHRS gyro;
 
   // PID velocity constants
   private static final double kVP = 0.3;
@@ -106,6 +104,15 @@ public class DriveTrain extends SubsystemBase {
   public double getLeftPos() {
     return leftEnc.getPosition();
   }
+
+  public double getRot(){
+    return gyro.getAngle();
+  }
+
+  public void resetRot(){
+    gyro.reset();
+  }
+
 
   public void setPID(double kP, double kI, double kD) {
     // right PID configuration

@@ -5,11 +5,8 @@ import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 
@@ -25,6 +22,11 @@ public class PositionVisionCommand extends CommandBase {
     private double distance;
     private double angle;
 
+    private PIDController angleFollower;
+    private final double kP=0.2;
+    private final double kI=0.00001;
+    private final double kD=0.0;
+
     public PositionVisionCommand(Shooter shooter, DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
         this.shooter = shooter;
@@ -36,6 +38,7 @@ public class PositionVisionCommand extends CommandBase {
         distanceEntry = table.getEntry("distance");
         distanceListenerHandle=distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
 
+        angleFollower=new PIDController(kP, kI, kD);
     }
 
     @Override
@@ -45,7 +48,8 @@ public class PositionVisionCommand extends CommandBase {
 
     @Override
     public void execute() {
-
+        double out = angleFollower.calculate(driveTrain.getRot());
+        driveTrain.tankDrive(-out, out);
     }
 
     @Override
@@ -60,9 +64,9 @@ public class PositionVisionCommand extends CommandBase {
     }
 
     private void listenAngle(EntryNotification n){
-        angle=n.value.getDouble();
-        if(!turning && angle>0.01){
-            turnByAngle(angle);
+        double val=n.value.getDouble();
+        if(!turning && val>0.01){
+            turnByAngle(val);
         }
     }
 
@@ -70,13 +74,11 @@ public class PositionVisionCommand extends CommandBase {
         distance = n.value.getDouble();
     }
 
-    private void turnByAngle(double radians) {
-        DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.K_TRACK_WIDTH_METERS);
-        // kinematics works for speeds, but by inputing a position a position can also
-        // be yielded
-        DifferentialDriveWheelSpeeds turnPositions = kinematics.toWheelSpeeds(new ChassisSpeeds(0, 0, radians));
-        driveTrain.positionDrive(driveTrain.metersToRotations(turnPositions.rightMetersPerSecond),
-                driveTrain.metersToRotations(turnPositions.leftMetersPerSecond));
+    private void turnByAngle(double degrees) {
+        angle=degrees;
         turning=true;
+        angleFollower.setSetpoint(degrees);
+        driveTrain.resetRot();
     }
+
 }
