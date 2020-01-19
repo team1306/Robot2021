@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase {
     public final TalonSRX flywheel;
     private final Spark kicker;
     private final DoubleSolenoid hood;
-    private final Encoder flywheelEnc = Encoder.Grayhill256;
+    public final Encoder flywheelEnc = Encoder.Grayhill256;
 
     private final double sinHighA = Math.sin(Constants.K_ANGLE_SHORT_DEGREES);
     private final double cosHighA = Math.cos(Constants.K_ANGLE_SHORT_DEGREES);

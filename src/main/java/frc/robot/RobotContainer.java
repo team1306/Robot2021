@@ -13,14 +13,14 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
+import frc.robot.commands.UserDrive;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Climber;
 import frc.robot.utils.Controller;
-import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
@@ -36,11 +36,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Command autoCommand;
 
-  private final DriveTrain driveTrain;
-  public final Shooter shooter;
-  public final Intake intake;
+  private DriveTrain driveTrain;
+  private Shooter shooter;
+  private Intake intake;
+  private Climber climber;
 
-  // user controlls
+  // user controls
   private UserAnalog driveRight;
   private UserAnalog driveLeft;
 
@@ -49,20 +50,33 @@ public class RobotContainer {
   private UserAnalog intakeSpeed;
   private UserDigital isIntakeStuck;
 
-  // inputs
+  // subsystem functionality
+  private final boolean drivetrainEnabled = true;
+  private final boolean shooterEnabled = true;
+  private final boolean intakeEnabled = true;
+  private final boolean climberEnabled = true;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
-    // driveTrain = new DriveTrain();
-    shooter = new Shooter();
-    driveTrain = null;
-    intake = new Intake();
+
     configureButtonBindings();
-    configureCommands();
+
     autoCommand = null;
+
+    if (drivetrainEnabled) {
+      initDrivetrain();
+    }
+    if (shooterEnabled) {
+      initShooter();
+    }
+    if (intakeEnabled) {
+      initIntake();
+    }
+    if (climberEnabled) {
+      initClimber();
+    }
   }
 
   /**
@@ -73,27 +87,34 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     Controller.init();
-    // UserAnalog driveRight = Controller.simpleAxis(Controller.PRIMARY,
-    // Controller.AXIS_RY);
-    // UserAnalog driveLeft = Controller.simpleAxis(Controller.PRIMARY,
-    // Controller.AXIS_LY);
+    driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+    driveLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+
     flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
 
     intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);
     isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
   }
 
-  private void configureCommands() {
-    // drive
+  private void initDrivetrain() {
+    driveTrain = new DriveTrain();
+    new UserDrive(driveTrain, driveRight, driveLeft);
+  }
 
-    // shooter
-    JoystickFlywheel testShooter = new JoystickFlywheel(shooter, flywheelSpeed);
-    PIDTunerCommand tuneShooter = new PIDTunerCommand(ControlMode.Velocity, -1, 1, false, FeedbackDevice.QuadEncoder,
-        new SubsystemBase[] { shooter }, Encoder.VersaPlanetary, shooter.flywheel);
-    Robot.testCommand = tuneShooter;
+  private void initShooter() {
+    shooter = new Shooter();
+    Robot.testCommand = new PIDTunerCommand(ControlMode.Velocity, 0, 1, false, FeedbackDevice.QuadEncoder, shooter,
+        shooter.flywheelEnc, shooter.flywheel);
+    new JoystickFlywheel(shooter, flywheelSpeed);
+  }
 
-    // intake
-    IntakeCommand intakeCommand = new IntakeCommand(intake, intakeSpeed, isIntakeStuck);
+  private void initIntake() {
+    intake = new Intake();
+    new IntakeCommand(intake, intakeSpeed, isIntakeStuck);
+  }
+
+  private void initClimber() {
+    climber = new Climber();
   }
 
   /**

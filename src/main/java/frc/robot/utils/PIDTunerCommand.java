@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -60,10 +61,10 @@ public class PIDTunerCommand extends CommandBase {
      * @param controllers - Option other controllers to test the same PID on
      */
     public PIDTunerCommand(ControlMode controlMode, double minOutput, double maxOutput, boolean invertPhase,
-            FeedbackDevice sensorType, SubsystemBase[] requirements,Encoder encoder, BaseMotorController controller,
+            FeedbackDevice sensorType, SubsystemBase[] requirements, Encoder encoder, BaseMotorController controller,
             BaseMotorController... controllers) {
         this.outputMode = controlMode;
-        this.encoder=encoder;
+        this.encoder = encoder;
         this.minOut = minOutput;
         this.maxOut = maxOutput;
         this.swapPhase = invertPhase;
@@ -93,6 +94,16 @@ public class PIDTunerCommand extends CommandBase {
             intializeMotorController(controllers[i]);
         }
         pushTableEntries();
+    }
+
+    /**
+     * For single subsystem requirement
+     */
+    public PIDTunerCommand(ControlMode controlMode, double minOutput, double maxOutput, boolean invertPhase,
+            FeedbackDevice sensorType, SubsystemBase requirement, Encoder encoder, BaseMotorController controller,
+            BaseMotorController... controllers) {
+        this(controlMode, minOutput, maxOutput, invertPhase, sensorType, new SubsystemBase[] { requirement }, encoder,
+                controller, controllers);
     }
 
     /**
@@ -188,10 +199,10 @@ public class PIDTunerCommand extends CommandBase {
      */
     private void valueListener(EntryNotification note) {
         goalVal = note.value.getDouble();
-        if(outputMode.equals(ControlMode.Velocity)){
-            goalVal=encoder.RPMtoPIDVelocity(goalVal);
-        }else if(outputMode.equals(ControlMode.Position)){
-            goalVal=encoder.rotationsToPulses(goalVal);
+        if (outputMode.equals(ControlMode.Velocity)) {
+            goalVal = encoder.RPMtoPIDVelocity(goalVal);
+        } else if (outputMode.equals(ControlMode.Position)) {
+            goalVal = encoder.rotationsToPulses(goalVal);
         }
 
         if (isScheduled()) {
