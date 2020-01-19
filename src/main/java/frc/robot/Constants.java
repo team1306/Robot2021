@@ -48,12 +48,12 @@ public final class Constants {
 
     // Robot information
     public static final int K_TRACK_WIDTH_METERS=1;//fill out
-    public static final double K_WHEEL_RADIUS_INCHES = 4;
+    public static final double K_WHEEL_RADIUS_INCHES =3;
 
-    public static final double K_SHOOTER_RADIUS_INCHES = 4;
+    public static final double K_SHOOTER_RADIUS_INCHES = 3;
     //angles from horizontal
     public static final double K_ANGLE_SHORT_DEGREES   = 65;
-    public static final double K_ANGLE_LONG_DEGREES    = 20;
+    public static final double K_ANGLE_LONG_DEGREES    = 35;
     public static final double K_SHOOTER_HEIGHT_FT     = 3.5;
 
 

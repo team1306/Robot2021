@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDSetup;
+import jdk.vm.ci.meta.Constant;
 
 public class Shooter extends SubsystemBase {
 
@@ -107,13 +108,20 @@ public class Shooter extends SubsystemBase {
     private double HighShotRPM(double dist) {
         double d2 = dist * dist;
         double repTerm = cosHighA * (sinHighA * dist - h * cosHighA);
-        return Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm);
+        return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
     private double LowShotRPM(double dist) {
         double d2 = dist * dist;
         double repTerm = cosLowA * (sinLowA * dist - h * cosLowA);
-        return Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm);
+        return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
+    public double feetPerSecondtoRPM(double feetPerSecond) {
+        return feetPerSecond * 12 / (Math.PI * Constants.K_SHOOTER_RADIUS_INCHES);
+    }
+
+    public double RPMtoFeetPerSecond(double rpm) {
+        return rpm * Math.PI * Constants.K_SHOOTER_RADIUS_INCHES / 12;
+    }
 }
