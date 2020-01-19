@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
 import frc.robot.utils.PIDSetup;
-import jdk.vm.ci.meta.Constant;
 
 public class Shooter extends SubsystemBase {
 
