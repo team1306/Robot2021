@@ -35,6 +35,7 @@ public final class Constants {
     public static final int K_INTAKE_AXEL_MAIN_SPARK = 1;
     public static final int K_INTAKE_AXEL_LEFT_SPARK = 2;
     public static final int K_INTAKE_INDEXER_SPARK   = 3;
+    public static final int K_VISION_STATUS_LEDS_PORT= 4;
 
     //PCM ports
     public static final int K_SHOOTER_HOOD_UP_SOLENOID  = 0;
@@ -51,8 +52,10 @@ public final class Constants {
     public static final double K_WHEEL_RADIUS_INCHES =3;
 
     public static final double K_SHOOTER_RADIUS_INCHES = 3;
+
+    public static final int K_NUM_LEDS = 65;
     //angles from horizontal
-    public static final double K_ANGLE_SHORT_DEGREES   = 65;
+    public static final double K_ANGLE_SHORT_DEGREES   = 70;
     public static final double K_ANGLE_LONG_DEGREES    = 35;
     public static final double K_SHOOTER_HEIGHT_FT     = 3.5;
 

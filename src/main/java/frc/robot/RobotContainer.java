@@ -16,11 +16,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
 import frc.robot.commands.UserDrive;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Climber;
 import frc.robot.utils.Controller;
+import frc.robot.utils.Lights;
 import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
@@ -41,6 +42,8 @@ public class RobotContainer {
   private Intake intake;
   private Climber climber;
 
+  private Lights lights;
+
   // user controls
   private UserAnalog driveRight;
   private UserAnalog driveLeft;
@@ -51,10 +54,11 @@ public class RobotContainer {
   private UserDigital isIntakeStuck;
 
   // subsystem functionality
-  private final boolean drivetrainEnabled = true;
-  private final boolean shooterEnabled = true;
-  private final boolean intakeEnabled = true;
-  private final boolean climberEnabled = true;
+  private final boolean drivetrainEnabled = false;
+  private final boolean shooterEnabled = false;
+  private final boolean intakeEnabled = false;
+  private final boolean climberEnabled = false;
+  private final boolean lightsEnabled = true;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,6 +80,9 @@ public class RobotContainer {
     }
     if (climberEnabled) {
       initClimber();
+    }
+    if (lightsEnabled){
+      initLights();
     }
   }
 
@@ -115,6 +122,10 @@ public class RobotContainer {
 
   private void initClimber() {
     climber = new Climber();
+  }
+
+  private void initLights(){
+    lights = new Lights();
   }
 
   /**
