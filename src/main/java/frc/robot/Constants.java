@@ -1,35 +1,28 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean constants. This class should not be used for any other
- * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.
- *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the constants are needed, to reduce verbosity.
+ * A class for holding constant values in a single editable spot. What goes in this file:
+ *  -Robot Motorcontroller ports and IDS
+ *  -Robot phsyical attributes
+ *  -Field attributes 
+ * 
+ * Things that don't go in this file:
+ *  -Subsystem-specific PID values
+ *  -Subsystem-specific sensor thresholds
  */
 public final class Constants {
 
     // CAN ids
-    public static final int K_DRIVE_LEFT_FRONT_ID   = 01;//why
-    public static final int K_DRIVE_LEFT_MIDDLE_ID  = 02;//comment
-    public static final int K_DRIVE_LEFT_BACK_ID    = 03;//like
-                                                         //this
-    public static final int K_DRIVE_RIGHT_FRONT_ID  = 04;      //when
-    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 05;     //you
-    public static final int K_DRIVE_RIGHT_BACK_ID   = 06;    //can
-                                                            //comment
-    public static final int K_SHOOTER_FlYWHEEL_ID   = 07;  //like
-                                                          //this
+    public static final int K_DRIVE_LEFT_FRONT_ID   = 01;
+    public static final int K_DRIVE_LEFT_MIDDLE_ID  = 02;
+    public static final int K_DRIVE_LEFT_BACK_ID    = 03;
+
+    public static final int K_DRIVE_RIGHT_FRONT_ID  = 04;
+    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 05;
+    public static final int K_DRIVE_RIGHT_BACK_ID   = 06;
+                                                    
+    public static final int K_SHOOTER_FlYWHEEL_ID   = 07;
+
     // PWM Ports
     public static final int K_SHOOTER_KICKER_SPARK   = 0;
     public static final int K_INTAKE_AXEL_MAIN_SPARK = 1;
@@ -47,18 +40,16 @@ public final class Constants {
     // Analog Ports
     public static final int K_DIST_SENSOR = 0;
 
-    // Robot information
-    public static final int K_TRACK_WIDTH_METERS=1;//fill out
+    // Robot information -TODO
+    public static final int K_TRACK_WIDTH_METERS=1; 
     public static final double K_WHEEL_RADIUS_INCHES =3;
 
     public static final double K_SHOOTER_RADIUS_INCHES = 3;
-
-    public static final int K_NUM_LEDS = 65;
-    //angles from horizontal
-    public static final double K_ANGLE_SHORT_DEGREES   = 70;
+    public static final double K_ANGLE_SHORT_DEGREES   = 55;//all angles measured from the horizontal
     public static final double K_ANGLE_LONG_DEGREES    = 35;
     public static final double K_SHOOTER_HEIGHT_FT     = 3.5;
 
+    public static final int K_NUM_LEDS = 65;
 
     //field information
     public static final double K_TARGET_HEIGHT_FT = 8.15;

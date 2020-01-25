@@ -10,8 +10,6 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
@@ -53,20 +51,24 @@ public class RobotContainer {
   private UserAnalog intakeSpeed;
   private UserDigital isIntakeStuck;
 
-  // subsystem functionality
+  // subsystem functionality. Subsystems and commands are not initialized unless
+  // flagged as true in this section. Important to distinguish this from actually
+  // enabling the robot.
   private final boolean drivetrainEnabled = false;
-  private final boolean shooterEnabled = false;
+  private final boolean shooterEnabled = true;
   private final boolean intakeEnabled = false;
   private final boolean climberEnabled = false;
   private final boolean lightsEnabled = true;
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * Initialization for the robot. Initializies the user inputs, subsystems, and
+   * commands, and sets the auto and test comamnds.
    */
   public RobotContainer() {
 
     configureButtonBindings();
 
+    // TODO
     autoCommand = null;
 
     if (drivetrainEnabled) {
@@ -81,26 +83,30 @@ public class RobotContainer {
     if (climberEnabled) {
       initClimber();
     }
-    if (lightsEnabled){
+    if (lightsEnabled) {
       initLights();
     }
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by instantiating a {@link GenericHID} or one of its subclasses
-   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Uses the system of UserAnalog and UserDigital to create the inputs requested
+   * by the commands. These inputs are set to the instance variables, and pulled
+   * later when the subsystem is initialized.
    */
   private void configureButtonBindings() {
+    //Sets up the controller objects so buttons can start to be created
     Controller.init();
+
+    //Drivetrain
     driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
     driveLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
 
+    //Shooter (will eventually be controlled by Vision)
     flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
 
+    //Intake
     intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);
-    isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
+    isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);//user button if two balls are stuck
   }
 
   private void initDrivetrain() {
@@ -124,12 +130,12 @@ public class RobotContainer {
     climber = new Climber();
   }
 
-  private void initLights(){
+  private void initLights() {
     lights = new Lights();
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
+   * Use this to pass the autonomous command to the Robot class.
    *
    * @return the command to run in autonomous
    */

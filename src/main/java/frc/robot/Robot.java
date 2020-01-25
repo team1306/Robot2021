@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoCommand = m_robotContainer.getAutonomousCommand();
-    // schedule the autonomous command (example)
+    // schedule the autonomous command only if set by the RobotContainer
     if (autoCommand != null) {
       autoCommand.schedule();
     }
@@ -86,14 +86,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    //command scheduler already ran in RobotPeriodic
   }
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
+    // If auto is continuing, cancel it. 
     if (autoCommand != null) {
       autoCommand.cancel();
     }
@@ -104,16 +102,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+        //command scheduler already ran in RobotPeriodic
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    //If the robotContainer has set up a command to test, run that. (Usually tuner command)
     try {
       CommandScheduler.getInstance().schedule(testCommand);
       System.out.println("Executing test command");
     } catch (NullPointerException e) {
+      //no command found.
       System.out.println("No test command, doing normal routine.");
     }
   }
@@ -123,5 +124,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+      //command scheduler already ran in RobotPeriodic
   }
 }

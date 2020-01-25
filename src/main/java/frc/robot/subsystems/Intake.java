@@ -15,6 +15,7 @@ public class Intake extends SubsystemBase {
      *    |#|::::::::::::::::::|#|=|=|
      *    |#|                  |#|  |
      *  ##|#|--------|:::::::::|#|=|=|##
+     *               ^-- Split shaft
      */
     private final Spark intakeMain;
     private final Spark intakeLeft;

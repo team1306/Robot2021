@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase {
     public final TalonSRX flywheel;
     private final Spark kicker;
     private final DoubleSolenoid hood;
-    public final Encoder flywheelEnc = Encoder.Grayhill256;
+    public final Encoder flywheelEnc = Encoder.VersaPlanetary;
 
     private final double sinHighA = Math.sin(Constants.K_ANGLE_SHORT_DEGREES);
     private final double cosHighA = Math.cos(Constants.K_ANGLE_SHORT_DEGREES);
@@ -36,10 +36,18 @@ public class Shooter extends SubsystemBase {
     private final double kI = 0.0001;
     private final double kD = 0;
 
+    private final Value hoodUp = Value.kForward;
+    private final Value hoodDown = Value.kReverse;
+
     public Shooter() {
         // initalize flywheel for PID
         flywheel = new TalonSRX(Constants.K_SHOOTER_FlYWHEEL_ID);
         PIDSetup.IntializePID(flywheel, kP, kI, kD, 0, 1, FeedbackDevice.QuadEncoder, 0, 0);
+        flywheel.setInverted(true);
+        flywheel.configPeakOutputReverse(0);
+        flywheel.configNominalOutputForward(0);
+        flywheel.configPeakOutputForward(1);
+        flywheel.configNominalOutputReverse(0);
 
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
@@ -60,6 +68,9 @@ public class Shooter extends SubsystemBase {
         return flywheelEnc.PIDVelocityToRPM(flywheel.getSelectedSensorVelocity());
     }
 
+    /**
+     * Cuts all output to the flywheel
+     */
     public void stopFlywheel() {
         flywheel.set(ControlMode.PercentOutput, 0);
     }
@@ -69,18 +80,24 @@ public class Shooter extends SubsystemBase {
      * 
      * @param isHigh - if the hood should be set to high
      */
-    public void setHoodHigh(boolean isHigh) {
-        if (isHigh) {
-            hood.set(Value.kForward);
-        } else {
-            hood.set(Value.kReverse);
+    public void setHood(boolean isHigh) {
+        if(isHigh){
+        hood.set(hoodUp);
+        }else{
+            hood.set(hoodDown);
         }
     }
 
-    public boolean isHoodHigh() {
-        return hood.get().equals(Value.kForward);
+    /**
+     * @return if the current hood output is high
+     */
+    public boolean isHoodUp() {
+        return hood.get().equals(hoodUp);
     }
 
+    /**
+     * Network Table Listener, do not call
+     */
     public void listenPiDistChange(EntryNotification n) {
         double dist = n.value.getDouble();
 
@@ -90,36 +107,56 @@ public class Shooter extends SubsystemBase {
         }
 
         if (dist > maxDistHigh) {
-            this.setHoodHigh(false);
+            this.setHood(false);
         } else if (dist < minDistLow) {
-            this.setHoodHigh(true);
+            this.setHood(true);
         }
         // else persist current hood
 
         // calculate speed
-        if (isHoodHigh()) {
+        if (isHoodUp()) {
             spinToRPM(HighShotRPM(dist));
         } else {
             spinToRPM(LowShotRPM(dist));
         }
     }
 
+    /**
+     * Gets the rpm for a high-angle shot at given distance
+     * @param dist - feet
+     * @return rpm
+     */
     private double HighShotRPM(double dist) {
         double d2 = dist * dist;
         double repTerm = cosHighA * (sinHighA * dist - h * cosHighA);
         return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
+    /**
+     * Gets the rpm for a low-angle shot at given distance
+     * @param dist- feet
+     * @return rpm
+     */
     private double LowShotRPM(double dist) {
         double d2 = dist * dist;
         double repTerm = cosLowA * (sinLowA * dist - h * cosLowA);
         return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
+    /**
+     * Calculates the rpm required to launch the ball at a given speed
+     * @param feetPerSecond
+     * @return rpm
+     */
     public double feetPerSecondtoRPM(double feetPerSecond) {
         return feetPerSecond * 12 / (Math.PI * Constants.K_SHOOTER_RADIUS_INCHES);
     }
 
+    /**
+     * Calculates the speed a ball would be launched at a given rpm
+     * @param rpm
+     * @return speed - feet per second
+     */
     public double RPMtoFeetPerSecond(double rpm) {
         return rpm * Math.PI * Constants.K_SHOOTER_RADIUS_INCHES / 12;
     }

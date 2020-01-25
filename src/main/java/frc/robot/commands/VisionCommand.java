@@ -6,6 +6,9 @@ import frc.robot.commands.vision.ShootVisionCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 
+/**
+ * Used for calling the vision command sequence in the correct order
+ */
 public class VisionCommand extends SequentialCommandGroup {
     public VisionCommand(DriveTrain driveTrain, Shooter shooter) {
         super();

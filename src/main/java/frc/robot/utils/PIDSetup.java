@@ -34,6 +34,17 @@ public class PIDSetup {
         c.config_kD(slotIdx, kD);
     }
 
+    /**
+     * Serves the same function as InitializePID, but for SparkMax motor controllers
+     * 
+     * @param spark     - the SparkMax to initliaze PID for
+     * @param kP        - initial P gain
+     * @param kI        - initial I gain
+     * @param kD        - initial D gain
+     * @param maxOutput - maximum percent output, in either direction, that the
+     *                  controller can output (binds globally- be careful)
+     * @param encoder   - the frc.robot.utils.Encoder object to translate units
+     */
     public static void IntializePIDSpark(CANSparkMax spark, double kP, double kI, double kD, double maxOutput,
             Encoder encoder) {
         CANPIDController c = spark.getPIDController();

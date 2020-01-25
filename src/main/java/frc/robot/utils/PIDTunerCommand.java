@@ -241,7 +241,7 @@ public class PIDTunerCommand extends CommandBase {
 
     }
 
-    private int dash = 0;
+    private int dash = 0;//counter for dashboard updates
 
     public void execute() {
         // every 10 executions update graphs

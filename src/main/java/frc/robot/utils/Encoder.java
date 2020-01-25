@@ -1,7 +1,19 @@
 package frc.robot.utils;
 
+/**
+ * A class for storing the encoder constants and mathematics around translating
+ * encoder values into physical values.
+ * 
+ * Encoders cannot be constructed except in this class, and it is important to
+ * check your imports to make sure you are not interfering with an
+ * edu.wpi.first.wpilibj.Encoder.
+ * 
+ * Most wpilibj encoder use cases look for velocity over 100ms, and this is
+ * reflected here.
+ */
+
 public class Encoder {
-    // unused/unowned and removed from public list for clarity
+    // unused/unowned encoders commented out for clarity
     // public static final Encoder Grayhill25 = new Encoder(4 * 25);
     // public static final Encoder Grayhill32 = new Encoder(4 * 32);
     // public static final Encoder Grayhill50 = new Encoder(4 * 50);
@@ -10,14 +22,10 @@ public class Encoder {
     public static final Encoder Grayhill256 = new Encoder(4 * 256);
 
     public static final Encoder VersaPlanetary = new Encoder(4 * 1024);
-    /*
-     * Reference for what position and velocities pid is looking for: In Velocity
-     * mode, output value is in position change / 100ms. In Position mode, output
-     * value is in encoder ticks
-     */
-    private static final int msPerMin = 1000 * 60;
 
-    private final int pulses;
+    private static final int msPerMin = 1000 * 60; // constant unit transformation
+
+    private final int pulses; // how many pulses are in a single rotation of the encoder
 
     private Encoder(int pulsesPerRotation) {
         pulses = pulsesPerRotation;
@@ -43,10 +51,21 @@ public class Encoder {
         return vel * msPerMin / (100 * pulses);
     }
 
+    /**
+     * Converts number of pulses to number of rotations
+     * 
+     * @param pulses - the rotation in pulses
+     * @return rotations - the number of rotations
+     */
     public double pulsesToRotations(double pulses) {
         return pulses / this.pulses;
     }
 
+    /**
+     * Converts rotations of the encoder into encoder pulses
+     * @param rotations
+     * @return pulses
+     */
     public double rotationsToPulses(double rotations) {
         return rotations * pulses;
     }

@@ -29,7 +29,6 @@ public class PositionVisionCommand extends CommandBase {
     private boolean turning = false;
     private Notifier pidHandeler;
     private double distance;
-    private double angle;
     private boolean finished = false;
 
     private final double maxVisionTurn = 0.4;
@@ -112,7 +111,6 @@ public class PositionVisionCommand extends CommandBase {
         if (!(pidHandeler == null)) {
             pidHandeler.stop();
         }
-        angle = degrees;
         turning = true;
         angleFollower.setSetpoint(degrees);
         driveTrain.resetRot();
