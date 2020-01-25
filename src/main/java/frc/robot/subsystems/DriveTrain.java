@@ -33,10 +33,6 @@ public class DriveTrain extends SubsystemBase {
   private static final double kVP = 0.3;
   private static final double kVI = 0.01;
   private static final double kVD = 0;
-  // PID rotation constants
-  private static final double kRP = 0;
-  private static final double kRI = 0;
-  private static final double kRD = 0;
 
   public DriveTrain() {
     // initialize motor controllers
@@ -107,6 +103,10 @@ public class DriveTrain extends SubsystemBase {
 
   public double getRot(){
     return gyro.getAngle();
+  }
+
+  public double getRotVelocity(){
+    return gyro.getRate();
   }
 
   public void resetRot(){

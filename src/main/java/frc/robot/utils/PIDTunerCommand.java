@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -206,15 +205,19 @@ public class PIDTunerCommand extends CommandBase {
         }
 
         if (isScheduled()) {
-            for (int i = 0; i < controllers.size(); i++) {
-                BaseMotorController c = controllers.get(i);
-                c.set(outputMode, goalVal);
-                c.setIntegralAccumulator(0);
-                System.out.println("Setting motor to goal " + goalVal);
-            }
+           setOutputs(outputMode,goalVal);
         }
         System.out.println("Listening to goal entry");
 
+    }
+
+    private void setOutputs(ControlMode mode, double goalVal){
+        for (int i = 0; i < controllers.size(); i++) {
+            BaseMotorController c = controllers.get(i);
+            c.set(mode, goalVal);
+            c.setIntegralAccumulator(0);
+            System.out.println("Setting motor to goal " + goalVal);
+        }
     }
 
     /**
@@ -245,8 +248,13 @@ public class PIDTunerCommand extends CommandBase {
         if (dash == 0) {
             updateOutputs();
         }
-        dash = (dash + 1) % 10;
+        dash = (dash + 1) % 3;
 
+    }
+
+    @Override
+    public void end(boolean isInterupted){
+        setOutputs(ControlMode.PercentOutput,0);
     }
 
     public boolean isFinished() {

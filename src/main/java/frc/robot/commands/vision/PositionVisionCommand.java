@@ -11,6 +11,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 
+/**
+ * General flow for this command:
+ * 
+ * Listener->Notifier->FollowPID-+ V Command->Execute->Evaluate Errors-> Pass to
+ * Next Command
+ * 
+ */
 public class PositionVisionCommand extends CommandBase {
 
     private final DriveTrain driveTrain;
@@ -23,9 +30,12 @@ public class PositionVisionCommand extends CommandBase {
     private Notifier pidHandeler;
     private double distance;
     private double angle;
+    private boolean finished = false;
 
     private final double maxVisionTurn = 0.4;
     private final double period = 10;
+    private final double velocityTolerance = 0.1;
+    private final double errorTolerance = 0.1;
 
     private PIDController angleFollower;
     private final double kP = 0.2;
@@ -50,11 +60,15 @@ public class PositionVisionCommand extends CommandBase {
     public void initialize() {
         angleListenerHandle = angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
+        finished = false;
     }
 
     @Override
     public void execute() {
-
+        if (Math.abs(angleFollower.getPositionError()) < errorTolerance
+                && Math.abs(driveTrain.getRotVelocity()) < velocityTolerance) {
+            turning = false;
+        }
     }
 
     public void followPID() {
@@ -67,22 +81,26 @@ public class PositionVisionCommand extends CommandBase {
     public void end(boolean interupted) {
         angleEntry.removeListener(angleListenerHandle);
         distanceEntry.removeListener(distanceListenerHandle);
-        try{
-        pidHandeler.stop();
-        }catch(NullPointerException e){
+        try {
+            pidHandeler.stop();
+        } catch (NullPointerException e) {
             // do nothing
         }
+        driveTrain.tankDrive(0, 0);
     }
 
     @Override
     public boolean isFinished() {
-        return !turning && angle <= 0.01;
+        return finished;
     }
 
     private void listenAngle(EntryNotification n) {
         double val = n.value.getDouble();
-        if (!turning && val > 0.01) {
+        if (!turning && val > errorTolerance) {
+            finished = false;
             turnByAngle(val);
+        } else if (!turning) {
+            finished = true;
         }
     }
 

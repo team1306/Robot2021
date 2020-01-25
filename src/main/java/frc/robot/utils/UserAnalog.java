@@ -2,14 +2,21 @@ package frc.robot.utils;
 
 public interface UserAnalog {
 
-    public static UserAnalog fromDigital(UserDigital digital, double trueVal, double falseVal){
-        return ()->{
-            if(digital.get()){
+    public static UserAnalog fromDigital(UserDigital digital, double trueVal, double falseVal) {
+        return () -> {
+            if (digital.get()) {
                 return trueVal;
-            }else{
+            } else {
                 return falseVal;
             }
         };
+    }
+
+    /**
+     * Binds a double to the expected [-1,1] range
+     */
+    public static double clamp(double val) {
+        return Math.max(-1, Math.min(1, val));
     }
 
     /**

@@ -21,6 +21,39 @@ public class UserDrive extends CommandBase {
   private final UserAnalog driveRight;
 
   /**
+   * Generates a set of tank drive UserAnalogs from an arcade drive and velocity input.
+   * @param velocity - the linear speed of the robot
+   * @param rotation - the rotational speed of the robot, with positive turning right
+   * @return {right, left}
+   */
+  public static UserAnalog[] arcadeToTankAdditive(UserAnalog velocity, UserAnalog rotation) {
+    UserAnalog right = () -> {
+      return UserAnalog.clamp(velocity.get() - rotation.get());
+    };
+    UserAnalog left = () -> {
+      return UserAnalog.clamp(velocity.get() + rotation.get());
+    };
+    return new UserAnalog[] { right, left };
+  }
+
+  /**
+   * Generates a set of tank drive UserAnalogs from an arcade drive input.
+   * This differs from arcadeToTankAdditive in that the rotation is scaled by the velocity
+   * @param velocity - the linear speed of the robot
+   * @param rotation - the rotational speed of the robot, with positive turning right
+   * @return {right, left}
+   */
+  public static UserAnalog[] arcadeToTankMultiplicative(UserAnalog velocity, UserAnalog rotation) {
+    UserAnalog right = () -> {
+      return UserAnalog.clamp(velocity.get() * (1 - rotation.get()));
+    };
+    UserAnalog left = () -> {
+      return UserAnalog.clamp(velocity.get() * (1 + rotation.get()));
+    };
+    return new UserAnalog[] { right, left };
+  }
+
+  /**
    * @param driveTrain - the robot's DriveTrain instance
    * @param driveRight - the user input llambda for getting the right % output
    * @param driveLeft  - the user input llambda for getting the left % output
