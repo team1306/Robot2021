@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.NetworkTablePaths;
 
 /**
  * General flow for this command:
@@ -46,10 +47,9 @@ public class PositionVisionCommand extends CommandBase {
         this.shooter = shooter;
 
         NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
-        NetworkTable table = ntInst.getTable("Vision");
-        angleEntry = table.getEntry("angle");
+        angleEntry = ntInst.getEntry(NetworkTablePaths.shooterAngle);
         angleListenerHandle = angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
-        distanceEntry = table.getEntry("distance");
+        distanceEntry = ntInst.getEntry(NetworkTablePaths.shooterDistance);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
 
         angleFollower = new PIDController(kP, kI, kD, period);

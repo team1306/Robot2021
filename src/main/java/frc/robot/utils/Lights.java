@@ -29,7 +29,7 @@ public class Lights extends AddressableLED {
         this.setData(leds);
         this.start();
         // Listener setup
-        NetworkTableEntry entry = NetworkTableInstance.getDefault().getTable("vision").getEntry("status color");
+        NetworkTableEntry entry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.ledStatus);
         entry.addListener(this::listenNetworkControl, EntryListenerFlags.kUpdate);
         //intialize entry and set default color
         entry.setString("0 0 0");
