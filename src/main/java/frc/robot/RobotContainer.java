@@ -11,9 +11,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
 import frc.robot.commands.UserDrive;
+import frc.robot.commands.VisionCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -59,6 +61,7 @@ public class RobotContainer {
   private final boolean intakeEnabled = false;
   private final boolean climberEnabled = false;
   private final boolean lightsEnabled = true;
+  private final boolean visionEnabled = true && drivetrainEnabled && shooterEnabled;
 
   /**
    * Initialization for the robot. Initializies the user inputs, subsystems, and
@@ -85,6 +88,9 @@ public class RobotContainer {
     }
     if (lightsEnabled) {
       initLights();
+    }
+    if(visionEnabled){
+      initVision();
     }
   }
 
@@ -130,6 +136,17 @@ public class RobotContainer {
 
   private void initLights() {
     lights = new Lights();
+  }
+
+  private void initVision(){
+    VisionCommand visionCommand = new VisionCommand(driveTrain, shooter);
+    Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_X, ()->{
+      if(visionCommand.isScheduled()){
+        CommandScheduler.getInstance().schedule(visionCommand);
+      }else{
+        CommandScheduler.getInstance().cancel(visionCommand);
+      }
+    });
   }
 
   /**

@@ -1,6 +1,9 @@
 package frc.robot.utils;
 
+import java.util.function.Function;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Controller {
     // Controller Map:
@@ -86,5 +89,19 @@ public class Controller {
         return () -> {
             return joystick.getRawButton(button);
         };
+    }
+
+    public static void bindCallback(int player, int button, Runnable callback){
+        Joystick joystick;
+        if (player == PRIMARY) {
+            joystick = primaryJoystick;
+        } else if (player == SECONDARY) {
+            joystick = secondaryJoystick;
+        } else {
+            System.err.println("ERROR: Invalid Player Controller requested");
+            return;
+        }
+        JoystickButton b = new JoystickButton(joystick, button);
+        b.whenPressed(callback);
     }
 }
