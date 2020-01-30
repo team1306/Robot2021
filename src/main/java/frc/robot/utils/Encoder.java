@@ -23,6 +23,8 @@ public class Encoder {
 
     public static final Encoder VersaPlanetary = new Encoder(4 * 1024);
 
+    public static final Encoder NeoInternal = new Encoder(42 * 4);
+
     private static final int msPerMin = 1000 * 60; // constant unit transformation
 
     private final int pulses; // how many pulses are in a single rotation of the encoder

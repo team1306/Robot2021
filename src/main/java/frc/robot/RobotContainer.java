@@ -116,8 +116,6 @@ public class RobotContainer {
 
   private void initShooter() {
     shooter = new Shooter();
-    Robot.testCommand = new PIDTunerCommand(ControlMode.Velocity, 0, 1, false, FeedbackDevice.QuadEncoder, shooter,
-        shooter.flywheelEnc, shooter.flywheel);
     new JoystickFlywheel(shooter, flywheelSpeed);
   }
 

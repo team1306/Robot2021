@@ -24,10 +24,19 @@ public class PIDSetup {
             double maxOutput, FeedbackDevice sensorType, int slotIdx, int timeout) {
         c.configFactoryDefault(timeout);
         c.configSelectedFeedbackSensor(sensorType, slotIdx, timeout);
+        /*
+        Minimum/Maxiumum outputs:
+            "-" = min output, "+" = max output, "|" = 0
+        (-1)     <---|+++++++++>(+1) Forward
+        (-1)     <---|+++++++++>(+1) Reverse
+
+        So in either case, PeakOutput should be set to max out and Nominal to min out,
+        no swapping required.
+        */
         c.configNominalOutputForward(minOutput, timeout);// nominal = minimum output
-        c.configNominalOutputReverse(-minOutput, timeout);
+        c.configNominalOutputReverse(minOutput, timeout);
         c.configPeakOutputForward(maxOutput, timeout);// peak = maximum output
-        c.configPeakOutputReverse(-maxOutput, timeout);
+        c.configPeakOutputReverse(maxOutput, timeout);
 
         c.config_kP(slotIdx, kP);
         c.config_kI(slotIdx, kI);
@@ -46,12 +55,24 @@ public class PIDSetup {
      * @param encoder   - the frc.robot.utils.Encoder object to translate units
      */
     public static void IntializePIDSpark(CANSparkMax spark, double kP, double kI, double kD, double maxOutput,
-            Encoder encoder) {
+            double minOutput, Encoder encoder) {
         CANPIDController c = spark.getPIDController();
         c.setP(kP);
         c.setI(kI);
         c.setD(kD);
-        c.setOutputRange(-maxOutput, maxOutput);
+        c.setOutputRange(minOutput, maxOutput);
         c.setFeedbackDevice(spark.getEncoder(EncoderType.kQuadrature, (int) encoder.rotationsToPulses(1)));
+    }
+
+    /**
+     * Initializes a spark with the given values for the NEO internal encoder
+     */
+    public static void IntializePIDSparkNEO(CANSparkMax spark, double kP, double kI, double kD, double maxOutput, double minOutput) {
+        CANPIDController c = spark.getPIDController();
+        c.setP(kP);
+        c.setI(kI);
+        c.setD(kD);
+        c.setOutputRange(minOutput, maxOutput);
+        c.setFeedbackDevice(spark.getEncoder(EncoderType.kHallSensor, (int) Encoder.NeoInternal.rotationsToPulses(1)));
     }
 }

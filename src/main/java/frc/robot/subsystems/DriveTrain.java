@@ -51,8 +51,8 @@ public class DriveTrain extends SubsystemBase {
     leftFollower1.follow(leftLeader);
     leftFollower2.follow(leftLeader);
     // initalize PID settings
-    PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, enc);
-    PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, enc);
+    PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, -1, enc);
+    PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, -1, enc);
     // get encoders
     rightEnc = rightLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
     leftEnc = leftLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
@@ -101,18 +101,17 @@ public class DriveTrain extends SubsystemBase {
     return leftEnc.getPosition();
   }
 
-  public double getRot(){
+  public double getRot() {
     return gyro.getAngle();
   }
 
-  public double getRotVelocity(){
+  public double getRotVelocity() {
     return gyro.getRate();
   }
 
-  public void resetRot(){
+  public void resetRot() {
     gyro.reset();
   }
-
 
   public void setPID(double kP, double kI, double kD) {
     // right PID configuration

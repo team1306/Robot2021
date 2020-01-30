@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -16,10 +20,10 @@ import frc.robot.utils.PIDSetup;
 
 public class Shooter extends SubsystemBase {
 
-    public final TalonSRX flywheel;
+    public final CANSparkMax flywheel;
     private final Spark kicker;
     private final DoubleSolenoid hood;
-    public final Encoder flywheelEnc = Encoder.VersaPlanetary;
+    public final Encoder flywheelEnc = Encoder.NeoInternal;
 
     private final double sinHighA = Math.sin(Constants.K_ANGLE_SHORT_DEGREES);
     private final double cosHighA = Math.cos(Constants.K_ANGLE_SHORT_DEGREES);
@@ -41,13 +45,8 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         // initalize flywheel for PID
-        flywheel = new TalonSRX(Constants.K_SHOOTER_FlYWHEEL_ID);
-        PIDSetup.IntializePID(flywheel, kP, kI, kD, 0, 1, FeedbackDevice.QuadEncoder, 0, 0);
-        flywheel.setInverted(true);
-        flywheel.configPeakOutputReverse(0);
-        flywheel.configNominalOutputForward(0);
-        flywheel.configPeakOutputForward(1);
-        flywheel.configNominalOutputReverse(0);
+        flywheel = new CANSparkMax(Constants.K_SHOOTER_FlYWHEEL_ID, MotorType.kBrushless);
+        PIDSetup.IntializePIDSparkNEO(flywheel, kP, kI, kD, 1, 0);
 
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
@@ -57,22 +56,22 @@ public class Shooter extends SubsystemBase {
     }
 
     public void spinToRPM(double rpm) {
-        flywheel.set(ControlMode.Velocity, flywheelEnc.RPMtoPIDVelocity(rpm));
+        flywheel.getPIDController().setReference(flywheelEnc.RPMtoPIDVelocity(rpm), ControlType.kVelocity);
     }
 
     public void setFlywheelPercent(double percent) {
-        flywheel.set(ControlMode.PercentOutput, percent);
+        flywheel.set(percent);
     }
 
     public double getRPM() {
-        return flywheelEnc.PIDVelocityToRPM(flywheel.getSelectedSensorVelocity());
+        return flywheelEnc.PIDVelocityToRPM(flywheel.getEncoder().getVelocity());
     }
 
     /**
      * Cuts all output to the flywheel
      */
     public void stopFlywheel() {
-        flywheel.set(ControlMode.PercentOutput, 0);
+        flywheel.set(0);
     }
 
     /**
@@ -81,9 +80,9 @@ public class Shooter extends SubsystemBase {
      * @param isHigh - if the hood should be set to high
      */
     public void setHood(boolean isHigh) {
-        if(isHigh){
-        hood.set(hoodUp);
-        }else{
+        if (isHigh) {
+            hood.set(hoodUp);
+        } else {
             hood.set(hoodDown);
         }
     }
@@ -123,6 +122,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Gets the rpm for a high-angle shot at given distance
+     * 
      * @param dist - feet
      * @return rpm
      */
@@ -134,6 +134,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Gets the rpm for a low-angle shot at given distance
+     * 
      * @param dist- feet
      * @return rpm
      */
@@ -145,6 +146,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Calculates the rpm required to launch the ball at a given speed
+     * 
      * @param feetPerSecond
      * @return rpm
      */
@@ -154,6 +156,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Calculates the speed a ball would be launched at a given rpm
+     * 
      * @param rpm
      * @return speed - feet per second
      */
