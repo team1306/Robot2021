@@ -101,7 +101,7 @@ public class DriveTrain extends SubsystemBase {
     return leftEnc.getPosition();
   }
 
-  public double getRot() {
+  public double getHeadingDegrees() {
     return gyro.getAngle();
   }
 
@@ -109,7 +109,7 @@ public class DriveTrain extends SubsystemBase {
     return gyro.getRate();
   }
 
-  public void resetRot() {
+  public void resetHeading() {
     gyro.reset();
   }
 

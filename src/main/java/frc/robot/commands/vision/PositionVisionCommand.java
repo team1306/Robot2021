@@ -2,7 +2,6 @@ package frc.robot.commands.vision;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -12,13 +11,6 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.NetworkTablePaths;
 
-/**
- * General flow for this command:
- * 
- * Listener->Notifier->FollowPID-+ V Command->Execute->Evaluate Errors-> Pass to
- * Next Command
- * 
- */
 public class PositionVisionCommand extends CommandBase {
 
     private final DriveTrain driveTrain;
@@ -27,7 +19,6 @@ public class PositionVisionCommand extends CommandBase {
     private int angleListenerHandle;
     private final NetworkTableEntry distanceEntry;
     private int distanceListenerHandle;
-    private boolean turning = false;
     private Notifier pidHandeler;
     private double distance;
     private boolean finished = false;
@@ -41,6 +32,9 @@ public class PositionVisionCommand extends CommandBase {
     private final double kP = 0.2;
     private final double kI = 0.00001;
     private final double kD = 0.0;
+
+    private double angle = Double.MAX_VALUE;// set to something outside of tolerance range. Since the PIDController
+                                            // doesn't actually listen to this variable for turning, it is safe.
 
     public PositionVisionCommand(Shooter shooter, DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
@@ -60,18 +54,18 @@ public class PositionVisionCommand extends CommandBase {
         angleListenerHandle = angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
         finished = false;
+        angle = Double.MAX_VALUE;
     }
 
     @Override
     public void execute() {
-        if (Math.abs(angleFollower.getPositionError()) < errorTolerance
-                && Math.abs(driveTrain.getRotVelocity()) < velocityTolerance) {
-            turning = false;
-        }
     }
 
+    /**
+     * Called by the PID Handeler.
+     */
     public void followPID() {
-        double out = angleFollower.calculate(driveTrain.getRot());
+        double out = angleFollower.calculate(driveTrain.getHeadingDegrees());
         out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);
         driveTrain.tankDrive(-out, out);
     }
@@ -85,39 +79,42 @@ public class PositionVisionCommand extends CommandBase {
         } catch (NullPointerException e) {
             // do nothing
         }
+        // reset speeds
         driveTrain.tankDrive(0, 0);
     }
 
     @Override
     public boolean isFinished() {
-        return finished;
+        //when not moving and both error and the vision-produced angle are under tolerance
+        return Math.abs(driveTrain.getRotVelocity()) < velocityTolerance
+                && Math.abs(angleFollower.getPositionError()) + Math.abs(angle) < errorTolerance;
     }
 
     private void listenAngle(EntryNotification n) {
         double val = n.value.getDouble();
-        if (!turning && val > errorTolerance) {
-            finished = false;
-            turnByAngle(val);
-        } else if (!turning) {
-            finished = true;
-        }
+        angle = val;
+        turnByAngle(val);
     }
 
     private void listenDistance(EntryNotification n) {
         distance = n.value.getDouble();
     }
 
+    /**
+     * Starts the processes for following based on PID
+     */
     private void turnByAngle(double degrees) {
         if (!(pidHandeler == null)) {
             pidHandeler.stop();
         }
-        turning = true;
-        angleFollower.setSetpoint(degrees);
-        driveTrain.resetRot();
-        pidHandeler = new Notifier(() -> {
-            followPID();
-        });
-        pidHandeler.startPeriodic(period);
+        angle = degrees;
+        if (this.isScheduled()) {
+            angleFollower.setSetpoint(degrees + driveTrain.getHeadingDegrees());
+            pidHandeler = new Notifier(() -> {
+                followPID();
+            });
+            pidHandeler.startPeriodic(period);
+        }
     }
 
 }
