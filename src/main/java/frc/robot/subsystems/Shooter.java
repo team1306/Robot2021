@@ -1,15 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
 
-import edu.wpi.first.networktables.EntryNotification;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Spark;
@@ -52,7 +46,6 @@ public class Shooter extends SubsystemBase {
         // Intialize other motors
         kicker = new Spark(Constants.K_SHOOTER_KICKER_SPARK);
 
-        NetworkTableInstance.getDefault().getEntry("vision/Distance");
     }
 
     public void spinToRPM(double rpm) {
@@ -61,6 +54,10 @@ public class Shooter extends SubsystemBase {
 
     public void setFlywheelPercent(double percent) {
         flywheel.set(percent);
+    }
+
+    public void setKickerPercent(double percent) {
+        kicker.set(percent);
     }
 
     public double getRPM() {
@@ -92,32 +89,6 @@ public class Shooter extends SubsystemBase {
      */
     public boolean isHoodUp() {
         return hood.get().equals(hoodUp);
-    }
-
-    /**
-     * Network Table Listener, do not call
-     */
-    public void listenPiDistChange(EntryNotification n) {
-        double dist = n.value.getDouble();
-
-        if (dist < 0) {
-            this.setFlywheelPercent(0);
-            return;
-        }
-
-        if (dist > maxDistHigh) {
-            this.setHood(false);
-        } else if (dist < minDistLow) {
-            this.setHood(true);
-        }
-        // else persist current hood
-
-        // calculate speed
-        if (isHoodUp()) {
-            spinToRPM(HighShotRPM(dist));
-        } else {
-            spinToRPM(LowShotRPM(dist));
-        }
     }
 
     /**
@@ -162,5 +133,31 @@ public class Shooter extends SubsystemBase {
      */
     public double RPMtoFeetPerSecond(double rpm) {
         return rpm * Math.PI * Constants.K_SHOOTER_RADIUS_INCHES / 12;
+    }
+
+    /**
+     * Calculates the hood and shooter inputs to shoot a specific distance
+     * 
+     * @param dist
+     */
+    public void targetDistance(double dist) {
+        if (dist < 0) {
+            this.setFlywheelPercent(0);
+            return;
+        }
+
+        if (dist > maxDistHigh) {
+            this.setHood(false);
+        } else if (dist < minDistLow) {
+            this.setHood(true);
+        }
+        // else persist current hood
+
+        // calculate speed
+        if (isHoodUp()) {
+            spinToRPM(HighShotRPM(dist));
+        } else {
+            spinToRPM(LowShotRPM(dist));
+        }
     }
 }

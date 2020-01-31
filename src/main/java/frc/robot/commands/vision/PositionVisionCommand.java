@@ -15,6 +15,7 @@ public class PositionVisionCommand extends CommandBase {
 
     private final DriveTrain driveTrain;
     private final Shooter shooter;
+    
     private final NetworkTableEntry angleEntry;
     private int angleListenerHandle;
     private final NetworkTableEntry distanceEntry;
@@ -25,7 +26,7 @@ public class PositionVisionCommand extends CommandBase {
     private final NetworkTableEntry putHeading;
 
     private final double maxVisionTurn = 0.4;
-    private final double period = 10;
+    private final double period = 10; // 10 ms
     private final double velocityTolerance = 0.1;
     private final double errorTolerance = 0.1;
 
@@ -34,8 +35,9 @@ public class PositionVisionCommand extends CommandBase {
     private final double kI = 0.00001;
     private final double kD = 0.0;
 
-    private double angle = Double.MAX_VALUE;// set to something outside of tolerance range. Since the PIDController
-                                            // doesn't actually listen to this variable for turning, it is safe.
+    private double angle = Double.MAX_VALUE;// This records angle offset from vision target. Set to something outside of
+                                            // tolerance range. Since the PIDController doesn't actually listen to this
+                                            // variable for turning, it is safe to set.
 
     public PositionVisionCommand(Shooter shooter, DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
@@ -89,7 +91,7 @@ public class PositionVisionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // when not moving and both error and the vision-produced angle are under
+        // when not moving and both error and the vision-produced angle is under
         // tolerance
         return Math.abs(driveTrain.getRotVelocity()) < velocityTolerance
                 && Math.abs(angleFollower.getPositionError()) + Math.abs(angle) < errorTolerance;
@@ -103,6 +105,7 @@ public class PositionVisionCommand extends CommandBase {
 
     private void listenDistance(EntryNotification n) {
         distance = n.value.getDouble();
+        shooter.targetDistance(distance);
     }
 
     /**
@@ -124,7 +127,7 @@ public class PositionVisionCommand extends CommandBase {
             pidHandeler.stop();
         }
         double currHeading = driveTrain.getHeadingDegrees();
-        angle = heading - currHeading;
+        angle = heading - currHeading;// variable records angle angle offset - not heading
         if (this.isScheduled()) {
             angleFollower.setSetpoint(heading);
             pidHandeler = new Notifier(() -> {
