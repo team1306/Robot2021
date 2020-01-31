@@ -22,6 +22,7 @@ public class PositionVisionCommand extends CommandBase {
     private Notifier pidHandeler;
     private double distance;
     private boolean finished = false;
+    private final NetworkTableEntry putHeading;
 
     private final double maxVisionTurn = 0.4;
     private final double period = 10;
@@ -46,6 +47,8 @@ public class PositionVisionCommand extends CommandBase {
         distanceEntry = ntInst.getEntry(NetworkTablePaths.shooterDistance);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
 
+        putHeading = ntInst.getEntry(NetworkTablePaths.robotHeading);
+
         angleFollower = new PIDController(kP, kI, kD, period);
     }
 
@@ -59,6 +62,7 @@ public class PositionVisionCommand extends CommandBase {
 
     @Override
     public void execute() {
+        putHeading.setDouble(driveTrain.getHeadingDegrees());
     }
 
     /**
@@ -85,15 +89,16 @@ public class PositionVisionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        //when not moving and both error and the vision-produced angle are under tolerance
+        // when not moving and both error and the vision-produced angle are under
+        // tolerance
         return Math.abs(driveTrain.getRotVelocity()) < velocityTolerance
                 && Math.abs(angleFollower.getPositionError()) + Math.abs(angle) < errorTolerance;
     }
 
     private void listenAngle(EntryNotification n) {
         double val = n.value.getDouble();
-        angle = val;
-        turnByAngle(val);
+        double heading = val;
+        turnToHeading(heading);
     }
 
     private void listenDistance(EntryNotification n) {
@@ -102,14 +107,26 @@ public class PositionVisionCommand extends CommandBase {
 
     /**
      * Starts the processes for following based on PID
+     * 
+     * @param degrees - current angular offset (in degrees)
      */
     private void turnByAngle(double degrees) {
+        turnToHeading(driveTrain.getHeadingDegrees() + degrees);
+    }
+
+    /**
+     * Starts the processes for following the PID to a specific gyro heading
+     * 
+     * @param heading - the goal heading (in degrees)
+     */
+    private void turnToHeading(double heading) {
         if (!(pidHandeler == null)) {
             pidHandeler.stop();
         }
-        angle = degrees;
+        double currHeading = driveTrain.getHeadingDegrees();
+        angle = heading - currHeading;
         if (this.isScheduled()) {
-            angleFollower.setSetpoint(degrees + driveTrain.getHeadingDegrees());
+            angleFollower.setSetpoint(heading);
             pidHandeler = new Notifier(() -> {
                 followPID();
             });
