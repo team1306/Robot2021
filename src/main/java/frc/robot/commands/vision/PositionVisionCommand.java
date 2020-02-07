@@ -22,7 +22,6 @@ public class PositionVisionCommand extends CommandBase {
     private int distanceListenerHandle;
     private Notifier pidHandeler;
     private double distance;
-    private boolean finished = false;
     private final NetworkTableEntry putHeading;
 
     private final double maxVisionTurn = 0.4;
@@ -58,8 +57,8 @@ public class PositionVisionCommand extends CommandBase {
     public void initialize() {
         angleListenerHandle = angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
-        finished = false;
         angle = Double.MAX_VALUE;
+        driveTrain.shift(driveTrain.K_LOW_GEAR);
     }
 
     @Override

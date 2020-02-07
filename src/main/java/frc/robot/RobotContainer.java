@@ -7,8 +7,7 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import java.io.Console;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -22,7 +21,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Controller;
 import frc.robot.utils.Lights;
-import frc.robot.utils.PIDTunerCommand;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 
@@ -61,7 +59,7 @@ public class RobotContainer {
   private final boolean intakeEnabled = false;
   private final boolean climberEnabled = false;
   private final boolean lightsEnabled = true;
-  private final boolean visionEnabled = true && drivetrainEnabled && shooterEnabled;
+  private final boolean visionEnabled = true && drivetrainEnabled & shooterEnabled;
 
   /**
    * Initialization for the robot. Initializies the user inputs, subsystems, and
@@ -143,8 +141,11 @@ public class RobotContainer {
     Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_X, ()->{
       if(visionCommand.isScheduled()){
         CommandScheduler.getInstance().schedule(visionCommand);
+        System.out.println("Scheduling Vision Command");
       }else{
         CommandScheduler.getInstance().cancel(visionCommand);
+        System.out.println("Canceling Vision Command");
+
       }
     });
   }

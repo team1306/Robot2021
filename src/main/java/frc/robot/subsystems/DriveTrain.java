@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -14,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -25,6 +19,12 @@ public class DriveTrain extends SubsystemBase {
   private final CANSparkMax leftLeader;
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
+
+  private final DoubleSolenoid shiftLeft;
+  private final DoubleSolenoid shiftRight;
+
+  public static final DoubleSolenoid.Value K_HIGH_GEAR = DoubleSolenoid.Value.kForward;
+  public static final DoubleSolenoid.Value K_LOW_GEAR = DoubleSolenoid.Value.kReverse;
 
   private final Encoder enc = Encoder.Grayhill256;
   public final AHRS gyro;
@@ -40,6 +40,10 @@ public class DriveTrain extends SubsystemBase {
     rightLeader = new CANSparkMax(Constants.K_DRIVE_RIGHT_FRONT_ID, MotorType.kBrushless);
     CANSparkMax rightFollower1 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
     CANSparkMax rightFollower2 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
+
+    shiftRight = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_RIGHT_FWD, Constants.K_DRIVE_SHIFT_RIGHT_BKWD);
+    shiftLeft = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_LEFT_FWD, Constants.K_DRIVE_SHIFT_LEFT_BKWD);
+
     // left
     leftLeader = new CANSparkMax(Constants.K_DRIVE_LEFT_FRONT_ID, MotorType.kBrushless);
     CANSparkMax leftFollower1 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
@@ -133,6 +137,32 @@ public class DriveTrain extends SubsystemBase {
     rightLeader.getPIDController().setReference(enc.rotationsToPulses(goalRight), ControlType.kPosition);
     leftLeader.getPIDController().setReference(enc.rotationsToPulses(goalLeft), ControlType.kPosition);
 
+  }
+
+  /**
+   * Swaps the gear of the drive train
+   */
+  public void shift() {
+    if (shiftLeft.get().equals(K_HIGH_GEAR)) {
+      shiftLeft.set(K_LOW_GEAR);
+    } else {
+      shiftLeft.set(K_HIGH_GEAR);
+    }
+    if (shiftRight.get().equals(K_HIGH_GEAR)) {
+      shiftRight.set(K_LOW_GEAR);
+    } else {
+      shiftRight.set(K_HIGH_GEAR);
+    }
+  }
+
+  /**
+   * Shifts to given gear. Gears are determined by K_HIGH_GEAR and K_LOW_GEAR
+   * 
+   * @param gear
+   */
+  public void shift(DoubleSolenoid.Value gear) {
+    shiftLeft.set(gear);
+    shiftRight.set(gear);
   }
 
   public double metersToRotations(double meters) {
