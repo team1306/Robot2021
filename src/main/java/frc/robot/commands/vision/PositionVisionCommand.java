@@ -58,12 +58,13 @@ public class PositionVisionCommand extends CommandBase {
         angleListenerHandle = angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
         distanceListenerHandle = distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
         angle = Double.MAX_VALUE;
-        driveTrain.shift(driveTrain.K_LOW_GEAR);
+        driveTrain.shift(DriveTrain.K_LOW_GEAR);
     }
 
     @Override
     public void execute() {
         putHeading.setDouble(driveTrain.getHeadingDegrees());
+        System.out.println("Vision Turn Command");
     }
 
     /**

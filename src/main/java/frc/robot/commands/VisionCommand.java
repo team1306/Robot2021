@@ -16,4 +16,10 @@ public class VisionCommand extends SequentialCommandGroup {
         ShootVisionCommand shoot = new ShootVisionCommand(shooter);
         addCommands(position, shoot);
     }
+
+    public void execute(){
+        super.execute();
+
+        System.out.println("Running Vision Command");
+    }
 }

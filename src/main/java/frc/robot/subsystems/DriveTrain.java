@@ -105,6 +105,14 @@ public class DriveTrain extends SubsystemBase {
     return leftEnc.getPosition();
   }
 
+  public double getLeftPercentOut(){
+    return leftLeader.get();
+  }
+
+  public double getRightPercentOut(){
+    return leftLeader.get();
+  }
+
   public double getHeadingDegrees() {
     return gyro.getAngle();
   }

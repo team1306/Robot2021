@@ -5,8 +5,7 @@ package frc.robot;
  * this file: -Robot Motorcontroller ports and IDS -Robot phsyical attributes
  * -Field attributes
  * 
- * Things that don't go in this file: 
- * -Subsystem-specific PID values
+ * Things that don't go in this file: -Subsystem-specific PID values
  * -Subsystem-specific sensor thresholds
  */
 public final class Constants {
@@ -21,6 +20,8 @@ public final class Constants {
     public static final int K_DRIVE_RIGHT_BACK_ID = 06;
 
     public static final int K_SHOOTER_FlYWHEEL_ID = 07;
+
+    public static final int K_SPINNER_MOTOR_ID = 8;
 
     // PWM Ports
     public static final int K_SHOOTER_KICKER_SPARK = 0;
@@ -52,7 +53,7 @@ public final class Constants {
     public static final double K_ANGLE_LONG_DEGREES = 35;
     public static final double K_SHOOTER_HEIGHT_FT = 3.5;
 
-    public static final int K_NUM_LEDS = 65;
+    public static final int K_NUM_LEDS = 15;
 
     // field information
     public static final double K_TARGET_HEIGHT_FT = 8.15;

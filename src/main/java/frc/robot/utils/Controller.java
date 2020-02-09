@@ -1,7 +1,5 @@
 package frc.robot.utils;
 
-import java.util.function.Function;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -91,7 +89,20 @@ public class Controller {
         };
     }
 
-    public static void bindCallback(int player, int button, Runnable callback){
+    /**
+     * 
+     * @param player
+     * @param button
+     * @param callback
+     * @return the bound button in case other operations need to be done and to protect against trash collection
+     */
+    public static JoystickButton bindCallback(int player, int button, Runnable callback){
+        JoystickButton b = getJoystickButton(player, button);
+        b.whenPressed(callback);
+        return b;
+    }
+
+    public static JoystickButton getJoystickButton(int player, int button){
         Joystick joystick;
         if (player == PRIMARY) {
             joystick = primaryJoystick;
@@ -99,9 +110,9 @@ public class Controller {
             joystick = secondaryJoystick;
         } else {
             System.err.println("ERROR: Invalid Player Controller requested");
-            return;
+            joystick=secondaryJoystick;
         }
         JoystickButton b = new JoystickButton(joystick, button);
-        b.whenPressed(callback);
+        return b;
     }
 }

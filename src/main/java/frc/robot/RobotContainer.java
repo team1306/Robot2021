@@ -7,10 +7,9 @@
 
 package frc.robot;
 
-import java.io.Console;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
 import frc.robot.commands.UserDrive;
@@ -51,15 +50,17 @@ public class RobotContainer {
   private UserAnalog intakeSpeed;
   private UserDigital isIntakeStuck;
 
+  private JoystickButton visionToggle;
+
   // subsystem functionality. Subsystems and commands are not initialized unless
   // flagged as true in this section. Important to distinguish this from actually
   // enabling the robot.
-  private final boolean drivetrainEnabled = false;
-  private final boolean shooterEnabled = true;
+  private final boolean drivetrainEnabled = true;
+  private final boolean shooterEnabled = false;
   private final boolean intakeEnabled = false;
   private final boolean climberEnabled = false;
   private final boolean lightsEnabled = true;
-  private final boolean visionEnabled = true && drivetrainEnabled & shooterEnabled;
+  private final boolean visionEnabled = true && drivetrainEnabled;// & shooterEnabled;
 
   /**
    * Initialization for the robot. Initializies the user inputs, subsystems, and
@@ -111,20 +112,24 @@ public class RobotContainer {
     //Intake
     intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);
     isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);//user button if two balls are stuck
+
   }
 
   private void initDrivetrain() {
     driveTrain = new DriveTrain();
+    Robot.driveTrain= driveTrain;
     new UserDrive(driveTrain, driveRight, driveLeft);
   }
 
   private void initShooter() {
     shooter = new Shooter();
+    Robot.shooter= shooter;
     new JoystickFlywheel(shooter, flywheelSpeed);
   }
 
   private void initIntake() {
     intake = new Intake();
+    Robot.intake=intake;
     new IntakeCommand(intake, intakeSpeed, isIntakeStuck);
   }
 
@@ -138,16 +143,8 @@ public class RobotContainer {
 
   private void initVision(){
     VisionCommand visionCommand = new VisionCommand(driveTrain, shooter);
-    Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_X, ()->{
-      if(visionCommand.isScheduled()){
-        CommandScheduler.getInstance().schedule(visionCommand);
-        System.out.println("Scheduling Vision Command");
-      }else{
-        CommandScheduler.getInstance().cancel(visionCommand);
-        System.out.println("Canceling Vision Command");
-
-      }
-    });
+    visionToggle=Controller.getJoystickButton(Controller.PRIMARY,Controller.BUTTON_X);
+    visionToggle.toggleWhenPressed(visionCommand);
   }
 
   /**

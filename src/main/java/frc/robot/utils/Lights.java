@@ -32,7 +32,7 @@ public class Lights extends AddressableLED {
         NetworkTableEntry entry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.ledStatus);
         entry.addListener(this::listenNetworkControl, EntryListenerFlags.kUpdate);
         //intialize entry and set default color
-        entry.setString("0 0 0");
+        entry.setString("255 0 0");
     }
 
     /**
