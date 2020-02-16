@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
@@ -56,11 +55,11 @@ public class RobotContainer {
   // flagged as true in this section. Important to distinguish this from actually
   // enabling the robot.
   private final boolean drivetrainEnabled = true;
-  private final boolean shooterEnabled = false;
-  private final boolean intakeEnabled = false;
-  private final boolean climberEnabled = false;
+  private final boolean shooterEnabled = true;
+  private final boolean intakeEnabled = true;
+  private final boolean climberEnabled = true;
   private final boolean lightsEnabled = true;
-  private final boolean visionEnabled = true && drivetrainEnabled;// & shooterEnabled;
+  private final boolean visionEnabled = true && drivetrainEnabled & shooterEnabled;
 
   /**
    * Initialization for the robot. Initializies the user inputs, subsystems, and
@@ -107,7 +106,7 @@ public class RobotContainer {
     driveLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
 
     //Shooter (will eventually be controlled by Vision)
-    flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+    flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
 
     //Intake
     intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);

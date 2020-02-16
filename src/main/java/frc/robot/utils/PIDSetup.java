@@ -44,27 +44,6 @@ public class PIDSetup {
     }
 
     /**
-     * Serves the same function as InitializePID, but for SparkMax motor controllers
-     * 
-     * @param spark     - the SparkMax to initliaze PID for
-     * @param kP        - initial P gain
-     * @param kI        - initial I gain
-     * @param kD        - initial D gain
-     * @param maxOutput - maximum percent output, in either direction, that the
-     *                  controller can output (binds globally- be careful)
-     * @param encoder   - the frc.robot.utils.Encoder object to translate units
-     */
-    public static void IntializePIDSpark(CANSparkMax spark, double kP, double kI, double kD, double maxOutput,
-            double minOutput, Encoder encoder) {
-        CANPIDController c = spark.getPIDController();
-        c.setP(kP);
-        c.setI(kI);
-        c.setD(kD);
-        c.setOutputRange(minOutput, maxOutput);
-        c.setFeedbackDevice(spark.getEncoder(EncoderType.kQuadrature, (int) encoder.rotationsToPulses(1)));
-    }
-
-    /**
      * Initializes a spark with the given values for the NEO internal encoder
      */
     public static void IntializePIDSparkNEO(CANSparkMax spark, double kP, double kI, double kD, double maxOutput, double minOutput) {
@@ -72,7 +51,7 @@ public class PIDSetup {
         c.setP(kP);
         c.setI(kI);
         c.setD(kD);
-        c.setOutputRange(minOutput, maxOutput);
+        //c.setOutputRange(minOutput, maxOutput);
         c.setFeedbackDevice(spark.getEncoder(EncoderType.kHallSensor, (int) Encoder.NeoInternal.rotationsToPulses(1)));
     }
 }

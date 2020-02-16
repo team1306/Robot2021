@@ -20,6 +20,6 @@ public class VisionCommand extends SequentialCommandGroup {
     public void execute(){
         super.execute();
 
-        System.out.println("Running Vision Command");
+        //my code
     }
 }

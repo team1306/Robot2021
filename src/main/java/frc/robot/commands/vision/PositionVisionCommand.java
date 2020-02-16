@@ -64,7 +64,6 @@ public class PositionVisionCommand extends CommandBase {
     @Override
     public void execute() {
         putHeading.setDouble(driveTrain.getHeadingDegrees());
-        System.out.println("Vision Turn Command");
     }
 
     /**

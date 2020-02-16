@@ -11,24 +11,26 @@ package frc.robot;
 public final class Constants {
 
     // CAN ids
-    public static final int K_DRIVE_LEFT_FRONT_ID = 01;
-    public static final int K_DRIVE_LEFT_MIDDLE_ID = 02;
-    public static final int K_DRIVE_LEFT_BACK_ID = 03;
+    public static final int K_DRIVE_LEFT_FRONT_ID = 1;
+    public static final int K_DRIVE_LEFT_MIDDLE_ID = 2;
+    public static final int K_DRIVE_LEFT_BACK_ID = 3;
 
-    public static final int K_DRIVE_RIGHT_FRONT_ID = 04;
-    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 05;
-    public static final int K_DRIVE_RIGHT_BACK_ID = 06;
+    public static final int K_DRIVE_RIGHT_FRONT_ID = 4;
+    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 5;
+    public static final int K_DRIVE_RIGHT_BACK_ID = 6;
 
-    public static final int K_SHOOTER_FlYWHEEL_ID = 07;
+    public static final int K_SHOOTER_FlYWHEEL_ID = 7;
 
     public static final int K_SPINNER_MOTOR_ID = 8;
 
+    public static final int K_SHOOTER_KICKER_ID = 9;
+    public static final int K_INTAKE_AXEL_RIGHT_ID = 10;
+    public static final int K_INTAKE_AXEL_LEFT_ID = 11;
+    public static final int K_INTAKE_INDEXER_ID = 12;
+    public static final int K_CLIMBER_MOTOR_ID = 13;
+
     // PWM Ports
-    public static final int K_SHOOTER_KICKER_SPARK = 0;
-    public static final int K_INTAKE_AXEL_MAIN_SPARK = 1;
-    public static final int K_INTAKE_AXEL_LEFT_SPARK = 2;
-    public static final int K_INTAKE_INDEXER_SPARK = 3;
-    public static final int K_VISION_STATUS_LEDS_PORT = 4;
+    public static final int K_VISION_STATUS_LEDS_PORT = 0;
 
     // PCM ports
     public static final int K_SHOOTER_HOOD_UP_SOLENOID = 0;
@@ -53,7 +55,7 @@ public final class Constants {
     public static final double K_ANGLE_LONG_DEGREES = 35;
     public static final double K_SHOOTER_HEIGHT_FT = 3.5;
 
-    public static final int K_NUM_LEDS = 15;
+    public static final int K_NUM_LEDS = 52;
 
     // field information
     public static final double K_TARGET_HEIGHT_FT = 8.15;

@@ -1,31 +1,25 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
-    private final Spark indexMotor;
-    /**
-     * For the intake, the following parts are controlled by intakeMain (:) and intakeLeft (-)
-     *  
-     *   
-     *    |#|::::::::::::::::::|#|=|=|
-     *    |#|                  |#|  |
-     *  ##|#|--------|:::::::::|#|=|=|##
-     *               ^-- Split shaft
-     */
-    private final Spark intakeMain;
-    private final Spark intakeLeft;
+    private final TalonSRX indexMotor;
+    private final VictorSPX intakeMain;
+    private final VictorSPX intakeLeft;
 
     private final DigitalInput indexSwitch;
 
     public Intake() {
-        indexMotor = new Spark(Constants.K_INTAKE_INDEXER_SPARK);
-        intakeMain = new Spark(Constants.K_INTAKE_AXEL_MAIN_SPARK);
-        intakeLeft = new Spark(Constants.K_INTAKE_AXEL_LEFT_SPARK);
+        indexMotor = new TalonSRX(Constants.K_INTAKE_INDEXER_ID);
+        intakeMain = new VictorSPX(Constants.K_INTAKE_AXEL_RIGHT_ID);
+        intakeLeft = new VictorSPX(Constants.K_INTAKE_AXEL_LEFT_ID);
         indexSwitch = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH);
     }
 
@@ -35,7 +29,7 @@ public class Intake extends SubsystemBase {
      * @param speed - double from 1 (in) to -1 (out)
      */
     public void index(double speed) {
-        indexMotor.set(speed);
+        indexMotor.set(ControlMode.PercentOutput, speed);
     }
 
     /**
@@ -52,8 +46,8 @@ public class Intake extends SubsystemBase {
      * @param speedLeft -The speed of the left half-axle 
      */
     public void intake(double speedRight, double speedLeft) {
-        intakeMain.set(speedRight);
-        intakeLeft.set(speedLeft);
+        intakeMain.set(ControlMode.PercentOutput, speedRight);
+        intakeLeft.set(ControlMode.PercentOutput, speedLeft);
     }
 
 }

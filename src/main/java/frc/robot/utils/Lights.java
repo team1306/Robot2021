@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
 
 /**
@@ -22,21 +23,22 @@ public class Lights extends AddressableLED {
         super(Constants.K_VISION_STATUS_LEDS_PORT);
         super.setLength(nLEDS);
 
-        //create buffer
+        // create buffer
         leds = new AddressableLEDBuffer(Constants.K_NUM_LEDS);
 
-        //set and start this object to drawing from the buffer
+        // set and start this object to drawing from the buffer
         this.setData(leds);
         this.start();
         // Listener setup
         NetworkTableEntry entry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.ledStatus);
-        entry.addListener(this::listenNetworkControl, EntryListenerFlags.kUpdate);
-        //intialize entry and set default color
-        entry.setString("255 0 0");
+        entry.addListener(this::listenNetworkControl, EntryListenerFlags.kLocal + EntryListenerFlags.kUpdate);
+        // intialize entry and set default color
+        entry.setString("0 0 0");
     }
 
     /**
      * Sets every led in the string to the RGB value
+     * 
      * @param r 0-255
      * @param g 0-255
      * @param b 0-255

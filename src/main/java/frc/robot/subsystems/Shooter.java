@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -15,7 +16,7 @@ import frc.robot.utils.PIDSetup;
 public class Shooter extends SubsystemBase {
 
     public final CANSparkMax flywheel;
-    private final Spark kicker;
+    private final TalonSRX kicker;
     private final DoubleSolenoid hood;
     public final Encoder flywheelEnc = Encoder.NeoInternal;
 
@@ -44,7 +45,7 @@ public class Shooter extends SubsystemBase {
 
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
-        kicker = new Spark(Constants.K_SHOOTER_KICKER_SPARK);
+        kicker = new TalonSRX(Constants.K_SHOOTER_KICKER_ID);
 
     }
 
@@ -57,7 +58,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setKickerPercent(double percent) {
-        kicker.set(percent);
+        kicker.set(ControlMode.PercentOutput, percent);
     }
 
     public double getRPM() {

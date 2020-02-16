@@ -11,12 +11,16 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
-import frc.robot.utils.PIDSetup;
 
 public class DriveTrain extends SubsystemBase {
 
   private final CANSparkMax rightLeader;
   private final CANSparkMax leftLeader;
+  private final CANSparkMax rightFollower1;
+  private final CANSparkMax leftFollower1;
+  private final CANSparkMax rightFollower2;
+  private final CANSparkMax leftFollower2;
+
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
 
@@ -38,16 +42,24 @@ public class DriveTrain extends SubsystemBase {
     // initialize motor controllers
     // right
     rightLeader = new CANSparkMax(Constants.K_DRIVE_RIGHT_FRONT_ID, MotorType.kBrushless);
-    CANSparkMax rightFollower1 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
-    CANSparkMax rightFollower2 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
+    rightFollower1 = new CANSparkMax(Constants.K_DRIVE_RIGHT_MIDDLE_ID, MotorType.kBrushless);
+    rightFollower2 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
 
     shiftRight = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_RIGHT_FWD, Constants.K_DRIVE_SHIFT_RIGHT_BKWD);
     shiftLeft = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_LEFT_FWD, Constants.K_DRIVE_SHIFT_LEFT_BKWD);
 
     // left
     leftLeader = new CANSparkMax(Constants.K_DRIVE_LEFT_FRONT_ID, MotorType.kBrushless);
-    CANSparkMax leftFollower1 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
-    CANSparkMax leftFollower2 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
+    leftFollower1 = new CANSparkMax(Constants.K_DRIVE_LEFT_MIDDLE_ID, MotorType.kBrushless);
+    leftFollower2 = new CANSparkMax(Constants.K_DRIVE_LEFT_BACK_ID, MotorType.kBrushless);
+
+    leftLeader.restoreFactoryDefaults();
+    leftFollower1.restoreFactoryDefaults();
+    leftFollower2.restoreFactoryDefaults();
+
+    rightLeader.restoreFactoryDefaults();
+    rightFollower1.restoreFactoryDefaults();
+    rightFollower2.restoreFactoryDefaults();
     // set follow
     rightFollower1.follow(rightLeader);
     rightFollower2.follow(rightLeader);
@@ -55,11 +67,11 @@ public class DriveTrain extends SubsystemBase {
     leftFollower1.follow(leftLeader);
     leftFollower2.follow(leftLeader);
     // initalize PID settings
-    PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, -1, enc);
-    PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, -1, enc);
+    // PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, -1, enc);
+    // PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, -1, enc);
     // get encoders
-    rightEnc = rightLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
-    leftEnc = leftLeader.getEncoder(EncoderType.kQuadrature, (int) enc.rotationsToPulses(1));
+    rightEnc = rightLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
+    leftEnc = leftLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
 
     gyro = new AHRS();
   }
@@ -70,8 +82,9 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double rightOutput, double leftOutput) {
+    System.out.println("Setting drive to " + rightOutput + ", " + leftOutput);
     rightLeader.set(rightOutput);
-    leftLeader.set(leftOutput);
+    leftLeader.set(-leftOutput);
   }
 
   /**
