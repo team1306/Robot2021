@@ -22,6 +22,8 @@ public class PositionVisionPIDController extends PIDController {
         this.period = period;
         this.driveTrain = driveTrain;
 
+        this.enableContinuousInput(0, 360);
+
         looper = new Notifier(this::runLoop);
     }
 
@@ -31,7 +33,7 @@ public class PositionVisionPIDController extends PIDController {
      */
     private void runLoop() {
         double out = this.calculate(driveTrain.getHeadingDegrees());
-        out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);//clamp to range
+        out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);// clamp to range
         driveTrain.tankDrive(-out, out);
     }
 
@@ -43,7 +45,7 @@ public class PositionVisionPIDController extends PIDController {
      * degrees will be changed to a goal heading of 0 degrees.
      */
     public void start() {
-        setGoalHeading(this.goalHeading);// reset closest path
+        resetGoalHeading(this.goalHeading);// reset closest path
         looper.startPeriodic(period);
         isRunning = true;
     }
@@ -54,7 +56,7 @@ public class PositionVisionPIDController extends PIDController {
      * @param goalHeading
      */
     public void start(double goalHeading) {
-        setGoalHeading(goalHeading);
+        resetGoalHeading(goalHeading);
         looper.startPeriodic(period);
         isRunning = true;
     }
@@ -76,11 +78,52 @@ public class PositionVisionPIDController extends PIDController {
      * 
      * Does NOT start the loop
      * 
-     * @param heading
+     * @param heading- goal gyro value, not relative to current robot heading
      */
     public void setGoalHeading(double heading) {
-        goalHeading = heading % 360 + 360 * (int) (driveTrain.getHeadingDegrees() / 360);
-        this.setSetpoint(heading);
+        goalHeading = 0.5 * (heading + nearestHeadingEquivalent(heading));
+        /*
+         * Breakdown of above function: To smooth results, we average it with previous
+         * results. However, if the previous result went through this process, we then
+         * also have the average of all previous inputs a different weights. For term n,
+         * where n is how many terms away from the current input, the weight is equal to
+         * 0.5/(2^n); this has a sum of one, because of the sum of infinite geometric
+         * series (the lost terms are made up by the reset).
+         * 
+         */
+        this.setSetpoint(goalHeading);
     }
 
+    /**
+     * Set the heading and skip the averaging- ignore past results. DOES still
+     * translate heading to nearest equivalent.
+     */
+    private void resetGoalHeading(double heading) {
+        goalHeading = nearestHeadingEquivalent(heading);
+        this.setSetpoint(goalHeading);
+    }
+
+    /**
+     * Converts a heading into the nearest equivalent heading to the robots current
+     * heading.
+     * 
+     * For instance, if the robot is at a heading of 270 degrees, with an input of
+     * zero, it would return 360 because a heading of 360 is the same as a heading
+     * of 0 but has less degrees between the current heading, meaning the shortest
+     * turn.
+     */
+    private double nearestHeadingEquivalent(double heading) {
+        double curr = driveTrain.getHeadingDegrees();
+        double r = 360 * (int) (curr / 360);
+        double fcurr = curr - r;// remove the number of whole rotation is the same as mod
+        double fheading = floormod(heading, 360);
+        if (floormod(fheading - fcurr, 360) > 180) {
+            r -= 360;
+        }
+        return r + fheading;
+    }
+
+    private double floormod(double num, double denom) {
+        return ((num % denom) + denom) % denom;
+    }
 }
