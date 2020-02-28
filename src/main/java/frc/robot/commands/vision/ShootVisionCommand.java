@@ -30,11 +30,12 @@ public class ShootVisionCommand extends CommandBase {
 
     @Override
     public void end(boolean isInterupted){
-
+        shooter.spinToRPM(0);
     }
 
     private void listenDistance(EntryNotification note){
-
+        double dist = note.value.getDouble();
+        shooter.targetDistance(dist);
     }
 
     @Override

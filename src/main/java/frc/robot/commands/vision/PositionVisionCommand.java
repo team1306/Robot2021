@@ -4,7 +4,6 @@ import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Shooter;
@@ -48,12 +47,13 @@ public class PositionVisionCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        angleFollower.start(driveTrain.getHeadingDegrees());
+        angleFollower.start();
         finished = false;
     }
 
     @Override
     public void execute() {
+        // turning is on it's own loop
         putHeading.setDouble(driveTrain.getHeadingDegrees());
     }
 

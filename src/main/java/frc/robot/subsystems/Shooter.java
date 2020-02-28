@@ -143,7 +143,7 @@ public class Shooter extends SubsystemBase {
      */
     public void targetDistance(double dist) {
         if (dist < 0) {
-            this.setFlywheelPercent(0);
+            this.spinToRPM(0);
             return;
         }
 
@@ -152,7 +152,7 @@ public class Shooter extends SubsystemBase {
         } else if (dist < minDistLow) {
             this.setHood(true);
         }
-        // else persist current hood
+        // else if between ranges persist current hood
 
         // calculate speed
         if (isHoodUp()) {
