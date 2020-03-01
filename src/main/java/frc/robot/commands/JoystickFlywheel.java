@@ -9,8 +9,8 @@ public class JoystickFlywheel extends CommandBase {
     private Shooter shooter;
     private UserAnalog input;
     
-    public JoystickFlywheel(Shooter subsystem, UserAnalog outputVelocity) {
-        shooter = subsystem;
+    public JoystickFlywheel(Shooter shooter, UserAnalog outputVelocity) {
+        this.shooter = shooter;
         input = outputVelocity;
 
         addRequirements(shooter);
@@ -20,6 +20,7 @@ public class JoystickFlywheel extends CommandBase {
     @Override
     public void execute() {
         shooter.setFlywheelPercent(input.get());
+        shooter.setKickerPercent(input.get());
     }
 
     @Override
@@ -33,5 +34,7 @@ public class JoystickFlywheel extends CommandBase {
             shooter.stopFlywheel();
         }
     }
+
+   
 
 }

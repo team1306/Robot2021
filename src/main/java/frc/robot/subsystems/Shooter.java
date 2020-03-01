@@ -42,7 +42,6 @@ public class Shooter extends SubsystemBase {
         // initalize flywheel for PID
         flywheel = new CANSparkMax(Constants.K_SHOOTER_FlYWHEEL_ID, MotorType.kBrushless);
         PIDSetup.IntializePIDSparkNEO(flywheel, kP, kI, kD, 1, 0);
-
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
         kicker = new TalonSRX(Constants.K_SHOOTER_KICKER_ID);
@@ -140,11 +139,13 @@ public class Shooter extends SubsystemBase {
      * Calculates the hood and shooter inputs to shoot a specific distance
      * 
      * @param dist
+     * 
+     * @return
      */
-    public void targetDistance(double dist) {
+    public double targetDistance(double dist) {
         if (dist < 0) {
             this.spinToRPM(0);
-            return;
+            return 0;
         }
 
         if (dist > maxDistHigh) {
@@ -156,9 +157,13 @@ public class Shooter extends SubsystemBase {
 
         // calculate speed
         if (isHoodUp()) {
-            spinToRPM(HighShotRPM(dist));
+            double rpm = HighShotRPM(dist);
+            spinToRPM(rpm);
+            return rpm;
         } else {
-            spinToRPM(LowShotRPM(dist));
+            double rpm = LowShotRPM(dist);
+            spinToRPM(rpm);
+            return rpm;
         }
     }
 }

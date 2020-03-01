@@ -24,8 +24,7 @@ public class DriveTrain extends SubsystemBase {
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
 
-  private final DoubleSolenoid shiftLeft;
-  private final DoubleSolenoid shiftRight;
+  private final DoubleSolenoid shift;
 
   public static final DoubleSolenoid.Value K_HIGH_GEAR = DoubleSolenoid.Value.kForward;
   public static final DoubleSolenoid.Value K_LOW_GEAR = DoubleSolenoid.Value.kReverse;
@@ -45,8 +44,7 @@ public class DriveTrain extends SubsystemBase {
     rightFollower1 = new CANSparkMax(Constants.K_DRIVE_RIGHT_MIDDLE_ID, MotorType.kBrushless);
     rightFollower2 = new CANSparkMax(Constants.K_DRIVE_RIGHT_BACK_ID, MotorType.kBrushless);
 
-    shiftRight = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_RIGHT_FWD, Constants.K_DRIVE_SHIFT_RIGHT_BKWD);
-    shiftLeft = new DoubleSolenoid(Constants.K_DRIVE_SHIFT_LEFT_FWD, Constants.K_DRIVE_SHIFT_LEFT_BKWD);
+    shift= new DoubleSolenoid(Constants.K_DRIVE_SHIFT_HIGH, Constants.K_DRIVE_SHIFT_LOW);
 
     // left
     leftLeader = new CANSparkMax(Constants.K_DRIVE_LEFT_FRONT_ID, MotorType.kBrushless);
@@ -82,7 +80,6 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void tankDrive(double rightOutput, double leftOutput) {
-    System.out.println("Setting drive to " + rightOutput + ", " + leftOutput);
     rightLeader.set(rightOutput);
     leftLeader.set(-leftOutput);
   }
@@ -164,15 +161,10 @@ public class DriveTrain extends SubsystemBase {
    * Swaps the gear of the drive train
    */
   public void shift() {
-    if (shiftLeft.get().equals(K_HIGH_GEAR)) {
-      shiftLeft.set(K_LOW_GEAR);
+    if (shift.get().equals(K_HIGH_GEAR)) {
+      shift.set(K_LOW_GEAR);
     } else {
-      shiftLeft.set(K_HIGH_GEAR);
-    }
-    if (shiftRight.get().equals(K_HIGH_GEAR)) {
-      shiftRight.set(K_LOW_GEAR);
-    } else {
-      shiftRight.set(K_HIGH_GEAR);
+      shift.set(K_HIGH_GEAR);
     }
   }
 
@@ -182,8 +174,7 @@ public class DriveTrain extends SubsystemBase {
    * @param gear
    */
   public void shift(DoubleSolenoid.Value gear) {
-    shiftLeft.set(gear);
-    shiftRight.set(gear);
+    shift.set(gear);
   }
 
   public double metersToRotations(double meters) {

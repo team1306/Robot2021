@@ -6,7 +6,7 @@ import frc.robot.subsystems.DriveTrain;
 
 public class PositionVisionPIDController extends PIDController {
 
-    private final double maxVisionTurn = 0.5;
+    private final double maxVisionTurn = 1.0;
 
     private DriveTrain driveTrain;
 
@@ -22,8 +22,6 @@ public class PositionVisionPIDController extends PIDController {
         this.period = period;
         this.driveTrain = driveTrain;
 
-        this.enableContinuousInput(0, 360);
-
         looper = new Notifier(this::runLoop);
     }
 
@@ -35,6 +33,8 @@ public class PositionVisionPIDController extends PIDController {
         double out = this.calculate(driveTrain.getHeadingDegrees());
         out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);// clamp to range
         driveTrain.tankDrive(-out, out);
+
+        System.out.println("Running PID Loop");
     }
 
     /**
@@ -46,8 +46,11 @@ public class PositionVisionPIDController extends PIDController {
      */
     public void start() {
         resetGoalHeading(this.goalHeading);// reset closest path
-        looper.startPeriodic(period);
+        looper.startPeriodic(period/1000);
         isRunning = true;
+        for(int i = 0; i<100;i++){
+            System.out.println("Starting loop");
+        }
     }
 
     /**
@@ -57,8 +60,11 @@ public class PositionVisionPIDController extends PIDController {
      */
     public void start(double goalHeading) {
         resetGoalHeading(goalHeading);
-        looper.startPeriodic(period);
+        looper.startPeriodic(period/1000);
         isRunning = true;
+        for(int i = 0; i<100;i++){
+            System.out.println("Starting loop");
+        }
     }
 
     /**
@@ -67,6 +73,9 @@ public class PositionVisionPIDController extends PIDController {
     public void stop() {
         looper.stop();
         isRunning = false;
+        for(int i = 0; i<100;i++){
+            System.out.println("Stopping loop");
+        }
     }
 
     public boolean isRunning() {
@@ -81,7 +90,7 @@ public class PositionVisionPIDController extends PIDController {
      * @param heading- goal gyro value, not relative to current robot heading
      */
     public void setGoalHeading(double heading) {
-        goalHeading = 0.5 * (heading + nearestHeadingEquivalent(heading));
+        goalHeading = nearestHeadingEquivalent(heading);
         /*
          * Breakdown of above function: To smooth results, we average it with previous
          * results. However, if the previous result went through this process, we then

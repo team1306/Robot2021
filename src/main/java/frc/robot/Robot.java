@@ -74,6 +74,12 @@ public class Robot extends TimedRobot {
     message+=String.format("Drive: L %0$7f R %0$7f\n", driveTrain.getLeftPercentOut(),driveTrain.getRightPercentOut());
     message+=String.format("Heading:%11s% 7f\n",".",driveTrain.getHeadingDegrees());
     }
+    if(!(intake == null)){
+      message+="Index Sensor Response: "+intake.getSwitch()+"\n";
+    }
+    if(!(shooter==null)){
+      message+="Shooter RPM: "+shooter.getRPM()+"\n";
+    }
     message+="\n###########################\n\n";
     System.out.println(message);
     }

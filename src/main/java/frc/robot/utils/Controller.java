@@ -57,7 +57,12 @@ public class Controller {
             };
         }
         return () -> {
-            return joystick.getRawAxis(axis);
+            //deadbanding
+            double raw = joystick.getRawAxis(axis);
+            double sign = Math.signum(raw);
+            final double deadband = 0.1;
+            final double multiplier = 1/(1-deadband);
+            return sign * Math.max(0,Math.abs(raw)-deadband)*multiplier;
         };
     }
 

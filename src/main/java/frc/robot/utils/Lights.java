@@ -6,7 +6,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Notifier;
 import frc.robot.Constants;
 
 /**
@@ -33,7 +32,7 @@ public class Lights extends AddressableLED {
         NetworkTableEntry entry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.ledStatus);
         entry.addListener(this::listenNetworkControl, EntryListenerFlags.kLocal + EntryListenerFlags.kUpdate);
         // intialize entry and set default color
-        entry.setString("0 0 0");
+        entry.setString("0 0 50");
     }
 
     /**

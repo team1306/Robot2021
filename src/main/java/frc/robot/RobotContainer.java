@@ -9,16 +9,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
+import frc.robot.commands.SpinnerCommand;
 import frc.robot.commands.UserDrive;
 import frc.robot.commands.VisionCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Spinner;
 import frc.robot.utils.Controller;
 import frc.robot.utils.Lights;
+import frc.robot.utils.TestVisionCommand;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 
@@ -37,6 +41,7 @@ public class RobotContainer {
   private Shooter shooter;
   private Intake intake;
   private Climber climber;
+  private Spinner spinner;
 
   private Lights lights;
 
@@ -49,6 +54,11 @@ public class RobotContainer {
   private UserAnalog intakeSpeed;
   private UserDigital isIntakeStuck;
 
+  private UserDigital climbButton;
+  private UserDigital climbReverse;
+
+  private UserDigital spinButton;
+
   private JoystickButton visionToggle;
 
   // subsystem functionality. Subsystems and commands are not initialized unless
@@ -60,7 +70,7 @@ public class RobotContainer {
   private final boolean climberEnabled = true;
   private final boolean lightsEnabled = true;
   private final boolean visionEnabled = true && drivetrainEnabled & shooterEnabled;
-
+  private final boolean spinnerEnabled = true;
   /**
    * Initialization for the robot. Initializies the user inputs, subsystems, and
    * commands, and sets the auto and test comamnds.
@@ -90,6 +100,11 @@ public class RobotContainer {
     if(visionEnabled){
       initVision();
     }
+    if(spinnerEnabled){
+      initSpinner();
+    }
+
+    Robot.testCommand = new TestVisionCommand();
   }
 
   /**
@@ -102,22 +117,34 @@ public class RobotContainer {
     Controller.init();
 
     //Drivetrain
-    driveRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
-    driveLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+    UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+    UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+    UserAnalog driveRotation = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+    UserAnalog[] driveParts = UserDrive.arcadeToTankAdditive(()->{return driveForward.get()-driveBackward.get();}, driveRotation);
+    driveRight=driveParts[0];
+    driveLeft=driveParts[1];
+    
 
     //Shooter (will eventually be controlled by Vision)
-    flywheelSpeed = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+    flywheelSpeed = Controller.simpleAxis(Controller.SECONDARY, Controller.AXIS_LTRIGGER);
 
     //Intake
-    intakeSpeed = UserAnalog.fromDigital(Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER), 1, 0);
-    isIntakeStuck = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);//user button if two balls are stuck
+    intakeSpeed = Controller.simpleAxis(Controller.SECONDARY, Controller.AXIS_RTRIGGER);
+    isIntakeStuck = Controller.simpleButton(Controller.SECONDARY, Controller.BUTTON_LBUMPER);//user button if two balls are stuck
 
+    //Climber
+    climbButton = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+    climbReverse = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_BACK);
+
+    //Spinner
+    spinButton = Controller.simpleButton(Controller.SECONDARY, Controller.BUTTON_A);
   }
 
   private void initDrivetrain() {
     driveTrain = new DriveTrain();
     Robot.driveTrain= driveTrain;
     new UserDrive(driveTrain, driveRight, driveLeft);
+    Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_LBUMPER, ()->{driveTrain.shift();});
   }
 
   private void initShooter() {
@@ -134,6 +161,7 @@ public class RobotContainer {
 
   private void initClimber() {
     climber = new Climber();
+    new ClimberCommand(climber, climbButton, climbReverse);
   }
 
   private void initLights() {
@@ -141,9 +169,14 @@ public class RobotContainer {
   }
 
   private void initVision(){
-    VisionCommand visionCommand = new VisionCommand(driveTrain, shooter);
+    VisionCommand visionCommand = new VisionCommand(driveTrain, shooter, intake);
     visionToggle=Controller.getJoystickButton(Controller.PRIMARY,Controller.BUTTON_X);
     visionToggle.toggleWhenPressed(visionCommand);
+  }
+
+  private void initSpinner(){
+    spinner = new Spinner();
+    new SpinnerCommand(spinner, spinButton);
   }
 
   /**

@@ -33,12 +33,12 @@ public final class Constants {
     public static final int K_VISION_STATUS_LEDS_PORT = 0;
 
     // PCM ports
-    public static final int K_SHOOTER_HOOD_UP_SOLENOID = 0;
-    public static final int K_SHOOTER_HOOD_DWN_SOLENOID = 1;
-    public static final int K_DRIVE_SHIFT_RIGHT_FWD = 2;
-    public static final int K_DRIVE_SHIFT_RIGHT_BKWD = 3;
-    public static final int K_DRIVE_SHIFT_LEFT_FWD = 4;
-    public static final int K_DRIVE_SHIFT_LEFT_BKWD = 5;
+    public static final int K_SHOOTER_HOOD_UP_SOLENOID = 5;
+    public static final int K_SHOOTER_HOOD_DWN_SOLENOID =6;
+    public static final int K_DRIVE_SHIFT_LOW = 1;
+    public static final int K_DRIVE_SHIFT_HIGH = 0;
+    public static final int K_INTAKE_SOLENOID_UP = 2;
+    public static final int K_INTAKE_SOLENOID_DOWN = 3;
 
     // DIO Ports
     public static final int K_INTAKE_INDEX_SWITCH = 0;
