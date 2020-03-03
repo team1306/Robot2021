@@ -60,6 +60,8 @@ public class RobotContainer {
   private UserDigital spinButton;
 
   private JoystickButton visionToggle;
+  private JoystickButton shiftHigh;
+  private JoystickButton shiftLow;
 
   // subsystem functionality. Subsystems and commands are not initialized unless
   // flagged as true in this section. Important to distinguish this from actually
@@ -120,10 +122,16 @@ public class RobotContainer {
     UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
     UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
     UserAnalog driveRotation = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
-    UserAnalog[] driveParts = UserDrive.arcadeToTankAdditive(()->{return driveForward.get()-driveBackward.get();}, driveRotation);
+    DriveDirection driveDirection = new DriveDirection();
+    Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_LBUMPER, driveDirection::swap);
+    UserAnalog[] driveParts = UserDrive.arcadeToTankAdditive(()->{return driveDirection.get()*(driveForward.get()-driveBackward.get());}, driveRotation);
     driveRight=driveParts[0];
     driveLeft=driveParts[1];
-    
+    shiftHigh = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_START);
+    shiftLow = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_BACK);
+
+    visionToggle=Controller.getJoystickButton(Controller.PRIMARY,Controller.BUTTON_X);
+
 
     //Shooter (will eventually be controlled by Vision)
     flywheelSpeed = Controller.simpleAxis(Controller.SECONDARY, Controller.AXIS_LTRIGGER);
@@ -144,7 +152,12 @@ public class RobotContainer {
     driveTrain = new DriveTrain();
     Robot.driveTrain= driveTrain;
     new UserDrive(driveTrain, driveRight, driveLeft);
-    Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_LBUMPER, ()->{driveTrain.shift();});
+    shiftHigh.whenPressed(()->{
+        driveTrain.shift(DriveTrain.K_HIGH_GEAR);
+    }, null);//intentionally not requiring drivetrain
+    shiftLow.whenPressed(()->{
+      driveTrain.shift(DriveTrain.K_LOW_GEAR);
+    }, null);
   }
 
   private void initShooter() {
@@ -170,7 +183,6 @@ public class RobotContainer {
 
   private void initVision(){
     VisionCommand visionCommand = new VisionCommand(driveTrain, shooter, intake);
-    visionToggle=Controller.getJoystickButton(Controller.PRIMARY,Controller.BUTTON_X);
     visionToggle.toggleWhenPressed(visionCommand);
   }
 
@@ -187,5 +199,22 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return autoCommand;
+  }
+}
+
+
+class DriveDirection implements UserAnalog{
+
+  private boolean fwd = true;
+
+  public double get(){
+    if(fwd){
+      return 1;
+    }
+    return -1;
+  }
+
+  public void swap(){
+    fwd = !fwd;
   }
 }
