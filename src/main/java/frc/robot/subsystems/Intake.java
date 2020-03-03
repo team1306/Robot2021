@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -17,7 +18,7 @@ public class Intake extends SubsystemBase {
     private final DoubleSolenoid intakeArm;
 
     private final DigitalInput indexSwitch;
-
+    private boolean forward = false;
     public Intake() {
         indexMotor = new VictorSPX(Constants.K_INTAKE_INDEXER_ID);
         indexMotor.setInverted(true);
@@ -43,6 +44,24 @@ public class Intake extends SubsystemBase {
      */
     public boolean getSwitch() {
         return indexSwitch.get();
+    }
+
+    /**
+     * Retracts the intake
+     */
+    public void retract(){
+        intakeArm.set(Value.kForward);
+        forward = true;
+        intakeArm.set(Value.kOff);
+    }
+
+    /**
+     * Extends the intake
+     */
+    public void extend(){
+        intakeArm.set(Value.kReverse);
+        forward = false;
+        intakeArm.set(Value.kOff);
     }
 
     /**
