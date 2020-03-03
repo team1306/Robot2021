@@ -119,7 +119,7 @@ public class RobotContainer {
     //Drivetrain
     UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
     UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
-    UserAnalog driveRotation = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+    UserAnalog driveRotation = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
     UserAnalog[] driveParts = UserDrive.arcadeToTankAdditive(()->{return driveForward.get()-driveBackward.get();}, driveRotation);
     driveRight=driveParts[0];
     driveLeft=driveParts[1];
