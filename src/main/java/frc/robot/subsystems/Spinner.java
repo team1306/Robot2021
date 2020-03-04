@@ -19,4 +19,8 @@ public class Spinner extends SubsystemBase {
         spinnerMotor.set(ControlMode.PercentOutput, output);
     }
 
+    public double getEncoderPosition(){
+        return spinnerMotor.getSelectedSensorPosition();
+    }
+
 }

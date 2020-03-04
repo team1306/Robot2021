@@ -13,6 +13,7 @@ import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.JoystickFlywheel;
 import frc.robot.commands.SpinnerCommand;
+import frc.robot.commands.SpinnerEncoderCommand;
 import frc.robot.commands.UserDrive;
 import frc.robot.commands.VisionCommand;
 import frc.robot.subsystems.Climber;
@@ -37,31 +38,31 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Command autoCommand;
 
-  private DriveTrain driveTrain;
-  private Shooter shooter;
-  private Intake intake;
-  private Climber climber;
-  private Spinner spinner;
-
-  private Lights lights;
-
   // user controls
-  private UserAnalog driveRight;
+  private UserAnalog driveRight;   //drive
   private UserAnalog driveLeft;
-
-  private UserAnalog flywheelSpeed;
-
-  private UserAnalog intakeSpeed;
-  private UserDigital isIntakeStuck;
-
-  private UserDigital climbButton;
-  private UserDigital climbReverse;
-
-  private UserDigital spinButton;
-
-  private JoystickButton visionToggle;
   private JoystickButton shiftHigh;
   private JoystickButton shiftLow;
+
+  private UserAnalog flywheelSpeed;//shooter
+  private JoystickButton hoodToggleButton;
+
+  private UserAnalog intakeSpeed;  //intake
+  private UserDigital isIntakeStuck;
+  private UserDigital indexOverride;
+  private JoystickButton intakeUp;
+  private JoystickButton intakeDown;
+
+  private UserDigital climbButton; //climber
+  private UserDigital climbReverse;
+
+  private UserDigital spinButton;  //spinner (todo)
+  private JoystickButton spin1;
+  private JoystickButton spin32;
+
+
+  private JoystickButton visionToggle;
+  
 
   // subsystem functionality. Subsystems and commands are not initialized unless
   // flagged as true in this section. Important to distinguish this from actually
@@ -122,73 +123,85 @@ public class RobotContainer {
     UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
     UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
     UserAnalog driveRotation = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
-    DriveDirection driveDirection = new DriveDirection();
+    DriveDirection driveDirection = new DriveDirection();//select which direction is forward
     Controller.bindCallback(Controller.PRIMARY, Controller.BUTTON_LBUMPER, driveDirection::swap);
+    //arcade drive to tank drive conversion
     UserAnalog[] driveParts = UserDrive.arcadeToTankAdditive(()->{return driveDirection.get()*(driveForward.get()-driveBackward.get());}, driveRotation);
     driveRight=driveParts[0];
     driveLeft=driveParts[1];
+    
     shiftHigh = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_START);
     shiftLow = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_BACK);
 
-    visionToggle=Controller.getJoystickButton(Controller.PRIMARY,Controller.BUTTON_X);
-
+    visionToggle=Controller.getJoystickButton(Controller.SECONDARY,Controller.BUTTON_Y);
 
     //Shooter (will eventually be controlled by Vision)
     flywheelSpeed = Controller.simpleAxis(Controller.SECONDARY, Controller.AXIS_LTRIGGER);
+    hoodToggleButton = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
 
     //Intake
     intakeSpeed = Controller.simpleAxis(Controller.SECONDARY, Controller.AXIS_RTRIGGER);
     isIntakeStuck = Controller.simpleButton(Controller.SECONDARY, Controller.BUTTON_LBUMPER);//user button if two balls are stuck
+    indexOverride = Controller.simpleButton(Controller.SECONDARY, Controller.BUTTON_RBUMPER);
+    intakeUp = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_Y);
+    intakeDown = Controller.getJoystickButton(Controller.PRIMARY, Controller.BUTTON_B);
 
     //Climber
-    climbButton = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
-    climbReverse = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_BACK);
+    climbButton = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
+    climbReverse = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
 
     //Spinner
     spinButton = Controller.simpleButton(Controller.SECONDARY, Controller.BUTTON_A);
+    spin1 = Controller.getJoystickButton(Controller.SECONDARY, Controller.BUTTON_X);
+    spin32 = Controller.getJoystickButton(Controller.SECONDARY, Controller.BUTTON_B);
   }
 
   private void initDrivetrain() {
-    driveTrain = new DriveTrain();
+    DriveTrain driveTrain = new DriveTrain();
     Robot.driveTrain= driveTrain;
-    new UserDrive(driveTrain, driveRight, driveLeft);
+    new UserDrive(driveTrain, driveRight, driveLeft); //is set as default so don't need to track
     shiftHigh.whenPressed(()->{
         driveTrain.shift(DriveTrain.K_HIGH_GEAR);
-    }, null);//intentionally not requiring drivetrain
+    });//intentionally not requiring drivetrain to shift
     shiftLow.whenPressed(()->{
       driveTrain.shift(DriveTrain.K_LOW_GEAR);
-    }, null);
+    });
   }
 
   private void initShooter() {
-    shooter = new Shooter();
+    Shooter shooter = new Shooter();
     Robot.shooter= shooter;
     new JoystickFlywheel(shooter, flywheelSpeed);
+    hoodToggleButton.whenPressed(()->{shooter.setHood(!shooter.isHoodUp());});
   }
 
   private void initIntake() {
-    intake = new Intake();
+    Intake intake = new Intake();
     Robot.intake=intake;
-    new IntakeCommand(intake, intakeSpeed, isIntakeStuck);
+    new IntakeCommand(intake, intakeSpeed, isIntakeStuck, indexOverride);
+    intakeUp.whenPressed(intake::retract, intake);
+    intakeDown.whenPressed(intake::extend, intake);
   }
 
   private void initClimber() {
-    climber = new Climber();
-    new ClimberCommand(climber, climbButton, climbReverse);
+    Robot.climber = new Climber();
+    new ClimberCommand(Robot.climber, climbButton, climbReverse);
   }
 
   private void initLights() {
-    lights = new Lights();
+    Robot.lights = new Lights();
   }
 
   private void initVision(){
-    VisionCommand visionCommand = new VisionCommand(driveTrain, shooter, intake);
+    VisionCommand visionCommand = new VisionCommand(Robot.driveTrain, Robot.shooter, Robot.intake);
     visionToggle.toggleWhenPressed(visionCommand);
   }
 
   private void initSpinner(){
-    spinner = new Spinner();
-    new SpinnerCommand(spinner, spinButton);
+    Robot.spinner = new Spinner();
+    new SpinnerCommand(Robot.spinner, spinButton);
+    spin1.whenPressed(new SpinnerEncoderCommand(1,Robot.spinner));
+    spin32.whenPressed(new SpinnerEncoderCommand(32,Robot.spinner));
   }
 
   /**
@@ -205,16 +218,13 @@ public class RobotContainer {
 
 class DriveDirection implements UserAnalog{
 
-  private boolean fwd = true;
+  private double direction = 1;
 
   public double get(){
-    if(fwd){
-      return 1;
-    }
-    return -1;
+    return direction;
   }
 
   public void swap(){
-    fwd = !fwd;
+    direction = -direction;
   }
 }

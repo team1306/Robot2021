@@ -23,6 +23,7 @@ public class ShootVisionCommand extends CommandBase {
         this.shooter = shooter;
         this.intake = intake;
         distanceEntry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.shooterDistance);
+        this.addRequirements(intake, shooter);
     }
 
     @Override

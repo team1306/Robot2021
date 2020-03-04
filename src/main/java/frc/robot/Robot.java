@@ -10,9 +10,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Spinner;
+import frc.robot.utils.Lights;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,12 +31,16 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain = null;
   public static Shooter shooter = null;
   public static Intake intake = null;
+  public static Climber climber = null;
+  public static Spinner spinner = null;
+  public static Lights lights = null;
 
   private static RobotContainer m_robotContainer;
 
-  private static final boolean debug=true;
+  private static final boolean debug = true;
   private static final int debugFrequency = 40;
-  private int debugCounter=0;
+  private int debugCounter = 0;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -65,23 +72,24 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    debugCounter=debugCounter+1;
-    if(debug&&debugCounter%debugFrequency==0){
-    debugCounter=0;
-    //Provide output to the console (26 char width)
-    String message ="\n\n######## ROBOT INFO ########\n\n";
-    if(!(driveTrain==null)){
-    message+=String.format("Drive: L %0$7f R %0$7f\n", driveTrain.getLeftPercentOut(),driveTrain.getRightPercentOut());
-    message+=String.format("Heading:%11s% 7f\n",".",driveTrain.getHeadingDegrees());
-    }
-    if(!(intake == null)){
-      message+="Index Sensor Response: "+intake.getSwitch()+"\n";
-    }
-    if(!(shooter==null)){
-      message+="Shooter RPM: "+shooter.getRPM()+"\n";
-    }
-    message+="\n###########################\n\n";
-    System.out.println(message);
+    debugCounter = debugCounter + 1;
+    if (debug && debugCounter % debugFrequency == 0) {
+      debugCounter = 0;
+      // Provide output to the console (26 char width)
+      String message = "\n\n######## ROBOT INFO ########\n\n";
+      if (!(driveTrain == null)) {
+        message += String.format("Drive: L %0$7f R %0$7f\n", driveTrain.getLeftPercentOut(),
+            driveTrain.getRightPercentOut());
+        message += String.format("Heading:%11s% 7f\n", ".", driveTrain.getHeadingDegrees());
+      }
+      if (!(intake == null)) {
+        message += "Index Sensor Response: " + intake.getSwitch() + "\n";
+      }
+      if (!(shooter == null)) {
+        message += "Shooter RPM: " + shooter.getRPM() + "\n";
+      }
+      message += "\n###########################\n\n";
+      System.out.println(message);
     }
   }
 
@@ -114,12 +122,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //command scheduler already ran in RobotPeriodic
+    // command scheduler already ran in RobotPeriodic
   }
 
   @Override
   public void teleopInit() {
-    // If auto is continuing, cancel it. 
+    // If auto is continuing, cancel it.
     if (autoCommand != null) {
       autoCommand.cancel();
     }
@@ -130,19 +138,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-        //command scheduler already ran in RobotPeriodic
+    // command scheduler already ran in RobotPeriodic
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    //If the robotContainer has set up a command to test, run that. (Usually tuner command)
+    // If the robotContainer has set up a command to test, run that. (Usually tuner
+    // command)
     try {
       CommandScheduler.getInstance().schedule(testCommand);
       System.out.println("Executing test command");
     } catch (NullPointerException e) {
-      //no command found.
+      // no command found.
       System.out.println("No test command, doing normal routine.");
     }
   }
@@ -152,6 +161,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-      //command scheduler already ran in RobotPeriodic
+    // command scheduler already ran in RobotPeriodic
   }
 }

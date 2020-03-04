@@ -18,6 +18,4 @@ public class Climber extends SubsystemBase{
         motor.set(ControlMode.PercentOutput, speed);
     }
 
-
-
 }

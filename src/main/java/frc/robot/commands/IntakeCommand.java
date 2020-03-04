@@ -9,14 +9,18 @@ public class IntakeCommand extends CommandBase {
 
     private final double indexSpeed = 0.8;
 
+    private final double intakeSpeedMultiplier = 0.7;
+
     private final Intake intake;
     private final UserAnalog grabberSpeed;
     private final UserDigital isStuck;
+    private final UserDigital indexOverride;
 
-    public IntakeCommand(Intake intake, UserAnalog grabberSpeed, UserDigital isStuck) {
+    public IntakeCommand(Intake intake, UserAnalog grabberSpeed, UserDigital isStuck, UserDigital indexOverride) {
         this.intake = intake;
         this.grabberSpeed = grabberSpeed;
         this.isStuck = isStuck;
+        this.indexOverride = indexOverride;
 
         addRequirements(intake);
         intake.setDefaultCommand(this);
@@ -29,12 +33,12 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (intake.getSwitch()) {
+        if (intake.getSwitch() || indexOverride.get()) {
             intake.index(indexSpeed);
         } else {
             intake.index(0);
         }
-        double speedRight = grabberSpeed.get();
+        double speedRight = intakeSpeedMultiplier*grabberSpeed.get();
         double speedLeft = speedRight;
         if(isStuck.get()){
             speedLeft = 0;

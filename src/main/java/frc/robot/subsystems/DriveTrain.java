@@ -177,6 +177,10 @@ public class DriveTrain extends SubsystemBase {
     shift.set(gear);
   }
 
+  public boolean isShiftLow(){
+    return shift.get().equals(K_LOW_GEAR);
+  }
+
   public double metersToRotations(double meters) {
     return meters * 100 / (2.54 * Constants.K_WHEEL_RADIUS_INCHES * Math.PI);
   }
