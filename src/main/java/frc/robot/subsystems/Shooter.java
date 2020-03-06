@@ -2,23 +2,25 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utils.Encoder;
-import frc.robot.utils.PIDSetup;
 
 public class Shooter extends SubsystemBase {
 
-    public final CANSparkMax flywheel;
+    public CANSparkMax flywheel;
+    private final CANEncoder encoder;
+    public final CANPIDController controller;
     private final TalonSRX kicker;
     private final DoubleSolenoid hood;
-    public final Encoder flywheelEnc = Encoder.NeoInternal;
 
     private final double sinHighA = Math.sin(Constants.K_ANGLE_SHORT_DEGREES);
     private final double cosHighA = Math.cos(Constants.K_ANGLE_SHORT_DEGREES);
@@ -31,29 +33,38 @@ public class Shooter extends SubsystemBase {
     private final double h = Constants.K_TARGET_HEIGHT_FT - Constants.K_SHOOTER_HEIGHT_FT;
     private final double g = 32.2;
 
-    private final double kP = 0.4;
-    private final double kI = 0.0001;
+    private final double kP = 0.0004;
+    private final double kI = 0.0000;
     private final double kD = 0;
 
-    private final Value hoodUp = Value.kForward;
-    private final Value hoodDown = Value.kReverse;
+    private final Value hoodUp = Value.kReverse;
+    private final Value hoodDown = Value.kForward;
 
     public Shooter() {
         // initalize flywheel for PID
         flywheel = new CANSparkMax(Constants.K_SHOOTER_FlYWHEEL_ID, MotorType.kBrushless);
-        PIDSetup.IntializePIDSparkNEO(flywheel, kP, kI, kD, 1, 0);
+        encoder = flywheel.getEncoder();
+        controller = flywheel.getPIDController();
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
         kicker = new TalonSRX(Constants.K_SHOOTER_KICKER_ID);
 
+        // Initialize PID
+        controller.setP(kP);
+        controller.setI(kI);
+        controller.setD(kD);
+        controller.setOutputRange(0, 1);
+        controller.setFeedbackDevice(encoder);
+        flywheel.setIdleMode(IdleMode.kCoast);
     }
 
     public void spinToRPM(double rpm) {
-        flywheel.getPIDController().setReference(flywheelEnc.RPMtoPIDVelocity(rpm), ControlType.kVelocity);
+       controller.setReference(rpm, ControlType.kVelocity);
     }
-
+    
     public void setFlywheelPercent(double percent) {
-        flywheel.set(percent);
+        controller.setReference(percent, ControlType.kDutyCycle);
+        //flywheel.set(percent);
     }
 
     public void setKickerPercent(double percent) {
@@ -61,14 +72,14 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getRPM() {
-        return flywheelEnc.PIDVelocityToRPM(flywheel.getEncoder().getVelocity());
+        return encoder.getVelocity();
     }
 
     /**
      * Cuts all output to the flywheel
      */
     public void stopFlywheel() {
-        flywheel.set(0);
+        flywheel.stopMotor();
     }
 
     /**

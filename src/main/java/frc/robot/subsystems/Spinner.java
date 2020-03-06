@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +14,7 @@ public class Spinner extends SubsystemBase {
     public Spinner(){
         //make the spinner
         spinnerMotor = new TalonSRX(Constants.K_SPINNER_MOTOR_ID);
+        spinnerMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public void spin(double output){

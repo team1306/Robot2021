@@ -48,7 +48,9 @@ public class ShootVisionCommand extends CommandBase {
 
     private void listenDistance(EntryNotification note){
         double dist = note.value.getDouble();
+        if(this.isScheduled()){
         targetRPM = shooter.targetDistance(dist);
+        }
     }
 
     @Override

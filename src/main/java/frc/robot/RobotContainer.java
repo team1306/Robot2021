@@ -166,6 +166,9 @@ public class RobotContainer {
     shiftLow.whenPressed(()->{
       driveTrain.shift(DriveTrain.K_LOW_GEAR);
     });
+
+    //default position: shift
+    driveTrain.shift(DriveTrain.K_LOW_GEAR);
   }
 
   private void initShooter() {
@@ -173,6 +176,9 @@ public class RobotContainer {
     Robot.shooter= shooter;
     new JoystickFlywheel(shooter, flywheelSpeed);
     hoodToggleButton.whenPressed(()->{shooter.setHood(!shooter.isHoodUp());});
+
+    //default position: hood
+    shooter.setHood(false);
   }
 
   private void initIntake() {
@@ -181,6 +187,9 @@ public class RobotContainer {
     new IntakeCommand(intake, intakeSpeed, isIntakeStuck, indexOverride);
     intakeUp.whenPressed(intake::retract, intake);
     intakeDown.whenPressed(intake::extend, intake);
+
+    //default position: intake
+    intake.retract();
   }
 
   private void initClimber() {
@@ -215,7 +224,9 @@ public class RobotContainer {
   }
 }
 
-
+/**
+ * Special UserAnalog for determining which direction is front for teleop input
+ */
 class DriveDirection implements UserAnalog{
 
   private double direction = 1;

@@ -15,7 +15,7 @@ public class VisionCommand extends SequentialCommandGroup {
         super();
         PositionVisionCommand position = new PositionVisionCommand(shooter, driveTrain);
         ShootVisionCommand shoot = new ShootVisionCommand(shooter, intake);
-        addCommands(position, shoot);
+        addCommands(shoot,position);//addCommands(position, shoot); - the right way
     }
 
     public void execute(){

@@ -32,11 +32,6 @@ public class DriveTrain extends SubsystemBase {
   private final Encoder enc = Encoder.Grayhill256;
   public final AHRS gyro;
 
-  // PID velocity constants
-  private static final double kVP = 0.3;
-  private static final double kVI = 0.01;
-  private static final double kVD = 0;
-
   public DriveTrain() {
     // initialize motor controllers
     // right
@@ -64,9 +59,6 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower1.follow(leftLeader);
     leftFollower2.follow(leftLeader);
-    // initalize PID settings
-    // PIDSetup.IntializePIDSpark(rightLeader, kVP, kVI, kVD, 1, -1, enc);
-    // PIDSetup.IntializePIDSpark(leftLeader, kVP, kVI, kVD, 1, -1, enc);
     // get encoders
     rightEnc = rightLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
     leftEnc = leftLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
@@ -84,14 +76,14 @@ public class DriveTrain extends SubsystemBase {
     leftLeader.set(-leftOutput);
   }
 
-  /**
-   * @param rightVel - the RPM velocity for the right half of the robot
-   * @param leftVel  - the RPM velocity for the left half of the robot
-   */
-  public void velocityDrive(double rightVel, double leftVel) {
-    rightLeader.getPIDController().setReference(rightVel, ControlType.kVelocity);
-    leftLeader.getPIDController().setReference(leftVel, ControlType.kVelocity);
-  }
+  // /**
+  //  * @param rightVel - the RPM velocity for the right half of the robot
+  //  * @param leftVel  - the RPM velocity for the left half of the robot
+  //  */
+  // public void velocityDrive(double rightVel, double leftVel) {
+  //   rightLeader.getPIDController().setReference(rightVel, ControlType.kVelocity);
+  //   leftLeader.getPIDController().setReference(leftVel, ControlType.kVelocity);
+  // }
 
   public double getRightRPM() {
     return rightEnc.getVelocity();
@@ -135,16 +127,16 @@ public class DriveTrain extends SubsystemBase {
     gyro.reset();
   }
 
-  public void setPID(double kP, double kI, double kD) {
-    // right PID configuration
-    rightLeader.getPIDController().setP(kP);
-    rightLeader.getPIDController().setI(kI);
-    rightLeader.getPIDController().setD(kD);
-    // left PID configuration
-    leftLeader.getPIDController().setP(kP);
-    leftLeader.getPIDController().setI(kI);
-    leftLeader.getPIDController().setD(kD);
-  }
+  // public void setPID(double kP, double kI, double kD) {
+  //   // right PID configuration
+  //   rightLeader.getPIDController().setP(kP);
+  //   rightLeader.getPIDController().setI(kI);
+  //   rightLeader.getPIDController().setD(kD);
+  //   // left PID configuration
+  //   leftLeader.getPIDController().setP(kP);
+  //   leftLeader.getPIDController().setI(kI);
+  //   leftLeader.getPIDController().setD(kD);
+  // }
 
   /**
    * Turns by rotations relative to current location

@@ -15,7 +15,6 @@ public class PositionVisionCommand extends CommandBase {
     private final Shooter shooter;
 
     private final NetworkTableEntry angleEntry;
-    private final NetworkTableEntry distanceEntry;
     private final NetworkTableEntry putHeading;
 
     private final double period = 5; // 10 ms
@@ -37,8 +36,6 @@ public class PositionVisionCommand extends CommandBase {
         NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
         angleEntry = ntInst.getEntry(NetworkTablePaths.shooterAngle);
         angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
-        distanceEntry = ntInst.getEntry(NetworkTablePaths.shooterDistance);
-        distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
 
         putHeading = ntInst.getEntry(NetworkTablePaths.robotHeading);
 
@@ -75,11 +72,6 @@ public class PositionVisionCommand extends CommandBase {
         // we are done when not moving and at goal position
         finished = Math.abs(driveTrain.getRotVelocity()) < velocityTolerance
                 && Math.abs(heading - driveTrain.getHeadingDegrees()) < positionTolerance;
-    }
-
-    private void listenDistance(EntryNotification n) {
-        distance = n.value.getDouble();
-        shooter.targetDistance(distance);
     }
 
 }

@@ -27,16 +27,12 @@ public class SpinnerEncoderCommand extends CommandBase{
 
     @Override
     public void execute() {
-        if(spinner.getEncoderPosition()<encoderGoal){
-            spinner.spin(1);
-        }else{
-            spinner.spin(-1);
-        }
+        spinner.spin(Math.max(-1, Math.min(1, (encoderGoal-spinner.getEncoderPosition())/1000)));
     }
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(spinner.getEncoderPosition()-encoderGoal)<10);
+        return (Math.abs(spinner.getEncoderPosition()-encoderGoal)<40);
     }
 
 }

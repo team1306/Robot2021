@@ -35,12 +35,7 @@ public class Robot extends TimedRobot {
   public static Spinner spinner = null;
   public static Lights lights = null;
 
-  private static RobotContainer m_robotContainer;
-
-  private static final boolean debug = true;
-  private static final int debugFrequency = 40;
-  private int debugCounter = 0;
-
+  private static RobotContainer container;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -50,7 +45,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    container = new RobotContainer();
   }
 
   /**
@@ -64,33 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler. This is responsible for polling buttons, adding
-    // newly-scheduled
-    // commands, running already-scheduled commands, removing finished or
-    // interrupted commands,
-    // and running subsystem periodic() methods. This must be called from the
-    // robot's periodic
-    // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    debugCounter = debugCounter + 1;
-    if (debug && debugCounter % debugFrequency == 0) {
-      debugCounter = 0;
-      // Provide output to the console (26 char width)
-      String message = "\n\n######## ROBOT INFO ########\n\n";
-      if (!(driveTrain == null)) {
-        message += String.format("Drive: L %0$7f R %0$7f\n", driveTrain.getLeftPercentOut(),
-            driveTrain.getRightPercentOut());
-        message += String.format("Heading:%11s% 7f\n", ".", driveTrain.getHeadingDegrees());
-      }
-      if (!(intake == null)) {
-        message += "Index Sensor Response: " + intake.getSwitch() + "\n";
-      }
-      if (!(shooter == null)) {
-        message += "Shooter RPM: " + shooter.getRPM() + "\n";
-      }
-      message += "\n###########################\n\n";
-      System.out.println(message);
-    }
   }
 
   /**
@@ -110,7 +79,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autoCommand = m_robotContainer.getAutonomousCommand();
+    autoCommand = container.getAutonomousCommand();
     // schedule the autonomous command only if set by the RobotContainer
     if (autoCommand != null) {
       autoCommand.schedule();
