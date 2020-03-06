@@ -33,8 +33,6 @@ public class PositionVisionPIDController extends PIDController {
         double out = this.calculate(driveTrain.getHeadingDegrees());
         out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);// clamp to range
         driveTrain.tankDrive(-out, out);
-
-        System.out.println("Running PID Loop");
     }
 
     /**
@@ -48,9 +46,6 @@ public class PositionVisionPIDController extends PIDController {
         resetGoalHeading(this.goalHeading);// reset closest path
         looper.startPeriodic(period/1000);
         isRunning = true;
-        for(int i = 0; i<100;i++){
-            System.out.println("Starting loop");
-        }
     }
 
     /**
@@ -62,9 +57,6 @@ public class PositionVisionPIDController extends PIDController {
         resetGoalHeading(goalHeading);
         looper.startPeriodic(period/1000);
         isRunning = true;
-        for(int i = 0; i<100;i++){
-            System.out.println("Starting loop");
-        }
     }
 
     /**
@@ -73,9 +65,6 @@ public class PositionVisionPIDController extends PIDController {
     public void stop() {
         looper.stop();
         isRunning = false;
-        for(int i = 0; i<100;i++){
-            System.out.println("Stopping loop");
-        }
     }
 
     public boolean isRunning() {

@@ -23,6 +23,9 @@ public class JoystickFlywheel extends CommandBase {
     @Override
     public void initialize() {
         SmartDashboard.putNumber("kP", shooter.controller.getP());
+        SmartDashboard.putNumber("kI", shooter.controller.getI());
+        SmartDashboard.putNumber("kD", shooter.controller.getD());
+
     }
 
     @Override
@@ -31,11 +34,22 @@ public class JoystickFlywheel extends CommandBase {
         shooter.setKickerPercent(input.get());
         SmartDashboard.putNumber("Spinner RPM", shooter.getRPM());
         double sP = shooter.controller.getP();
-        double p = SmartDashboard.getNumber("kP", sP);
-        if(p!=sP){
-            shooter.controller.setP(p);
+        double P = SmartDashboard.getNumber("kP", sP);
+        if(P!=sP){
+            shooter.controller.setP(P);
         }
-        System.out.println(shooter.flywheel.getIdleMode().toString());
+        double sI = shooter.controller.getI();
+        double I = SmartDashboard.getNumber("kI", sI);
+        if(I!=sI){
+            shooter.controller.setI(I);
+        }
+        double sD = shooter.controller.getD();
+        double D = SmartDashboard.getNumber("kD", sD);
+        if(D!=sD){
+            shooter.controller.setD(D);
+        }
+        System.out.println(shooter.flywheel.get());
+
     }
 
     @Override

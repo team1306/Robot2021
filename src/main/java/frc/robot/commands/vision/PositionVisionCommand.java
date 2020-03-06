@@ -19,12 +19,12 @@ public class PositionVisionCommand extends CommandBase {
 
     private final double period = 5; // 10 ms
     private final double velocityTolerance = 0.1;
-    private final double positionTolerance = 1;
+    private final double positionTolerance = 0.5;
 
     private PositionVisionPIDController angleFollower;
     private final double kP = 0.006;
     private final double kI = 0.0000009;
-    private final double kD = 0.0001;
+    private final double kD = 0.000;
 
     private double distance;
     private boolean finished = false;

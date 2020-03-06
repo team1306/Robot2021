@@ -16,6 +16,7 @@ public class ShootVisionCommand extends CommandBase {
 
     private final double tolerance = 5.0;
     double targetRPM = 0;
+    boolean isRunning = false;
 
     private NetworkTableEntry distanceEntry;
 
@@ -29,6 +30,7 @@ public class ShootVisionCommand extends CommandBase {
     @Override
     public void initialize() {
         distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kLocal+EntryListenerFlags.kUpdate+EntryListenerFlags.kNew);
+        isRunning = true;
     }
 
     @Override
@@ -38,17 +40,18 @@ public class ShootVisionCommand extends CommandBase {
         }else{
             stopShoot();
         }
-        System.out.println("Shoot vision executing");
     }
 
     @Override
     public void end(boolean isInterupted){
         shooter.spinToRPM(0);
+        isRunning = false;
     }
 
     private void listenDistance(EntryNotification note){
         double dist = note.value.getDouble();
-        if(this.isScheduled()){
+        if(isRunning){
+        System.out.println("Setting Shooter Speed");
         targetRPM = shooter.targetDistance(dist);
         }
     }

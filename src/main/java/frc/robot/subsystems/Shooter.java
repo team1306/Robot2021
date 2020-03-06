@@ -48,6 +48,7 @@ public class Shooter extends SubsystemBase {
         hood = new DoubleSolenoid(Constants.K_SHOOTER_HOOD_UP_SOLENOID, Constants.K_SHOOTER_HOOD_DWN_SOLENOID);
         // Intialize other motors
         kicker = new TalonSRX(Constants.K_SHOOTER_KICKER_ID);
+        kicker.setInverted(true);
 
         // Initialize PID
         controller.setP(kP);
@@ -154,6 +155,7 @@ public class Shooter extends SubsystemBase {
      * @return
      */
     public double targetDistance(double dist) {
+        System.out.println("Targeting Distance "+dist);
         if (dist < 0) {
             this.spinToRPM(0);
             return 0;
