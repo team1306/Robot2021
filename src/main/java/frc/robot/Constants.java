@@ -55,7 +55,7 @@ public final class Constants {
     public static final double K_ANGLE_LONG_DEGREES = 35;
     public static final double K_SHOOTER_HEIGHT_FT = 3.5;
 
-    public static final int K_NUM_LEDS = 52;
+    public static final int K_NUM_LEDS = 28;
 
     // field information
     public static final double K_TARGET_HEIGHT_FT = 8.15;
