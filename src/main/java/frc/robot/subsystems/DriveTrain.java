@@ -7,10 +7,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
+import frc.robot.utils.NetworkTablePaths;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -31,6 +34,8 @@ public class DriveTrain extends SubsystemBase {
 
   private final Encoder enc = Encoder.Grayhill256;
   public final AHRS gyro;
+
+  private NetworkTableEntry putHeading;
 
   public DriveTrain() {
     // initialize motor controllers
@@ -64,11 +69,16 @@ public class DriveTrain extends SubsystemBase {
     leftEnc = leftLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
 
     gyro = new AHRS();
+
+    putHeading = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.robotHeading);
+
+    register();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    putHeading.setDouble(this.getHeadingDegrees());
   }
 
   public void tankDrive(double rightOutput, double leftOutput) {
