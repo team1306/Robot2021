@@ -43,7 +43,6 @@ public class Lights extends AddressableLED {
      * @param b 0-255
      */
     public void setAllColor(int r, int g, int b) {
-        System.out.println("Setting all color.");
         for (int i = 0; i < nLEDS; i++) {
             leds.setRGB(i, r, g, b);
         }

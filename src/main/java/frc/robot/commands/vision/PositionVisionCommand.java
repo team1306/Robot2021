@@ -15,18 +15,16 @@ public class PositionVisionCommand extends CommandBase {
     private final Shooter shooter;
 
     private final NetworkTableEntry angleEntry;
-    private final NetworkTableEntry putHeading;
 
     private final double period = 5; // 10 ms
     private final double velocityTolerance = 0.1;
-    private final double positionTolerance = 0.5;
+    private final double positionTolerance = 0.75;
 
     private PositionVisionPIDController angleFollower;
-    private final double kP = 0.006;
-    private final double kI = 0.0000009;
+    private final double kP = 0.00006;
+    private final double kI = 0.000000;
     private final double kD = 0.000;
 
-    private double distance;
     private boolean finished = false;
 
     public PositionVisionCommand(Shooter shooter, DriveTrain driveTrain) {
@@ -37,8 +35,6 @@ public class PositionVisionCommand extends CommandBase {
         angleEntry = ntInst.getEntry(NetworkTablePaths.shooterAngle);
         angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
 
-        putHeading = ntInst.getEntry(NetworkTablePaths.robotHeading);
-
         angleFollower = new PositionVisionPIDController(kP, kI, kD, period, driveTrain);
     }
 
@@ -46,12 +42,13 @@ public class PositionVisionCommand extends CommandBase {
     public void initialize() {
         angleFollower.start();
         finished = false;
+
+        driveTrain.shift(DriveTrain.K_LOW_GEAR);
     }
 
     @Override
     public void execute() {
-        // turning is on it's own loop
-        putHeading.setDouble(driveTrain.getHeadingDegrees());
+        // turning is on it's own loop, as is robot heading
     }
 
     @Override

@@ -16,6 +16,14 @@ public class PositionVisionPIDController extends PIDController {
     private double period;
     private boolean isRunning = false;
 
+    /**
+     * Constructs the PID Controller with the given constants and with a reference to the drivetain object.
+     * @param Kp - p gain
+     * @param Ki - i gain
+     * @param Kd - d gain
+     * @param period - the refresh period to loop at, in milleseconds
+     * @param driveTrain - drivetrain instance
+     */
     public PositionVisionPIDController(double Kp, double Ki, double Kd, double period, DriveTrain driveTrain) {
         super(Kp, Ki, Kd, period);
 
@@ -65,6 +73,7 @@ public class PositionVisionPIDController extends PIDController {
     public void stop() {
         looper.stop();
         isRunning = false;
+        driveTrain.tankDrive(0, 0);
     }
 
     public boolean isRunning() {
@@ -79,7 +88,7 @@ public class PositionVisionPIDController extends PIDController {
      * @param heading- goal gyro value, not relative to current robot heading
      */
     public void setGoalHeading(double heading) {
-        goalHeading = nearestHeadingEquivalent(heading);
+        goalHeading = goalHeading + nearestHeadingEquivalent(heading)/2;
         /*
          * Breakdown of above function: To smooth results, we average it with previous
          * results. However, if the previous result went through this process, we then

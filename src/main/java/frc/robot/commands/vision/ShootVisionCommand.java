@@ -14,7 +14,7 @@ public class ShootVisionCommand extends CommandBase {
     private final Shooter shooter;
     private final Intake intake;
 
-    private final double tolerance = 5.0;
+    private final double tolerance = 15.0;
     double targetRPM = 0;
     boolean isRunning = false;
 
@@ -63,7 +63,7 @@ public class ShootVisionCommand extends CommandBase {
 
     public void shoot(){
         shooter.setKickerPercent(1);
-        intake.index(0.8);
+        intake.index(0.7);
     }
 
     public void stopShoot(){

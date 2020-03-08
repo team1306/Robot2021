@@ -41,7 +41,8 @@ public final class Constants {
     public static final int K_INTAKE_SOLENOID_DOWN = 3;
 
     // DIO Ports
-    public static final int K_INTAKE_INDEX_SWITCH = 0;
+    public static final int K_INTAKE_INDEX_SWITCH_TOP = 0;
+    public static final int K_INTAKE_INDEX_SWITCH_BOTTOM = 1;
 
     // Analog Ports
     public static final int K_DIST_SENSOR = 0;

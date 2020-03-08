@@ -20,16 +20,18 @@ public class Intake extends SubsystemBase {
 
     private final DoubleSolenoid intakeArm;
 
-    private final DigitalInput indexSwitch;
+    private final DigitalInput indexBottom;
+    private final DigitalInput indexTop;
+
     public Intake() {
         indexMotor = new VictorSPX(Constants.K_INTAKE_INDEXER_ID);
         indexMotor.setInverted(true);
         intakeMain = new VictorSPX(Constants.K_INTAKE_AXEL_RIGHT_ID);
         intakeLeft = new VictorSPX(Constants.K_INTAKE_AXEL_LEFT_ID);
         intakeLeft.setInverted(true);
-        indexSwitch = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH);
-
-        intakeArm = new DoubleSolenoid(Constants.K_INTAKE_SOLENOID_UP,Constants.K_INTAKE_SOLENOID_DOWN);
+        indexTop = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH_TOP);
+        indexBottom = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH_BOTTOM);
+        intakeArm = new DoubleSolenoid(Constants.K_INTAKE_SOLENOID_UP, Constants.K_INTAKE_SOLENOID_DOWN);
     }
 
     /**
@@ -42,27 +44,32 @@ public class Intake extends SubsystemBase {
     }
 
     /**
-     * Returns whether the indexing sensor detects a ball
+     * Returns whether the indexing sensor detects a ball. If intake is up, the
+     * sensor readings are looking at the robot, so will only return false.
      */
-    public boolean getSwitch() {
-        return indexSwitch.get();
+    public boolean getSwitchBottom() {
+        return (!indexBottom.get()) && isIntakeDown();
+    }
+
+    public boolean getSwitchTop(){
+        return !indexTop.get();
     }
 
     /**
      * Retracts the intake
      */
-    public void retract(){
+    public void retract() {
         intakeArm.set(RetractionDirection);
     }
 
     /**
      * Extends the intake
      */
-    public void extend(){
+    public void extend() {
         intakeArm.set(ExtensionDirection);
     }
 
-    public boolean isIntakeDown(){
+    public boolean isIntakeDown() {
         return intakeArm.get().equals(ExtensionDirection);
     }
 
@@ -70,7 +77,7 @@ public class Intake extends SubsystemBase {
      * runs the intake bar
      * 
      * @param speedRight -The speed of the right half-axle and the roller bar
-     * @param speedLeft -The speed of the left half-axle 
+     * @param speedLeft  -The speed of the left half-axle
      */
     public void intake(double speedRight, double speedLeft) {
         intakeMain.set(ControlMode.PercentOutput, speedRight);

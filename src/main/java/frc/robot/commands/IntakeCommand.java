@@ -33,7 +33,10 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (intake.getSwitch() || indexOverride.get()) {
+        if(intake.getSwitchTop()){
+            intake.index(-indexSpeed/2);
+        }
+        else if (intake.getSwitchBottom() || indexOverride.get()) {
             intake.index(indexSpeed);
         } else {
             intake.index(0);

@@ -33,9 +33,9 @@ public class Shooter extends SubsystemBase {
     private final double h = Constants.K_TARGET_HEIGHT_FT - Constants.K_SHOOTER_HEIGHT_FT;
     private final double g = 32.2;
 
-    private final double kP = 0.0004;
-    private final double kI = 0.0000;
-    private final double kD = 0;
+    private final double kP = 0.0003;
+    private final double kI = 0.000001;
+    private final double kD = 0.000008;
 
     private final Value hoodUp = Value.kReverse;
     private final Value hoodDown = Value.kForward;
@@ -59,16 +59,16 @@ public class Shooter extends SubsystemBase {
         flywheel.setIdleMode(IdleMode.kCoast);
     }
 
-    public void spinToRPM(double rpm) {
+    public void spinToRPM(final double rpm) {
        controller.setReference(rpm, ControlType.kVelocity);
     }
     
-    public void setFlywheelPercent(double percent) {
+    public void setFlywheelPercent(final double percent) {
         controller.setReference(percent, ControlType.kDutyCycle);
         //flywheel.set(percent);
     }
 
-    public void setKickerPercent(double percent) {
+    public void setKickerPercent(final double percent) {
         kicker.set(ControlMode.PercentOutput, percent);
     }
 
@@ -88,7 +88,7 @@ public class Shooter extends SubsystemBase {
      * 
      * @param isHigh - if the hood should be set to high
      */
-    public void setHood(boolean isHigh) {
+    public void setHood(final boolean isHigh) {
         if (isHigh) {
             hood.set(hoodUp);
         } else {
@@ -109,9 +109,9 @@ public class Shooter extends SubsystemBase {
      * @param dist - feet
      * @return rpm
      */
-    private double HighShotRPM(double dist) {
-        double d2 = dist * dist;
-        double repTerm = cosHighA * (sinHighA * dist - h * cosHighA);
+    private double HighShotRPM(final double dist) {
+        final double d2 = dist * dist;
+        final double repTerm = cosHighA * (sinHighA * dist - h * cosHighA);
         return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
@@ -121,9 +121,9 @@ public class Shooter extends SubsystemBase {
      * @param dist- feet
      * @return rpm
      */
-    private double LowShotRPM(double dist) {
-        double d2 = dist * dist;
-        double repTerm = cosLowA * (sinLowA * dist - h * cosLowA);
+    private double LowShotRPM(final double dist) {
+        final double d2 = dist * dist;
+        final double repTerm = cosLowA * (sinLowA * dist - h * cosLowA);
         return feetPerSecondtoRPM(Math.sqrt(2 * d2 * g * repTerm) / (2 * repTerm));
     }
 
@@ -133,7 +133,7 @@ public class Shooter extends SubsystemBase {
      * @param feetPerSecond
      * @return rpm
      */
-    public double feetPerSecondtoRPM(double feetPerSecond) {
+    public double feetPerSecondtoRPM(final double feetPerSecond) {
         return feetPerSecond * 12 / (Math.PI * Constants.K_SHOOTER_RADIUS_INCHES);
     }
 
@@ -143,7 +143,7 @@ public class Shooter extends SubsystemBase {
      * @param rpm
      * @return speed - feet per second
      */
-    public double RPMtoFeetPerSecond(double rpm) {
+    public double RPMtoFeetPerSecond(final double rpm) {
         return rpm * Math.PI * Constants.K_SHOOTER_RADIUS_INCHES / 12;
     }
 
@@ -154,7 +154,7 @@ public class Shooter extends SubsystemBase {
      * 
      * @return
      */
-    public double targetDistance(double dist) {
+    public double targetDistance(final double dist) {
         System.out.println("Targeting Distance "+dist);
         if (dist < 0) {
             this.spinToRPM(0);
@@ -170,11 +170,11 @@ public class Shooter extends SubsystemBase {
 
         // calculate speed
         if (isHoodUp()) {
-            double rpm = HighShotRPM(dist);
+            final double rpm = HighShotRPM(dist);
             spinToRPM(rpm);
             return rpm;
         } else {
-            double rpm = LowShotRPM(dist);
+            final double rpm = LowShotRPM(dist);
             spinToRPM(rpm);
             return rpm;
         }

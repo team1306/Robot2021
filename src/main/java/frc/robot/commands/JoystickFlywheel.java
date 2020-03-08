@@ -10,7 +10,7 @@ public class JoystickFlywheel extends CommandBase {
     private Shooter shooter;
     private UserAnalog input;
 
-    private final double maxRPM=2000;
+    private final double maxRPM=4000;
     
     public JoystickFlywheel(Shooter shooter, UserAnalog outputVelocity) {
         this.shooter = shooter;
@@ -25,14 +25,14 @@ public class JoystickFlywheel extends CommandBase {
         SmartDashboard.putNumber("kP", shooter.controller.getP());
         SmartDashboard.putNumber("kI", shooter.controller.getI());
         SmartDashboard.putNumber("kD", shooter.controller.getD());
-
     }
 
     @Override
     public void execute() {
-        shooter.spinToRPM(input.get()*maxRPM);
+        double sRPM = shooter.getRPM();
+        shooter.spinToRPM(Math.max(input.get()*maxRPM, sRPM-100));
         shooter.setKickerPercent(input.get());
-        SmartDashboard.putNumber("Spinner RPM", shooter.getRPM());
+        SmartDashboard.putNumber("Spinner RPM", sRPM);
         double sP = shooter.controller.getP();
         double P = SmartDashboard.getNumber("kP", sP);
         if(P!=sP){
