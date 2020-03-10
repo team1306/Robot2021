@@ -51,8 +51,8 @@ public class ShootVisionCommand extends CommandBase {
     private void listenDistance(EntryNotification note){
         double dist = note.value.getDouble();
         if(isRunning){
-        System.out.println("Setting Shooter Speed");
         targetRPM = shooter.targetDistance(dist);
+        System.out.println("Setting Shooter Speed: "+targetRPM);
         }
     }
 

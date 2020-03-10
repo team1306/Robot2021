@@ -155,7 +155,6 @@ public class Shooter extends SubsystemBase {
      * @return
      */
     public double targetDistance(final double dist) {
-        System.out.println("Targeting Distance "+dist);
         if (dist < 0) {
             this.spinToRPM(0);
             return 0;

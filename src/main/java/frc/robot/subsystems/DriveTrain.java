@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -64,6 +65,14 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower1.follow(leftLeader);
     leftFollower2.follow(leftLeader);
+
+    rightLeader.setIdleMode(IdleMode.kBrake);
+    rightFollower1.setIdleMode(IdleMode.kBrake);
+    rightFollower2.setIdleMode(IdleMode.kBrake);
+    leftLeader.setIdleMode(IdleMode.kBrake);
+    leftFollower1.setIdleMode(IdleMode.kBrake);
+    leftFollower2.setIdleMode(IdleMode.kBrake);
+
     // get encoders
     rightEnc = rightLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
     leftEnc = leftLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));

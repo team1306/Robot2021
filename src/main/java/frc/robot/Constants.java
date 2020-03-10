@@ -48,7 +48,7 @@ public final class Constants {
     public static final int K_DIST_SENSOR = 0;
 
     // Robot information -TODO
-    public static final int K_TRACK_WIDTH_METERS = 1;
+    public static final double K_TRACK_WIDTH_METERS = 0.7175;
     public static final double K_WHEEL_RADIUS_INCHES = 3;
 
     public static final double K_SHOOTER_RADIUS_INCHES = 3;

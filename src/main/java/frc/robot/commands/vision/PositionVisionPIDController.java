@@ -2,6 +2,12 @@ package frc.robot.commands.vision;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
 public class PositionVisionPIDController extends PIDController {
@@ -15,6 +21,11 @@ public class PositionVisionPIDController extends PIDController {
     private double goalHeading = 0;
     private double period;
     private boolean isRunning = false;
+
+    private final TrajectoryConfig trajectoryConfig;
+    private Trajectory trajectory;
+    private Pose2d startPose;
+    private Pose2d endPose;
 
     /**
      * Constructs the PID Controller with the given constants and with a reference to the drivetain object.
@@ -31,6 +42,14 @@ public class PositionVisionPIDController extends PIDController {
         this.driveTrain = driveTrain;
 
         looper = new Notifier(this::runLoop);
+
+        trajectoryConfig = new TrajectoryConfig(1, 2);
+        trajectoryConfig.setEndVelocity(0);
+        trajectoryConfig.setStartVelocity(0);
+        trajectoryConfig.setKinematics(new DifferentialDriveKinematics(Constants.K_TRACK_WIDTH_METERS));
+
+        startPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
+        endPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
     }
 
     /**
@@ -74,6 +93,7 @@ public class PositionVisionPIDController extends PIDController {
         looper.stop();
         isRunning = false;
         driveTrain.tankDrive(0, 0);
+        this.reset();
     }
 
     public boolean isRunning() {
@@ -110,6 +130,17 @@ public class PositionVisionPIDController extends PIDController {
         this.setSetpoint(goalHeading);
     }
 
+    @Override
+    public void setSetpoint(double setpoint) {
+        super.setSetpoint(setpoint);
+
+        startPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
+        endPose = new Pose2d(0, 0, new Rotation2d(setpoint));
+
+        //trajectory = TrajectoryGenerator.generateTrajectory(startPose, new ArrayList<Translation2d>(), endPose, trajectoryConfig);
+
+    }
+
     /**
      * Converts a heading into the nearest equivalent heading to the robots current
      * heading.
@@ -121,13 +152,14 @@ public class PositionVisionPIDController extends PIDController {
      */
     private double nearestHeadingEquivalent(double heading) {
         double curr = driveTrain.getHeadingDegrees();
-        double r = 360 * (int) (curr / 360);
-        double fcurr = curr - r;// remove the number of whole rotation is the same as mod
-        double fheading = floormod(heading, 360);
-        if (floormod(fheading - fcurr, 360) > 180) {
-            r -= 360;
+        double relative = heading - curr;
+        relative = floormod(relative, 360);
+        if(relative>180){
+            relative = relative-360;
         }
-        return r + fheading;
+        double nearest = relative + curr;
+        System.out.println("Nearest Equivalent of "+heading+" to "+curr+" is "+nearest);
+        return nearest;
     }
 
     private double floormod(double num, double denom) {

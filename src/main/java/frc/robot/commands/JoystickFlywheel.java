@@ -48,8 +48,6 @@ public class JoystickFlywheel extends CommandBase {
         if(D!=sD){
             shooter.controller.setD(D);
         }
-        System.out.println(shooter.flywheel.get());
-
     }
 
     @Override
