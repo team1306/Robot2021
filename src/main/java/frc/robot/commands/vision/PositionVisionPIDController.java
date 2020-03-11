@@ -1,13 +1,8 @@
 package frc.robot.commands.vision;
 
+import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
 public class PositionVisionPIDController extends PIDController {
@@ -17,22 +12,20 @@ public class PositionVisionPIDController extends PIDController {
     private DriveTrain driveTrain;
 
     private Notifier looper;
+    private LinearFilter filter;
 
     private double goalHeading = 0;
     private double period;
     private boolean isRunning = false;
 
-    private final TrajectoryConfig trajectoryConfig;
-    private Trajectory trajectory;
-    private Pose2d startPose;
-    private Pose2d endPose;
-
     /**
-     * Constructs the PID Controller with the given constants and with a reference to the drivetain object.
-     * @param Kp - p gain
-     * @param Ki - i gain
-     * @param Kd - d gain
-     * @param period - the refresh period to loop at, in milleseconds
+     * Constructs the PID Controller with the given constants and with a reference
+     * to the drivetain object.
+     * 
+     * @param Kp         - p gain
+     * @param Ki         - i gain
+     * @param Kd         - d gain
+     * @param period     - the refresh period to loop at, in milleseconds
      * @param driveTrain - drivetrain instance
      */
     public PositionVisionPIDController(double Kp, double Ki, double Kd, double period, DriveTrain driveTrain) {
@@ -42,14 +35,7 @@ public class PositionVisionPIDController extends PIDController {
         this.driveTrain = driveTrain;
 
         looper = new Notifier(this::runLoop);
-
-        trajectoryConfig = new TrajectoryConfig(1, 2);
-        trajectoryConfig.setEndVelocity(0);
-        trajectoryConfig.setStartVelocity(0);
-        trajectoryConfig.setKinematics(new DifferentialDriveKinematics(Constants.K_TRACK_WIDTH_METERS));
-
-        startPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
-        endPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
+        filter = LinearFilter.singlePoleIIR(7 * period, period);
     }
 
     /**
@@ -57,6 +43,7 @@ public class PositionVisionPIDController extends PIDController {
      * drivetrain
      */
     private void runLoop() {
+        this.setSetpoint(filter.calculate(goalHeading));
         double out = this.calculate(driveTrain.getHeadingDegrees());
         out = Math.min(Math.max(-maxVisionTurn, out), maxVisionTurn);// clamp to range
         driveTrain.tankDrive(-out, out);
@@ -71,7 +58,7 @@ public class PositionVisionPIDController extends PIDController {
      */
     public void start() {
         resetGoalHeading(this.goalHeading);// reset closest path
-        looper.startPeriodic(period/1000);
+        looper.startPeriodic(period / 1000);
         isRunning = true;
     }
 
@@ -82,7 +69,7 @@ public class PositionVisionPIDController extends PIDController {
      */
     public void start(double goalHeading) {
         resetGoalHeading(goalHeading);
-        looper.startPeriodic(period/1000);
+        looper.startPeriodic(period / 1000);
         isRunning = true;
     }
 
@@ -94,6 +81,7 @@ public class PositionVisionPIDController extends PIDController {
         isRunning = false;
         driveTrain.tankDrive(0, 0);
         this.reset();
+        filter.reset();
     }
 
     public boolean isRunning() {
@@ -108,17 +96,7 @@ public class PositionVisionPIDController extends PIDController {
      * @param heading- goal gyro value, not relative to current robot heading
      */
     public void setGoalHeading(double heading) {
-        goalHeading = goalHeading + nearestHeadingEquivalent(heading)/2;
-        /*
-         * Breakdown of above function: To smooth results, we average it with previous
-         * results. However, if the previous result went through this process, we then
-         * also have the average of all previous inputs a different weights. For term n,
-         * where n is how many terms away from the current input, the weight is equal to
-         * 0.5/(2^n); this has a sum of one, because of the sum of infinite geometric
-         * series (the lost terms are made up by the reset).
-         * 
-         */
-        this.setSetpoint(goalHeading);
+        goalHeading = nearestHeadingEquivalent(heading);
     }
 
     /**
@@ -128,17 +106,7 @@ public class PositionVisionPIDController extends PIDController {
     private void resetGoalHeading(double heading) {
         goalHeading = nearestHeadingEquivalent(heading);
         this.setSetpoint(goalHeading);
-    }
-
-    @Override
-    public void setSetpoint(double setpoint) {
-        super.setSetpoint(setpoint);
-
-        startPose = new Pose2d(0, 0, new Rotation2d(driveTrain.getHeadingDegrees()));
-        endPose = new Pose2d(0, 0, new Rotation2d(setpoint));
-
-        //trajectory = TrajectoryGenerator.generateTrajectory(startPose, new ArrayList<Translation2d>(), endPose, trajectoryConfig);
-
+        filter.reset();
     }
 
     /**
@@ -154,11 +122,11 @@ public class PositionVisionPIDController extends PIDController {
         double curr = driveTrain.getHeadingDegrees();
         double relative = heading - curr;
         relative = floormod(relative, 360);
-        if(relative>180){
-            relative = relative-360;
+        if (relative > 180) {
+            relative = relative - 360;
         }
         double nearest = relative + curr;
-        System.out.println("Nearest Equivalent of "+heading+" to "+curr+" is "+nearest);
+        System.out.println("Nearest Equivalent of " + heading + " to " + curr + " is " + nearest);
         return nearest;
     }
 
