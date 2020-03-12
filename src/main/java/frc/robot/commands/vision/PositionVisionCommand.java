@@ -21,9 +21,9 @@ public class PositionVisionCommand extends CommandBase {
     private final double positionTolerance = 0.75;
 
     private PositionVisionPIDController angleFollower;
-    private final double kP = 0.0004;
+    private final double kP = 0.04;
     private final double kI = 0.00000000000;
-    private final double kD = 0.000001;
+    private final double kD = 0.00000;
 
     private boolean finished = false;
 
@@ -35,7 +35,7 @@ public class PositionVisionCommand extends CommandBase {
         angleEntry = ntInst.getEntry(NetworkTablePaths.shooterAngle);
         angleEntry.addListener(this::listenAngle, EntryListenerFlags.kUpdate);
 
-        angleFollower = new PositionVisionPIDController(kP, kI, kD, period, driveTrain);
+        angleFollower = new PositionVisionPIDController(kP, kI, kD, period, driveTrain);       
     }
 
     @Override

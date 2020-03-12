@@ -126,7 +126,6 @@ public class PositionVisionPIDController extends PIDController {
             relative = relative - 360;
         }
         double nearest = relative + curr;
-        System.out.println("Nearest Equivalent of " + heading + " to " + curr + " is " + nearest);
         return nearest;
     }
 
