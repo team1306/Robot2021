@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -29,6 +30,8 @@ public class DriveTrain extends SubsystemBase {
   private final CANEncoder leftEnc;
 
   private final DoubleSolenoid shift;
+  private final double shiftCounterMax=3;
+  private double shiftCounter=0;
 
   public static final DoubleSolenoid.Value K_HIGH_GEAR = DoubleSolenoid.Value.kForward;
   public static final DoubleSolenoid.Value K_LOW_GEAR = DoubleSolenoid.Value.kReverse;
@@ -88,6 +91,11 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     putHeading.setDouble(this.getHeadingDegrees());
+    if(shiftCounter ==0){
+      shift.set(Value.kOff);
+    }else{
+      shiftCounter-=1;
+    }
   }
 
   public void tankDrive(double rightOutput, double leftOutput) {
@@ -177,6 +185,7 @@ public class DriveTrain extends SubsystemBase {
     } else {
       shift.set(K_HIGH_GEAR);
     }
+    shiftCounter = shiftCounterMax;
   }
 
   /**
@@ -186,6 +195,7 @@ public class DriveTrain extends SubsystemBase {
    */
   public void shift(DoubleSolenoid.Value gear) {
     shift.set(gear);
+    shiftCounter = shiftCounterMax;
   }
 
   public boolean isShiftLow(){

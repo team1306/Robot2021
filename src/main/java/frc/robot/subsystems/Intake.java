@@ -19,9 +19,12 @@ public class Intake extends SubsystemBase {
     private final VictorSPX intakeLeft;
 
     private final DoubleSolenoid intakeArm;
+    private final double armCounterMax = 3;
+    private double armCounter=0;
 
     private final DigitalInput indexBottom;
     private final DigitalInput indexTop;
+
 
     public Intake() {
         indexMotor = new VictorSPX(Constants.K_INTAKE_INDEXER_ID);
@@ -32,6 +35,16 @@ public class Intake extends SubsystemBase {
         indexTop = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH_TOP);
         indexBottom = new DigitalInput(Constants.K_INTAKE_INDEX_SWITCH_BOTTOM);
         intakeArm = new DoubleSolenoid(Constants.K_INTAKE_SOLENOID_UP, Constants.K_INTAKE_SOLENOID_DOWN);
+        register();
+    }
+
+    @Override
+    public void periodic() {
+        if(armCounter == 0){
+            intakeArm.set(Value.kOff);
+        }else{
+            armCounter-=1;
+        }
     }
 
     /**
@@ -60,6 +73,7 @@ public class Intake extends SubsystemBase {
      */
     public void retract() {
         intakeArm.set(RetractionDirection);
+        armCounter = armCounterMax;
     }
 
     /**
@@ -67,6 +81,7 @@ public class Intake extends SubsystemBase {
      */
     public void extend() {
         intakeArm.set(ExtensionDirection);
+        armCounter = armCounterMax;
     }
 
     public boolean isIntakeDown() {

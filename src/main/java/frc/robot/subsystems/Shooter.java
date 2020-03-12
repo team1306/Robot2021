@@ -20,7 +20,10 @@ public class Shooter extends SubsystemBase {
     private final CANEncoder encoder;
     public final CANPIDController controller;
     private final TalonSRX kicker;
+
     private final DoubleSolenoid hood;
+    private final double hoodCounterMax=3;
+    private double hoodCounter=0;
 
     private final double sinHighA = Math.sin(Constants.K_ANGLE_SHORT_DEGREES);
     private final double cosHighA = Math.cos(Constants.K_ANGLE_SHORT_DEGREES);
@@ -57,6 +60,18 @@ public class Shooter extends SubsystemBase {
         controller.setOutputRange(0, 1);
         controller.setFeedbackDevice(encoder);
         flywheel.setIdleMode(IdleMode.kCoast);
+
+        register();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        if(hoodCounter ==0){
+            hood.set(Value.kOff);
+        }else{
+            hoodCounter-=1;
+        }
     }
 
     public void spinToRPM(final double rpm) {
@@ -94,6 +109,7 @@ public class Shooter extends SubsystemBase {
         } else {
             hood.set(hoodDown);
         }
+        hoodCounter = hoodCounterMax;
     }
 
     /**
