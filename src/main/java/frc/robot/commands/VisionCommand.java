@@ -13,7 +13,7 @@ import frc.robot.subsystems.Shooter;
 public class VisionCommand extends SequentialCommandGroup {
     public VisionCommand(DriveTrain driveTrain, Shooter shooter, Intake intake) {
         super();
-        PositionVisionCommand position = new PositionVisionCommand(shooter, driveTrain);
+        PositionVisionCommand position = new PositionVisionCommand(driveTrain);
         ShootVisionCommand shoot = new ShootVisionCommand(shooter, intake);
         //addCommands(shoot,position);// - the test way
         addCommands(position, shoot);// - the right way

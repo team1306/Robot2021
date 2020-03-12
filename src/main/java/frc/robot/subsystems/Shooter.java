@@ -152,14 +152,13 @@ public class Shooter extends SubsystemBase {
      * 
      * @param dist
      * 
-     * @return
+     * @return new rpm setpoint
      */
-    public double targetDistance(final double dist) {
+    public double targetDistance(double dist) {
         if (dist < 0) {
             this.spinToRPM(0);
             return 0;
         }
-
         if (dist > maxDistHigh) {
             this.setHood(false);
         } else if (dist < minDistLow) {
@@ -169,11 +168,11 @@ public class Shooter extends SubsystemBase {
 
         // calculate speed
         if (isHoodUp()) {
-            final double rpm = HighShotRPM(dist);
+            double rpm = HighShotRPM(dist);
             spinToRPM(rpm);
             return rpm;
         } else {
-            final double rpm = LowShotRPM(dist);
+            double rpm = LowShotRPM(dist);
             spinToRPM(rpm);
             return rpm;
         }

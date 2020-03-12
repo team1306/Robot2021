@@ -6,13 +6,11 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Shooter;
 import frc.robot.utils.NetworkTablePaths;
 
 public class PositionVisionCommand extends CommandBase {
 
     private final DriveTrain driveTrain;
-    private final Shooter shooter;
 
     private final NetworkTableEntry angleEntry;
 
@@ -27,9 +25,8 @@ public class PositionVisionCommand extends CommandBase {
 
     private boolean finished = false;
 
-    public PositionVisionCommand(Shooter shooter, DriveTrain driveTrain) {
+    public PositionVisionCommand(DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
-        this.shooter = shooter;
 
         NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
         angleEntry = ntInst.getEntry(NetworkTablePaths.shooterAngle);

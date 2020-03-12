@@ -24,7 +24,7 @@ public class ShootVisionCommand extends CommandBase {
         this.shooter = shooter;
         this.intake = intake;
         distanceEntry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.shooterDistance);
-        distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kLocal+EntryListenerFlags.kUpdate+EntryListenerFlags.kNew);
+        distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kUpdate);
 
         this.addRequirements(intake, shooter);
     }
@@ -45,8 +45,9 @@ public class ShootVisionCommand extends CommandBase {
 
     @Override
     public void end(boolean isInterupted){
-        shooter.spinToRPM(0);
         isRunning = false;
+        shooter.spinToRPM(0);
+        stopShoot();
     }
 
     private void listenDistance(EntryNotification note){
