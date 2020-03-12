@@ -24,12 +24,13 @@ public class ShootVisionCommand extends CommandBase {
         this.shooter = shooter;
         this.intake = intake;
         distanceEntry = NetworkTableInstance.getDefault().getEntry(NetworkTablePaths.shooterDistance);
+        distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kLocal+EntryListenerFlags.kUpdate+EntryListenerFlags.kNew);
+
         this.addRequirements(intake, shooter);
     }
 
     @Override
     public void initialize() {
-        distanceEntry.addListener(this::listenDistance, EntryListenerFlags.kLocal+EntryListenerFlags.kUpdate+EntryListenerFlags.kNew);
         isRunning = true;
     }
 
