@@ -31,7 +31,7 @@ public class UserDrive extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

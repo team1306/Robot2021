@@ -22,4 +22,4 @@ public interface UserDigital {
      *         controller.
      */
     public boolean get();
-}
+} 

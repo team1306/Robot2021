@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Units;
+
 /**
  * A class for holding constant values in a single editable spot. What goes in
  * this file: -Robot Motorcontroller ports and IDS -Robot phsyical attributes
@@ -55,6 +57,7 @@ public final class Constants {
     // Robot information -TODO
     public static final double K_TRACK_WIDTH_METERS = 0.7175;
     public static final double K_WHEEL_RADIUS_INCHES = 3;//pnuematic, so ish
+    public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
 
     public static final double K_SHOOTER_RADIUS_INCHES = 3;
     public static final double K_ANGLE_SHORT_DEGREES = 55;// all angles measured from the horizontal

@@ -34,10 +34,16 @@ public class SwerveDrive extends SubsystemBase {
   private final double width = 1;
   private final double length = 1;
 
-  private final swerveWheel frontRight;
-  private final swerveWheel frontLeft;
-  private final swerveWheel backRight;
-  private final swerveWheel backLeft;
+  // private final swerveWheel frontRight; 
+  // private final swerveWheel frontLeft;
+  // private final swerveWheel backRight;
+  // private final swerveWheel backLeft;
+
+  // (speed motor ID, angle motor ID)
+  swerveWheel frontLeft = new swerveWheel(1, 2);
+  swerveWheel frontRight = new swerveWheel(1, 2);
+  swerveWheel backLeft = new swerveWheel(1, 2);
+  swerveWheel backRight = new swerveWheel(1, 2);
 
   Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
   Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
@@ -54,10 +60,10 @@ public class SwerveDrive extends SubsystemBase {
    */
   public SwerveDrive() {
 
-    frontRight = new swerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID, 1);
-    frontLeft = new swerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID, 2);
-    backRight = new swerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_ANGLE_RIGHT_BACK_ID, 2);
-    backLeft = new swerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_ANGLE_LEFT_BACK_ID, 1);
+    // frontRight = new swerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID, 1);
+    // frontLeft = new swerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID, 2);
+    // backRight = new swerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_ANGLE_RIGHT_BACK_ID, 2);
+    // backLeft = new swerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_ANGLE_LEFT_BACK_ID, 1);
   }
 
   // public void swerveDrive(double x1, double y1, double turn) {
@@ -92,15 +98,28 @@ public class SwerveDrive extends SubsystemBase {
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
     // Front left module state
-    SwerveModuleState frontLeft = moduleStates[0];
+    SwerveModuleState frontLeftState = moduleStates[0];
+
+    // frontLeft.convert() testing swerveWheel.convert method
 
     // Front right module state
-    SwerveModuleState frontRight = moduleStates[1];
+    SwerveModuleState frontRightState = moduleStates[1];
 
     // Back left module state
-    SwerveModuleState backLeft = moduleStates[2];
+    SwerveModuleState backLeftState = moduleStates[2];
 
     // Back right module state
-    SwerveModuleState backRight = moduleStates[3];
+    SwerveModuleState backRightState = moduleStates[3];
+  }
+
+  public void resetEncoders() {
+    frontRight.resetEncoder();
+    frontLeft.resetEncoder();
+    backRight.resetEncoder();
+    backLeft.resetEncoder(); // different backLeft(other ones got commented out)
+  }
+
+  public double getFrontRightEnc() {
+    return frontRight.getPosition();
   }
 }
