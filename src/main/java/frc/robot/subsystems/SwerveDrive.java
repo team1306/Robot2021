@@ -40,10 +40,10 @@ public class SwerveDrive extends SubsystemBase {
   // private final swerveWheel backLeft;
 
   // (speed motor ID, angle motor ID)
-  swerveWheel frontLeft = new swerveWheel(1, 2);
-  swerveWheel frontRight = new swerveWheel(1, 2);
-  swerveWheel backLeft = new swerveWheel(1, 2);
-  swerveWheel backRight = new swerveWheel(1, 2);
+  SwerveWheel frontLeft = new SwerveWheel(1, 2);
+  SwerveWheel frontRight = new SwerveWheel(1, 2);
+  SwerveWheel backLeft = new SwerveWheel(1, 2);
+  SwerveWheel backRight = new SwerveWheel(1, 2);
 
   Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
   Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);

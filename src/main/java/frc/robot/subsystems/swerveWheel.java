@@ -1,22 +1,17 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+//import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.ControlType;
+//import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
+
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 //import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-//import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-//import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.util.Units;
-
 /*import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -24,7 +19,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;*/
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
 
-public class swerveWheel extends SubsystemBase { 
+public class SwerveWheel extends SubsystemBase { 
     private final CANSparkMax speedMotor;
     private final CANSparkMax angleMotor;
     //private final int wheelPosition;
@@ -32,7 +27,7 @@ public class swerveWheel extends SubsystemBase {
     private final Encoder enc = Encoder.Grayhill256;
     private final com.revrobotics.CANPIDController pidController;
 
-    public swerveWheel(int speedMotorID, int angleMotorID) {
+    public SwerveWheel(int speedMotorID, int angleMotorID) {
         //These are the motors that provide speed
         speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
         angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);

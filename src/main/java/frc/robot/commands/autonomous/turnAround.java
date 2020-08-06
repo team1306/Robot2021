@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * An example command that uses an example subsystem.
  */
-public class turnAround extends Command {
+public class TurnAround extends Command {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final SwerveDrive m_subsystem = new SwerveDrive(); 
 
@@ -16,7 +16,7 @@ public class turnAround extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public turnAround() {
+    public TurnAround() {
         
     }
 

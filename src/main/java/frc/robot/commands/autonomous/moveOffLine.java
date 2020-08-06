@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  * An example command that uses an example subsystem.
  */
-public class moveOffLine extends Command {
+public class MoveOffLine extends Command {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final SwerveDrive m_subsystem = new SwerveDrive(); 
 
@@ -22,7 +22,7 @@ public class moveOffLine extends Command {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public moveOffLine(double time) {
+    public MoveOffLine(double time) {
         timer = new Timer();
         this.time = time;
         m_subsystem.swerveDrive(0, 1, 0);

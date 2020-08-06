@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
-public class practiceAuto extends TimedRobot {
+public class PracticeAuto extends TimedRobot {
     Command autonomousCommand; // make all four other files into commands
 
     public void robotInit() {
         //oi = new OI(); // what does this do and why doesn't it work
-        autonomousCommand = new autonomous();
+        autonomousCommand = new Autonomous();
     }
 
     public void autonomousInit() {
