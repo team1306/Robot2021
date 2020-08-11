@@ -28,18 +28,20 @@ public class SwerveWheel extends SubsystemBase {
     private final com.revrobotics.CANPIDController pidController;
 
     public SwerveWheel(int speedMotorID, int angleMotorID) {
-        //These are the motors that provide speed
+        //motor providing forward acceleration
         speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
+        speedMotor.setIdleMode(IdleMode.kBrake);
+
+        //motor providing rotation on speedMotor
         angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
         angleEnc = angleMotor.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
+        
+        //creating pidController for controlling angleMotor
         pidController = angleMotor.getPIDController();
         pidController.setP(Constants.KP);
         pidController.setI(Constants.KI);
         pidController.setD(Constants.KD);
 
-        //this.wheelPosition = wheelPosition;
-
-        speedMotor.setIdleMode(IdleMode.kBrake);
     }
 
     public void drive(double speed, double angle) {
@@ -49,39 +51,7 @@ public class SwerveWheel extends SubsystemBase {
 
         //TODO this needs to be rewritten
         double input = position + angle;
-        pidController.setReference( input, ControlType.kPosition);
-        //double velocity = angleEnc.getVelocity();
-
-        //move to swerveDrive
-        // if (speedMotor.getIdleMode().equals(IdleMode.kBrake)) {
-        //     //converted to pulses
-        //     if(wheelPosition == 1) {
-        //         //move to 45 degree position left of the y axis
-        //         pidController.setReference(.375, ControlType.kPosition);
-        //     } else {
-        //         //move to 45 degree position right of the y axis
-        //         pidController.setReference(.125, ControlType.kPosition);
-        //     }
-        // } else {
-            //positions = rotations: [0,256]
-            //angle: [-1,1]
-            //how does this work
-            //pidController.setReference( , ControlType.kPosition);
-
-        //}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-
-        // double setpoint = angle * (Constants.MAX_VOLTS * 0.5) + (Constants.MAX_VOLTS * 0.5); // Optimization offset can be calculated here.
-        // if (setpoint < 0) {
-        //     setpoint = Constants.MAX_VOLTS + setpoint;
-        // }
-        // if (setpoint > Constants.MAX_VOLTS) {
-        //     setpoint = setpoint - Constants.MAX_VOLTS;
-        // }
-        // pidController.setSetpoint(setpoint);
-
-        //sketch
-        //wheels have to start perfectly straight
-        //this will work if it is close
+        pidController.setReference(input, ControlType.kPosition);
     }
 
     public void resetEncoder() {
