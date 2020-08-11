@@ -61,19 +61,19 @@ public class SwerveDrive extends SubsystemBase {
 
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
-    frontLeft.convert(frontLeftState);
+    frontLeft.drive(frontLeftState);
 
     // Front right module state
     SwerveModuleState frontRightState = moduleStates[1];
-    frontRight.convert(frontRightState);
+    frontRight.drive(frontRightState);
 
     // Back left module state
     SwerveModuleState backLeftState = moduleStates[2];
-    backLeft.convert(backLeftState);
+    backLeft.drive(backLeftState);
 
     // Back right module state
     SwerveModuleState backRightState = moduleStates[3];
-    backRight.convert(backRightState);
+    backRight.drive(backRightState);
   }
 
   public void resetEncoders() {
