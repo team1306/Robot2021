@@ -30,10 +30,10 @@ import frc.robot.Constants;;
 
 public class SwerveDrive extends SubsystemBase {
   // (speed motor ID, angle motor ID)
-  SwerveWheel frontLeft = new SwerveWheel(1, 2);
-  SwerveWheel frontRight = new SwerveWheel(1, 2);
-  SwerveWheel backLeft = new SwerveWheel(1, 2);
-  SwerveWheel backRight = new SwerveWheel(1, 2);
+  SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID);
+  SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_ANGLE_RIGHT_FRONT_ID);
+  SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_ANGLE_LEFT_BACK_ID);
+  SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_ANGLE_RIGHT_BACK_ID);
 
   Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
   Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
