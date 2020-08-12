@@ -1,5 +1,3 @@
-//package frc.robot.commands;
-
 package frc.robot.commands.autonomous;
 
 import frc.robot.subsystems.SwerveDrive;
@@ -8,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 //import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * An example command that uses an example subsystem.
+ * Command that moves the robot off of the starting line.
  */
 public class MoveOffLine extends Command {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -18,9 +16,8 @@ public class MoveOffLine extends Command {
     private final Timer timer;
 
     /**
-     * Creates a new ExampleCommand.
-     *
-     * @param subsystem The subsystem used by this command.
+     * Creates MoveOffLine command.
+     * Declares a timer and sets the SwerveDrive subsystem to move forward
      */
     public MoveOffLine(double time) {
         timer = new Timer();
@@ -41,8 +38,8 @@ public class MoveOffLine extends Command {
      * Called after initialization. Repeatedly drives forward?
      */
     @Override
-    public void execute() {
-        m_subsystem.swerveDrive(1, 0, 0);
+    public void execute() { // call MoveOffLine?
+        m_subsystem.swerveDrive(0, 1, 0);
     }
 
     /**

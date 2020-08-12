@@ -2,26 +2,25 @@ package frc.robot.commands.autonomous;
 
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj.command.Command;
-//import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * An example command that uses an example subsystem.
+ * TurnAround command that utilizes the SwerveDrive subsystem
+ * Turns the robot 180 degrees from its current position
  */
 public class TurnAround extends Command {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final SwerveDrive m_subsystem = new SwerveDrive(); 
 
     /**
-     * Creates a new ExampleCommand.
-     *
-     * @param subsystem The subsystem used by this command.
+     * Creates a new TurnAround command
+     * TODO this
      */
     public TurnAround() {
         
     }
 
     /**
-     * Called once the command is initialized. Resets and starts the timer
+     * Called once the command is initialized. Resets encoders to measure new positions
      */
     @Override
     public void initialize() {
@@ -29,7 +28,7 @@ public class TurnAround extends Command {
     }
 
     /**
-     * Called after initialization. Repeatedly drives forward?
+     * Called after initialization. Starts turning and slows down?
      */
     @Override
     public void execute() {
@@ -37,7 +36,7 @@ public class TurnAround extends Command {
     }
 
     /**
-     * Called whlie execute() is running. Checks if an amount of time has passed
+     * Called while execute() is running. Checks if the encoder measurement is at 180 degrees
      */
     @Override
     public boolean isFinished() {
@@ -45,7 +44,7 @@ public class TurnAround extends Command {
     }
 
     /**
-     * Called once the time has passed to stop the swerveDrive
+     * Called once the encoder position is greater than 180
      */
     public void end() {
         m_subsystem.swerveDrive(0, 0, 0);

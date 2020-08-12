@@ -11,22 +11,9 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-//import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-//import com.revrobotics.CANEncoder;
-//import com.revrobotics.CANSparkMax;
-
-//import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-//import com.revrobotics.ControlType;
-//import com.revrobotics.EncoderType;
-//import com.revrobotics.CANSparkMax.IdleMode;
-
-/*import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;*/
-import frc.robot.Constants;;
+import frc.robot.Constants;
 
 public class SwerveDrive extends SubsystemBase {
   // (speed motor ID, angle motor ID)
@@ -46,13 +33,18 @@ public class SwerveDrive extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds;
 
   /**
-   * Creates a new ExampleSubsystem.
+   * Creates a new SwerveDrive subsystem TODO.
    */
   public SwerveDrive() {
 
   }
 
-  //creates module states and assigns them to the specific wheels
+  /**
+   * Creates four new SwerveModuleStates and assigns them to their respective wheels
+   * @param x1 x-coordinate movement
+   * @param y1 y-coordinate movement
+   * @param turn rotation of the wheels
+   */
   public void swerveDrive(double x1, double y1, double turn) {
     chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
 
@@ -76,6 +68,9 @@ public class SwerveDrive extends SubsystemBase {
     backRight.drive(backRightState);
   }
 
+  /**
+   * Resets encoder values to zero
+   */
   public void resetEncoders() {
     frontRight.resetEncoder();
     frontLeft.resetEncoder();
@@ -83,6 +78,10 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.resetEncoder(); // different backLeft(other ones got commented out)
   }
 
+  /**
+   * Test method which returns value of the front right encoder TODO
+   * @return position of front right encoder
+   */
   public double getFrontRightEnc() {
     return frontRight.getPosition();
   }
