@@ -7,27 +7,22 @@
 
 package frc.robot.subsystems;
 
-//import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-//import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-/*import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;*/
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
 
 public class DriveTrain extends SubsystemBase {
 
-  // declare
+  // TODO Delete this??
+  // declares instance variables (motors for each wheel and two encoders)
   private final CANSparkMax rightFront;
   private final CANSparkMax rightMid;
   private final CANSparkMax rightBack;
@@ -41,7 +36,7 @@ public class DriveTrain extends SubsystemBase {
   private final Encoder enc = Encoder.Grayhill256;
 
   /**
-   * Creates a new ExampleSubsystem.
+   * Creates a new DriveTrain subsystem.
    */
   public DriveTrain() {
 
@@ -85,11 +80,21 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
+  /**
+   * Sets the front of each side's wheels to values from driver 
+   * One stick controls one side of the robot's wheels
+   */
   public void tankDrive(double rightOutput, double leftOutput) {
     rightFront.set(rightOutput);
     leftFront.set(-leftOutput);
   }
 
+  /**
+   * Sets the front of each side's wheels to values from the driver
+   * Speed and rotation are assigned to separate joysticks
+   * @param velocity input of robot speed
+   * @param rotation input of robot rotation
+   */
   public void arcadeDrive(double velocity, double rotation) {
       rightFront.set(velocity + rotation);
       leftFront.set(-velocity + rotation);

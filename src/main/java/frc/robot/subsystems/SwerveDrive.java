@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwerveDrive extends SubsystemBase {
+  // TODO figure out where these instance fields will be used
   // (speed motor ID, angle motor ID)
   SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID);
   SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_ANGLE_RIGHT_FRONT_ID);
@@ -33,7 +34,7 @@ public class SwerveDrive extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds;
 
   /**
-   * Creates a new SwerveDrive subsystem TODO.
+   * TODO Create default SwerveDrive constructor.
    */
   public SwerveDrive() {
 
@@ -70,6 +71,7 @@ public class SwerveDrive extends SubsystemBase {
 
   /**
    * Resets encoder values to zero
+   * TODO learn more about encoders/whether this will work
    */
   public void resetEncoders() {
     frontRight.resetEncoder();
@@ -79,7 +81,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   /**
-   * Test method which returns value of the front right encoder TODO
+   * Test method which returns value of the front right encoder
    * @return position of front right encoder
    */
   public double getFrontRightEnc() {

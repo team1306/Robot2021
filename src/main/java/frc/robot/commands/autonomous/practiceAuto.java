@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class PracticeAuto extends TimedRobot {
 
-    //TODO figure out what this does
+    //TODO figure out the purpose of PracticeAuto
     Command autonomousCommand; // make all four other files into commands
 
     public void robotInit() {
