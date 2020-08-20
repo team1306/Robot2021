@@ -104,4 +104,37 @@ public class SwerveWheel extends SubsystemBase {
     public double getPosition() {
         return angleEnc.getPosition();
     }
+
+    /**
+     * Finds the shortest rotational path a wheel can take IN DEGREES
+     * Accounts for negative and positive rotations that are multiples of 180
+     * @param rotation in degrees
+     */
+    public static int takeShortestPathDegrees(int degreesPath) {
+
+        while(Math.abs(degreesPath) >= 360) { // deleting any unnecessary loops
+            if(degreesPath > 0) {
+                degreesPath -= 360;
+            } else {
+                degreesPath += 360;
+            }
+        }
+
+        while(Math.abs(degreesPath) > 180) { // deleting any half-loops
+            if(degreesPath > 0) {
+                degreesPath -= 180;
+            } else {
+                degreesPath += 180;
+            }
+        }
+
+        return degreesPath;
+    }
+
+    /**
+     * Converts the shortest rotational path in degrees to rotations
+     */
+    public double takeShortestPathRotations(int degreesPath) {
+        return takeShortestPathDegrees(degreesPath) / 360;
+    }
 }
