@@ -71,4 +71,4 @@ public class Encoder {
     public double rotationsToPulses(double rotations) {
         return rotations * pulses;
     }
-}
+} 
