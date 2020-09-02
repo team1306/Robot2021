@@ -8,47 +8,28 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
-
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import frc.robot.Constants;
-import frc.robot.utils.Encoder;
-import frc.robot.subsystems.Index;
 
-public class Intake extends SubsystemBase {
-
-    // pretty sure there is only one motor for intake?
+public class Shooter extends SubsystemBase {
     private final CANSparkMax motor;
-
-    // TODO pistons on recad #1 - digital input because they go up and down
-
-    // encoder
-    private final Encoder enc = Encoder.Grayhill256;
+    
 
   /**
-   * Creates a new Intake subsystem.
+   * Creates a new Shooter subsystem.
+   * @param motorSpeed: the value the motor should go at
    */
-  public Intake() {
-      motor = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless); 
+  public Shooter() {   
+      motor = new CANSparkMax(Constants.K_SHOOTER_ID, MotorType.kBrushless); 
   }
 
   /**
-   * This method spins the motor so the power cells go in
+   * shoots the ball
+   * TODO use vision
    */
-  public void spin() {
-        motor.set(0.5);    
-  }
-
-  /**
-   * This method spins the motor backwards to un-jam power cells
-   */
-  public void spit() {
-      motor.set(-0.5); 
+  public void shoot(double motorSpeed) {
+        motor.set(motorSpeed);    
   }
 
   @Override

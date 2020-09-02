@@ -40,7 +40,7 @@ public class Index extends SubsystemBase {
      */
   public Index() {
       ballPositions = new boolean[positionsInIndex];
-      spinner = new CANSparkMax(1,MotorType.kBrushless);
+      spinner = new CANSparkMax(Constants.K_INDEX_MOTOR_ID,MotorType.kBrushless);
       spinnerEnc = spinner.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
       spinnerEnc.setPosition(0.0);
 
@@ -66,11 +66,7 @@ public class Index extends SubsystemBase {
 
     double currentPosition = spinnerEnc.getPosition();
 
-    //loops around
-    if(currentPosition == 1.0) {
-        currentPosition = 0;
-    }
-    pidController.setReference(.2 + currentPosition, ControlType.kPosition);
+    pidController.setReference((.2 + spinnerEnc.getPosition()) % 1, ControlType.kPosition);
   }
 
 
@@ -92,7 +88,7 @@ public class Index extends SubsystemBase {
   }
 
 
-    /**
+  /**
    * @return true if ball in exit index
    */
   public boolean canShoot() {
