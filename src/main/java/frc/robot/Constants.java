@@ -21,7 +21,7 @@ public final class Constants {
     public static final int K_DRIVE_RIGHT_MIDDLE_ID = 5;
     public static final int K_DRIVE_RIGHT_BACK_ID = 6;
 
-    public static final int K_SHOOTER_FlYWHEEL_ID = 7;
+    public static final int K_SHOOTER_ID = 7;
 
     public static final int K_SPINNER_MOTOR_ID = 8;
 
@@ -35,6 +35,9 @@ public final class Constants {
     public static final int K_ANGLE_LEFT_BACK_ID = 15;
     public static final int K_ANGLE_RIGHT_FRONT_ID = 16;
     public static final int K_ANGLE_RIGHT_BACK_ID = 17;
+
+    public static final int K_INDEX_MOTOR_ID = 18;
+    public static final int K_INTAKE_MOTOR_ID = 19;
 
     // PWM Ports
     public static final int K_VISION_STATUS_LEDS_PORT = 0;

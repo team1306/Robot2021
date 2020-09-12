@@ -8,9 +8,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
 
@@ -22,8 +24,10 @@ public class Climber extends SubsystemBase {
   /**
    * Creates a new Climber subsystem.
    */
-  public Climber() {
-    climber = new CANSparkMax(DEVICE_ID, TYPE);
+  public Climber(DigitalInput isClimbing, DigitalInput isPulling) {
+    this.isClimbing = isClimbing;
+    this.isPulling = isPulling;
+    climber = new CANSparkMax(Constants.K_CLIMBER_MOTOR_ID, MotorType.kBrushless);
   }
 
   /**

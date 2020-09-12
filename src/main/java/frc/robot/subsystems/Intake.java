@@ -18,6 +18,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
+import frc.robot.subsystems.Index;
 
 public class Intake extends SubsystemBase {
 
@@ -33,33 +34,21 @@ public class Intake extends SubsystemBase {
    * Creates a new Intake subsystem.
    */
   public Intake() {
-      motor = new CANSparkMax(DEVICE_ID, TYPE) //TODO "make" deviceID and type
+      motor = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless); 
   }
 
   /**
    * This method spins the motor so the power cells go in
    */
-  public void spin(boolean isIntakeOn) {
-      while(isIntakeOn) {
-        motor.set(0.5);
-      }
+  public void spin() {
+        motor.set(0.5);    
   }
 
   /**
    * This method spins the motor backwards to un-jam power cells
    */
-  public void spit(boolean isIntakeJammed) {
-      while(isIntakeJammed) {
-          motor.set(-0.5);
-      }
-  }
-
-  /**
-   * This method lifts the intake up
-   * TODO define max height of lift in rotations?
-   */
-  public void lift() {
-    while()
+  public void spit() {
+      motor.set(-0.5); 
   }
 
   @Override

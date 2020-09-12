@@ -48,7 +48,7 @@ public class Spinner extends SubsystemBase {
    * Creates a new Spinner subsystem.
    */
   public Spinner() {
-    spinner = new CANSparkMax(DEVICE_ID, TYPE);
+    spinner = new CANSparkMax(Constants.K_SPINNER_MOTOR_ID, MotorType.kBrushless);
   }
 
   /**
