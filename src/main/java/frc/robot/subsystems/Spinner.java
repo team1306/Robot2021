@@ -30,8 +30,6 @@ public class Spinner extends SubsystemBase {
     public final String YELLOW = "#FFFF00";
 
     private final CANSparkMax spinner;
-    
-    private final CANSparkMax lever;
 
     private final DigitalInput isPressed;
 
@@ -46,8 +44,10 @@ public class Spinner extends SubsystemBase {
 
   /**
    * Creates a new Spinner subsystem.
+   * @param isPressed: User input for whether spinner goes or not
    */
-  public Spinner() {
+  public Spinner(DigitalInput isPressed) {
+    this.isPressed = isPressed;
     spinner = new CANSparkMax(Constants.K_SPINNER_MOTOR_ID, MotorType.kBrushless);
   }
 

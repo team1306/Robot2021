@@ -51,6 +51,10 @@ public class Intake extends SubsystemBase {
       motor.set(-0.5); 
   }
 
+  public void spin(double speed) {
+    motor.set(speed);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run (vision stuff)

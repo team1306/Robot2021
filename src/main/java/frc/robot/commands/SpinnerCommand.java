@@ -20,9 +20,9 @@ public class SpinnerCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SpinnerCommand(Spinner m_subsystem) {
+  public SpinnerCommand(Spinner m_subsystem, DigitalInput isPressed) {
     m_spinner = m_subsystem;
-    isPressed = new DigitalInput(CHANNEL);
+    this.isPressed = isPressed;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_spinner); 

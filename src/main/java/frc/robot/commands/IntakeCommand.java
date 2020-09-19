@@ -38,6 +38,6 @@ public class IntakeCommand extends CommandBase {
         }*/
         double speed = intakeSpeedMultiplier * grabberSpeed.get();
         
-        intake.intake(speed);
+        intake.spin(speed);
     }
 }

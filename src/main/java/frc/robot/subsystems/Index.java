@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.EncoderType;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -63,8 +62,6 @@ public class Index extends SubsystemBase {
     }
 
     ballPositions[positionsInIndex - 1] = storage;
-
-    double currentPosition = spinnerEnc.getPosition();
 
     pidController.setReference((.2 + spinnerEnc.getPosition()) % 1, ControlType.kPosition);
   }

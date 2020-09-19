@@ -2,8 +2,6 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Spinner;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.SwerveWheel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -20,9 +18,9 @@ public class ClimberCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ClimberCommand(Spinner m_subsystem) {
+  public ClimberCommand(Spinner m_subsystem, DigitalInput isPressed) {
     m_spinner = m_subsystem;
-    isPressed = new DigitalInput(CHANNEL);
+    this.isPressed = isPressed;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_spinner); 
