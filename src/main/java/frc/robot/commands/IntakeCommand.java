@@ -3,12 +3,14 @@ package frc.robot.commands;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * The Intake command for the Intake subsystem
  */
 public class IntakeCommand extends CommandBase {
     private final UserAnalog speed;
+    private final UserDigital press;
     private final Intake intake;
 
     /**
@@ -17,6 +19,7 @@ public class IntakeCommand extends CommandBase {
     public IntakeCommand(UserAnalog speed, Intake intake) {
         this.speed = speed;
         this.intake = intake;
+        this.press = press;
 
         addRequirements(intake);
         intake.setDefaultCommand(this);
@@ -41,10 +44,10 @@ public class IntakeCommand extends CommandBase {
          */
 
         /*
-         * I will also have to figure out how to retract the intake with this command
+         * I will also have to figure out how to retract the intake with this command. Hopefully with just one button for input
          */
-
-        intake.extend();
+        if (press.get())
+            intake.extend();
 
     }
 
