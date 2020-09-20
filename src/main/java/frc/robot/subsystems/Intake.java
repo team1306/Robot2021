@@ -6,6 +6,8 @@ import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -16,12 +18,19 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax motorRight;
   private final CANSparkMax motorLeft;
 
+  // The encoders for the two intake motors
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
 
+  // Just the Encoder that egan wrote. This is here for it's methods.
   private final Encoder enc = Encoder.Grayhill256;
 
-  // TODO pistons on recad #1 - digital input because they go up and down
+  // piston
+  private final DoubleSolenoid intakeArm;
+
+  // piston direction values
+  private static final Value ExtensionDirection = Value.kReverse;
+  private static final Value RetractionDirection = Value.kForward;
 
   /**
    * Creates a new Intake subsystem.
@@ -45,6 +54,11 @@ public class Intake extends SubsystemBase {
     // encoders
     rightEnc = motorRight.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
     leftEnc = motorLeft.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
+
+    // The piston stuff
+    intakeArm = new DoubleSolenoid(Constants.K_INTAKE_SOLENOID_UP, Constants.K_INTAKE_SOLENOID_DOWN);
+    register();
+
   }
 
   /**
@@ -75,8 +89,30 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run (vision stuff)
   }
 
-  public double getRPM() {
-    return enc.getVelocity();
+  /*
+   * These two get the RPM of each motor on the intake, in case you need those
+   * numbers
+   */
+  public double getRightRPM() {
+    return rightEnc.getVelocity();
+  }
+
+  public double getLeftRPM() {
+    return leftEnc.getVelocity();
+  }
+
+  /**
+   * Retracts the intake
+   */
+  public void retract() {
+    intakeArm.set(RetractionDirection);
+  }
+
+  /**
+   * Extends the intake
+   */
+  public void extend() {
+    intakeArm.set(ExtensionDirection);
   }
 
 }
