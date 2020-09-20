@@ -7,52 +7,60 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
-
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
-import frc.robot.subsystems.Index;
 
 public class Intake extends SubsystemBase {
 
-    // pretty sure there is only one motor for intake?
-    private final CANSparkMax motor;
+  // Two motors for the recad robot intake
+  private final CANSparkMax motorRight;
+  private final CANSparkMax motorLeft;
 
-    // TODO pistons on recad #1 - digital input because they go up and down
+  // TODO pistons on recad #1 - digital input because they go up and down
 
-    // encoder
-    private final Encoder enc = Encoder.Grayhill256;
+  // encoder
+  private final Encoder enc = Encoder.Grayhill256;
 
   /**
    * Creates a new Intake subsystem.
    */
   public Intake() {
-      motor = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless); 
+    motorRight = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless);
+    motorLeft = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless);
+
+    // reset
+    motorRight.restoreFactoryDefaults();
+    motorLeft.restoreFactoryDefaults();
+
+    // follow
+    motorRight.follow(motorLeft);
+
+    // idle
+    motorRight.setIdleMode(IdleMode.kBrake);
+    motorLeft.setIdleMode(IdleMode.kBrake);
   }
 
   /**
    * This method spins the motor so the power cells go in
    */
   public void spin() {
-        motor.set(0.5);    
+    motorRight.set(0.5);
   }
 
   /**
    * This method spins the motor backwards to un-jam power cells
    */
   public void spit() {
-      motor.set(-0.5); 
+    motorRight.set(-0.5);
   }
 
   public void spin(double speed) {
-    motor.set(speed);
+    motorRight.set(speed);
   }
 
   @Override
