@@ -1,13 +1,8 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -21,10 +16,12 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax motorRight;
   private final CANSparkMax motorLeft;
 
-  // TODO pistons on recad #1 - digital input because they go up and down
+  private final CANEncoder rightEnc;
+  private final CANEncoder leftEnc;
 
-  // encoder
   private final Encoder enc = Encoder.Grayhill256;
+
+  // TODO pistons on recad #1 - digital input because they go up and down
 
   /**
    * Creates a new Intake subsystem.
@@ -44,6 +41,10 @@ public class Intake extends SubsystemBase {
     // idle
     motorRight.setIdleMode(IdleMode.kBrake);
     motorLeft.setIdleMode(IdleMode.kBrake);
+
+    // encoders
+    rightEnc = motorRight.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
+    leftEnc = motorLeft.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
   }
 
   /**
@@ -73,4 +74,9 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run (vision stuff)
   }
+
+  public double getRPM() {
+    return enc.getVelocity();
+  }
+
 }
