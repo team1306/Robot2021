@@ -30,8 +30,9 @@ public class Intake extends SubsystemBase {
    * Creates a new Intake subsystem.
    */
   public Intake() {
-    motorRight = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless);
-    motorLeft = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID, MotorType.kBrushless);
+    // delcares the motor controllers
+    motorRight = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID_RIGHT, MotorType.kBrushless);
+    motorLeft = new CANSparkMax(Constants.K_INTAKE_MOTOR_ID_LEFT, MotorType.kBrushless);
 
     // reset
     motorRight.restoreFactoryDefaults();
@@ -52,15 +53,20 @@ public class Intake extends SubsystemBase {
     motorRight.set(0.5);
   }
 
+  /*
+   * This is just the spin() method again, except it takes a parameter. The other
+   * one is there just in case you want to intake without giving it any input for
+   * speed.
+   */
+  public void spin(double speed) {
+    motorRight.set(speed);
+  }
+
   /**
    * This method spins the motor backwards to un-jam power cells
    */
   public void spit() {
     motorRight.set(-0.5);
-  }
-
-  public void spin(double speed) {
-    motorRight.set(speed);
   }
 
   @Override

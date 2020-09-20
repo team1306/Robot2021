@@ -37,7 +37,9 @@ public final class Constants {
     public static final int K_ANGLE_RIGHT_BACK_ID = 17;
 
     public static final int K_INDEX_MOTOR_ID = 18;
-    public static final int K_INTAKE_MOTOR_ID = 19;
+    public static final int K_INTAKE_MOTOR_ID_RIGHT = 19;
+    public static final int K_INTAKE_MOTOR_ID_LEFT = 20;
+
 
     
 

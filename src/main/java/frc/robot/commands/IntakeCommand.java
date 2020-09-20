@@ -1,43 +1,46 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
-import frc.robot.utils.UserDigital;
 
+/**
+ * An example command that uses an example subsystem.
+ */
 public class IntakeCommand extends CommandBase {
-
-    private final double indexSpeed = 0.8;
-
-    private final double intakeSpeedMultiplier = 0.7;
-
+    private final UserAnalog speed;
     private final Intake intake;
-    private final UserAnalog grabberSpeed;
 
-    public IntakeCommand(Intake intake, UserAnalog grabberSpeed) {
+    /**
+     * Creates a new IntakeCommand.
+     */
+    public IntakeCommand(UserAnalog speed, Intake intake) {
+        this.speed = speed;
         this.intake = intake;
-        this.grabberSpeed = grabberSpeed;
-
-        addRequirements(intake);
-        intake.setDefaultCommand(this);
+        // Use addRequirements() here to declare subsystem dependencies.
     }
 
+    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+    }
+
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        intake.spin(speed.get());
 
     }
 
+    // Called once the command ends or is interrupted.
     @Override
-    public void execute() {
-        /*if (intake.getSwitchTop()) {
-            intake.index(-indexSpeed / 2);
-        } else if (intake.getSwitchBottom() || indexOverride.get()) {
-            intake.index(indexSpeed);
-        } else {
-            intake.index(0);
-        }*/
-        double speed = intakeSpeedMultiplier * grabberSpeed.get();
-        
-        intake.spin(speed);
+    public void end(boolean interrupted) {
+        intake.spin(0.0);
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 }
