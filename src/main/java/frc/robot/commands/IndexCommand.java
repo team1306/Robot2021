@@ -3,7 +3,6 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Index;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 
 /**

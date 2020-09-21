@@ -35,6 +35,7 @@ public class ClimberCommand extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  // todo make user dependent??
   @Override
   public void execute() {
     if(unfold.get()) {

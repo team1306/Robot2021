@@ -50,14 +50,23 @@ public class Spinner extends SubsystemBase {
     armAngle = arm.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
   }
 
+  /**
+   * Controls the motor that spins the arm
+   */
   public void spin() {
     spinner.set(0.5);
   }
 
+  /**
+   * Stops the spinnning
+   */
   public void stop() {
     spinner.set(0);
   }
 
+  /**
+   * Extends arms???
+   */
   public void extend() {
     // TODO arm
     // not sure how to write with motor
@@ -66,10 +75,16 @@ public class Spinner extends SubsystemBase {
     // not a motor?
   }
 
+  /**
+   * Retracts arm
+   */
   public void retract() {
 
   }
 
+  /**
+   * Gets the current angle of the arm
+   */
   public double getArmAngle() {
     return armAngle.getPosition();
   }
