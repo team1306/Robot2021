@@ -40,6 +40,9 @@ public final class Constants {
     public static final int K_INTAKE_MOTOR_ID_RIGHT = 19;
     public static final int K_INTAKE_MOTOR_ID_LEFT = 20;
 
+    public static final int K_SPINNER_ARM_ID = 21;
+    public static final int K_GOAL_ANGLE = 0;
+
 
     
 

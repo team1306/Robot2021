@@ -7,16 +7,12 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
-
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.EncoderType;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
 import frc.robot.utils.Encoder;
@@ -30,8 +26,10 @@ public class Spinner extends SubsystemBase {
     public final String YELLOW = "#FFFF00";
 
     private final CANSparkMax spinner;
+    private final CANSparkMax arm;
+    private final CANEncoder armAngle;
 
-    private final DigitalInput isPressed;
+    private final Encoder enc = Encoder.Grayhill256;
 
   /*
   BLUE: Cyan 100, Magenta 0, Yellow 0 (00FFFF)
@@ -46,31 +44,57 @@ public class Spinner extends SubsystemBase {
    * Creates a new Spinner subsystem.
    * @param isPressed: User input for whether spinner goes or not
    */
-  public Spinner(DigitalInput isPressed) {
-    this.isPressed = isPressed;
+  public Spinner() {
     spinner = new CANSparkMax(Constants.K_SPINNER_MOTOR_ID, MotorType.kBrushless);
+    arm = new CANSparkMax(Constants.K_SPINNER_ARM_ID, MotorType.kBrushless);
+    armAngle = arm.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
   }
 
   /**
-   * Spins the motor until the driver releases the button
+   * Controls the motor that spins the arm
    */
   public void spin() {
-    while(this.isPressed.get()) {
-      spinner.set(0.5);
-    }
+    spinner.set(0.5);
   }
 
   /**
-   * Meant for if the camera is the one detecting the color
-   * TODO auto for spinner
+   * Stops the spinnning
    */
-  public void autoCamera() {
-    
+  public void stop() {
+    spinner.set(0);
+  }
+
+  /**
+   * Extends arms???
+   */
+  public void extend() {
+    // TODO arm
+    // not sure how to write with motor
+    // idea is to rotate 180 or extend
+    // pretty sure this is also pneumatic piston
+    // not a motor?
+  }
+
+  /**
+   * Retracts arm
+   */
+  public void retract() {
+
+  }
+
+  /**
+   * Gets the current angle of the arm
+   */
+  public double getArmAngle() {
+    return armAngle.getPosition();
+  }
+
+  public void moveArm() {
+    // TODO auto arm thingy
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run (vision stuff)
   }
-
 }

@@ -3,23 +3,24 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Index;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * An example command that uses an example subsystem.
  */
 public class IndexCommand extends CommandBase {
-  private final UserAnalog speed;
-  private final Index index;
+  private final UserDigital isPressed;
+  private final Index m_index;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new IndexCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param index The subsystem used by this command.
+   * @param isPressed whether the spinner should rotate
    */
-  public IndexCommand(UserAnalog speed, Index index) {
-    this.speed = speed;
-    this.index = index;
+  public IndexCommand(UserDigital isPressed, Index index) {
+    this.isPressed = isPressed;
+    this.m_index = index;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -37,13 +38,15 @@ public class IndexCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    if(isPressed.get()) {
+      m_index.rotate();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.

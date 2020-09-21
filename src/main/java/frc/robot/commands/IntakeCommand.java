@@ -16,7 +16,7 @@ public class IntakeCommand extends CommandBase {
     /**
      * Creates a new IntakeCommand.
      */
-    public IntakeCommand(UserAnalog speed, Intake intake) {
+    public IntakeCommand(UserAnalog speed, Intake intake, UserDigital press) {
         this.speed = speed;
         this.intake = intake;
         this.press = press;

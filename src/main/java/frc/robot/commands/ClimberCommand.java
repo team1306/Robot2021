@@ -1,7 +1,7 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Spinner;
+import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -10,20 +10,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class ClimberCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Spinner m_spinner; 
-  private final DigitalInput isPressed;
+  private final Climber m_climber;
+  private final DigitalInput unfold;
+  private final DigitalInput isExtendPressed;
+  private final DigitalInput isRetractPressed;
 
   /**
-   * Creates a new SpinnerCommand.
+   * Creates a new ClimberCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ClimberCommand(Spinner m_subsystem, DigitalInput isPressed) {
-    m_spinner = m_subsystem;
-    this.isPressed = isPressed;
+  public ClimberCommand(Climber m_subsystem, DigitalInput fold, DigitalInput extend, DigitalInput retract) {
+    m_climber = m_subsystem;
+    unfold = fold;
+    isExtendPressed = extend;
+    isRetractPressed = retract;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_spinner); 
+    addRequirements(m_climber); 
   }
 
   @Override
@@ -31,17 +35,24 @@ public class ClimberCommand extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  // todo make user dependent??
   @Override
   public void execute() {
-    while(isPressed.get()) {
-        m_spinner.spin();
+    if(unfold.get()) {
+      m_climber.unfold();
+    } else if(isExtendPressed.get()) {
+      m_climber.extend();
+    } else if(isRetractPressed.get()) {
+      m_climber.retract();
+    } else {
+      m_climber.stop();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // SECOND ARM COMES DOWN
+    m_climber.stop();
   }
 
   // Returns true when the command should end.

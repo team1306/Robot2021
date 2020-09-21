@@ -17,35 +17,42 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
 
     private final CANSparkMax climber;
-    private final DigitalInput isClimbing;
-    private final DigitalInput isPulling;
-
 
   /**
    * Creates a new Climber subsystem.
    */
   public Climber(DigitalInput isClimbing, DigitalInput isPulling) {
-    this.isClimbing = isClimbing;
-    this.isPulling = isPulling;
     climber = new CANSparkMax(Constants.K_CLIMBER_MOTOR_ID, MotorType.kBrushless);
   }
 
   /**
-   * Spins the motor until the driver releases the button
+   * Unfolds the climber so that it's positioned to move up
    */
   public void unfold() {
-    while(this.isClimbing.get()) {
-      climber.set(0.5);
-    }
+    // pnematic piston work?
   }
 
+  /**
+   * Extends the arm up
+   */
+  public void extend() {
+    climber.set(0.5);
+  }
+
+  /**
+   * Retracts the arm down
+   */
   public void retract() {
-      while(this.isPulling.get()) {
-          climber.set(-0.5);
-      }
+    climber.set(-0.5);
+  }
+
+  /**
+   * Stops the climber motor from moving
+   */
+  public void stop() {
+    climber.set(0);
   }
   
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run (vision stuff)
