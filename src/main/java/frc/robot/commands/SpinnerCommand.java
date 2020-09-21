@@ -37,14 +37,14 @@ public class SpinnerCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(isSpinnerOn.get()) {
+    if(isSpinnerOn.get()) { // if spinner button pressed
       if(m_spinner.getArmAngle() > Constants.K_GOAL_ANGLE) { // write method for arm angle testing
         m_spinner.spin();
-      } else {
+      } else { // if arm is NOT extended
         m_spinner.extend();
         m_spinner.spin();
       }
-    } else if(isArmExtended.get()) {
+    } else if(isArmExtended.get()) { // press arm to extend
       m_spinner.extend();
     } else {
       m_spinner.stop();
