@@ -44,7 +44,8 @@ public class IntakeCommand extends CommandBase {
          */
 
         /*
-         * I will also have to figure out how to retract the intake with this command. Hopefully with just one button for input
+         * I will also have to figure out how to retract the intake with this command.
+         * Hopefully with just one button for input
          */
         if (press.get())
             intake.extend();
