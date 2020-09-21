@@ -10,7 +10,7 @@ import frc.robot.utils.UserDigital;
  */
 public class IndexCommand extends CommandBase {
   private final UserDigital isPressed;
-  private final Index index;
+  private final Index m_index;
 
   /**
    * Creates a new IndexCommand.
@@ -20,7 +20,7 @@ public class IndexCommand extends CommandBase {
    */
   public IndexCommand(UserDigital isPressed, Index index) {
     this.isPressed = isPressed;
-    this.index = index;
+    this.m_index = index;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -39,7 +39,7 @@ public class IndexCommand extends CommandBase {
   @Override
   public void execute() {
     if(isPressed.get()) {
-      index.rotate();
+      m_index.rotate();
     }
   }
 
