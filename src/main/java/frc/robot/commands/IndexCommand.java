@@ -4,12 +4,13 @@ package frc.robot.commands;
 import frc.robot.subsystems.Index;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * An example command that uses an example subsystem.
  */
 public class IndexCommand extends CommandBase {
-  private final UserAnalog speed;
+  private final UserDigital isPressed;
   private final Index index;
 
   /**
@@ -17,8 +18,8 @@ public class IndexCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IndexCommand(UserAnalog speed, Index index) {
-    this.speed = speed;
+  public IndexCommand(UserDigital isPressed, Index index) {
+    this.isPressed = isPressed;
     this.index = index;
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -37,7 +38,7 @@ public class IndexCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    index.rotate();
   }
 
   // Called once the command ends or is interrupted.
