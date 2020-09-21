@@ -26,19 +26,21 @@ public class Climber extends SubsystemBase {
   }
 
   /**
-   * Spins the motor until the driver releases the button
+   * Unfolds the climber so that it's positioned to move up
    */
-
   public void unfold() {
     // pnematic piston work?
   }
 
+  /**
+   * Extends the arm up
+   */
   public void extend() {
     climber.set(0.5);
   }
 
   /**
-   * 
+   * Retracts the arm down
    */
   public void retract() {
     climber.set(-0.5);
