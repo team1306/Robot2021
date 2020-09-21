@@ -14,9 +14,10 @@ public class IndexCommand extends CommandBase {
   private final Index index;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new IndexCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param index The subsystem used by this command.
+   * @param isPressed whether the spinner should rotate
    */
   public IndexCommand(UserDigital isPressed, Index index) {
     this.isPressed = isPressed;
@@ -38,7 +39,9 @@ public class IndexCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    index.rotate();
+    if(isPressed.get()) {
+      index.rotate();
+    }
   }
 
   // Called once the command ends or is interrupted.
