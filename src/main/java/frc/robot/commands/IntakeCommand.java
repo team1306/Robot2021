@@ -34,7 +34,7 @@ public class IntakeCommand extends CommandBase {
     @Override
     public void execute() {
         // This will just run both motors at the same speed.
-        intake.spin(speed.get());
+        intake.spin(speed.get()); 
 
         /*
          * I will want to add a thing to spit out the balls if need be. I don't think we
@@ -43,12 +43,14 @@ public class IntakeCommand extends CommandBase {
          * should probably go in the Intake subsystem I think.
          */
 
-        /*
+        /* 
          * I will also have to figure out how to retract the intake with this command.
          * Hopefully with just one button for input
          */
-        if (press.get())
+        if (press.get()) 
             intake.extend();
+            // TODO what is it doing when not extended? or before the button being pressed
+            // TODO Make it toggle with some if else statements to see if it's been extended or retracted 
 
     }
 
