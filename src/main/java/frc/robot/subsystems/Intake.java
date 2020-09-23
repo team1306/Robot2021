@@ -18,19 +18,21 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax motorRightLeader;
   private final CANSparkMax motorLeftFollower;
 
-  // The encoders for the two intake motors
-  private final CANEncoder rightEnc;
-  private final CANEncoder leftEnc;
-
-  // Just the Encoder that egan wrote. This is here for it's methods.
-  private final Encoder enc = Encoder.Grayhill256;
+  /*
+   * I left this stuff here in case we want to put encoders back. Should be similar to drivetrain if we do
+   * // The encoders for the two intake motors private final CANEncoder rightEnc;
+   * private final CANEncoder leftEnc;
+   * 
+   * // Just the Encoder that egan wrote. This is here for it's methods. private
+   * final Encoder enc = Encoder.Grayhill256;
+   */
 
   // piston
   private final DoubleSolenoid intakeArm;
 
   // piston direction values
-  private static final Value ExtensionDirection = Value.kReverse;
-  private static final Value RetractionDirection = Value.kForward; // TODO maybe change this back to constants
+  private static final Value ExtensionDirection = Value.kForward; // Pretty sure extension is kForward
+  private static final Value RetractionDirection = Value.kReverse; // I think this is alright using the Value thing.
 
   /**
    * Creates a new Intake subsystem.
@@ -46,15 +48,11 @@ public class Intake extends SubsystemBase {
     motorLeftFollower.restoreFactoryDefaults();
 
     // follow
-    motorLeftFollower.follow(motorRightLeader); 
+    motorLeftFollower.follow(motorRightLeader);
 
     // idle
     motorRightLeader.setIdleMode(IdleMode.kBrake);
     motorLeftFollower.setIdleMode(IdleMode.kBrake);
-
-    // encoders
-    rightEnc = motorRightLeader.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
-    leftEnc = motorLeftFollower.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
 
     // The piston stuff
     intakeArm = new DoubleSolenoid(Constants.K_INTAKE_SOLENOID_UP, Constants.K_INTAKE_SOLENOID_DOWN);
@@ -90,18 +88,6 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run (vision stuff)
   }
 
-  /*
-   * These two get the RPM of each motor on the intake, in case you need those
-   * numbers
-   */
-  public double getRightRPM() {
-    return rightEnc.getVelocity();
-  }
-
-  public double getLeftRPM() {
-    return leftEnc.getVelocity(); // TODO maybe we dont need an encoder. not super necessary
-  }
-
   /**
    * Retracts the intake
    */
@@ -113,9 +99,7 @@ public class Intake extends SubsystemBase {
    * Extends the intake
    */
   public void extend() {
-    intakeArm.set(ExtensionDirection); 
+    intakeArm.set(ExtensionDirection);
   }
-
-
 
 }

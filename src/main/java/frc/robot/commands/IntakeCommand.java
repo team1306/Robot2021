@@ -36,14 +36,14 @@ public class IntakeCommand extends CommandBase {
         // This will just run both motors at the same speed.
         intake.spin(speed.get()); 
 
-        /*
+        /* TODO
          * I will want to add a thing to spit out the balls if need be. I don't think we
          * have and sensor stuff to count how many balls are in the index, maybe we do,
          * but I'd have to find it. The method to determine if the balls are jammed
          * should probably go in the Intake subsystem I think.
          */
 
-        /* 
+        /* TODO
          * I will also have to figure out how to retract the intake with this command.
          * Hopefully with just one button for input
          */
