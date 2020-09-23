@@ -20,6 +20,10 @@ public class SwerveWheel extends SubsystemBase {
     private final Encoder enc = Encoder.Grayhill256;
     private final com.revrobotics.CANPIDController pidController;
 
+    private final double KP = 1 ;
+    private final double KI = 1 ;
+    private final double KD = 1 ;
+
     /**
      * Creates and initializes SwerveWheel object as well as a PID controller
      * @param speedMotorID motor in charge of speed
@@ -35,10 +39,11 @@ public class SwerveWheel extends SubsystemBase {
         angleEnc = angleMotor.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
         
         //creating pidController for controlling angleMotor
+        //rewrite to be file specific
         pidController = angleMotor.getPIDController();
-        pidController.setP(Constants.KP);
-        pidController.setI(Constants.KI);
-        pidController.setD(Constants.KD);
+        pidController.setP(KP);
+        pidController.setI(KI);
+        pidController.setD(KD);
     }
 
     /**
@@ -74,7 +79,7 @@ public class SwerveWheel extends SubsystemBase {
         //converts angleValue to a position value    
         double angle = convertAngleValue(angleValue);
 
-        pidController.setReference(angle, ControlType.kPosition);
+        pidController.setReference(takeShortestPathRotations(angleValue), ControlType.kPosition);
     }
 
     /**converts a value in degrees into a value between -1 and 1
@@ -109,8 +114,10 @@ public class SwerveWheel extends SubsystemBase {
      * Finds the shortest rotational path a wheel can take IN DEGREES
      * Accounts for negative and positive rotations that are multiples of 180
      * @param rotation in degrees
+     * consider rotation direction
+     * test cases with robot
      */
-    public static int takeShortestPathDegrees(int degreesPath) {
+    public static double takeShortestPathDegrees(double degreesPath) {
 
         while(Math.abs(degreesPath) >= 360) { // deleting any unnecessary loops
             if(degreesPath > 0) {
@@ -134,7 +141,7 @@ public class SwerveWheel extends SubsystemBase {
     /**
      * Converts the shortest rotational path in degrees to rotations
      */
-    public double takeShortestPathRotations(int degreesPath) {
+    public double takeShortestPathRotations(double degreesPath) {
         return takeShortestPathDegrees(degreesPath) / 360;
     }
 }
