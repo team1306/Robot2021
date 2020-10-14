@@ -10,7 +10,7 @@ import frc.robot.utils.UserAnalog;
  */
 public class ShooterCommand extends CommandBase {
   private final UserAnalog speed;
-  private final Shooter shooter;
+  private final Shooter m_shooter;
 
   /**
    * Creates a new ExampleCommand.
@@ -19,7 +19,7 @@ public class ShooterCommand extends CommandBase {
    */
   public ShooterCommand(UserAnalog speed, Shooter shooter) {
     this.speed = speed;
-    this.shooter = shooter;
+    m_shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -37,13 +37,13 @@ public class ShooterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.shoot(speed.get());
+    m_shooter.shoot(speed.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.shoot(0.0);
+    m_shooter.shoot(0.0);
   }
 
   // Returns true when the command should end.

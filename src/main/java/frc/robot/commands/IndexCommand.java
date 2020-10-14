@@ -36,6 +36,7 @@ public class IndexCommand extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+  //should call button on press
   @Override
   public void execute() {
     if(isPressed.get()) {
