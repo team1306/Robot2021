@@ -23,7 +23,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;*/
 import frc.robot.Constants;
-import frc.robot.utils.Encoder;
+import frc.robot.utils.EncoderConverter;
 
 public class ExampleSubsystem extends SubsystemBase {
 
@@ -38,7 +38,7 @@ public class ExampleSubsystem extends SubsystemBase {
   private final CANEncoder rightEnc;
   private final CANEncoder leftEnc;
 
-  private final Encoder enc = Encoder.Grayhill256;
+  private final EncoderConverter enc = EncoderConverter.Grayhill256;
 
   /**
    * Creates a new ExampleSubsystem.
