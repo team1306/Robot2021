@@ -7,13 +7,17 @@
 
 package frc.robot;
 
+import frc.robot.commands.UserDrive;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 // import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.autonomous.MoveOffLine;
-// import frc.robot.subsystems.DriveTrain;
+//import frc.robot.commands.autonomous.MoveOffLine;
+import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
 // import frc.robot.commands.*;
+
+import frc.robot.utils.Controller;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -22,9 +26,16 @@ import edu.wpi.first.wpilibj2.command.Command;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final Command userDrive;
+  private final DriveTrain driveTrain;
+  
+
   // The robot's subsystems and commands are defined here...
   // private final DriveTrain m_exampleSubsystem = new DriveTrain();
-  private final Command autoCommand = (Command)(new MoveOffLine(1.0));
+  //private final Command autoCommand = (Command)(new MoveOffLine(1.0));
+
+  
+  
 
   //private final Command practiceauto = new Command(moveOffLine(1.0));
   //private final ExampleCommand practiceaut2o = new ExampleCommand(m_exampleSubsystem);
@@ -35,8 +46,12 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    Controller.init();
+
     // Configure the button bindings
-    configureButtonBindings();
+    driveTrain = new DriveTrain();
+    userDrive = new UserDrive(driveTrain, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY), Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX));
+    
   }
 
   /**
@@ -56,6 +71,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return autoCommand;
+    return userDrive;
   }
 }

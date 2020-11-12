@@ -25,6 +25,8 @@ public class UserDrive extends CommandBase {
     this.driveTrain = driveTrain;
     this.driveLeft = driveLeft;
     this.driveRight = driveRight;
+
+    driveTrain.setDefaultCommand(this);
   }
 
   /**
