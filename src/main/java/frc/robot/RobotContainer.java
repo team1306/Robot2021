@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 // import frc.robot.commands.*;
 
 import frc.robot.utils.Controller;
+import frc.robot.utils.UserAnalog;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -39,7 +40,8 @@ public class RobotContainer {
 
   //private final Command practiceauto = new Command(moveOffLine(1.0));
   //private final ExampleCommand practiceaut2o = new ExampleCommand(m_exampleSubsystem);
-
+  private UserAnalog driveRight;
+  private UserAnalog driveLeft;
 
 
   /**
@@ -48,9 +50,16 @@ public class RobotContainer {
   public RobotContainer() {
     Controller.init();
 
+    UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+    UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+    
+    driveRight = () -> {
+     return UserAnalog.clamp(driveForward.get() - driveBackward.get());
+    };
+
     // Configure the button bindings
     driveTrain = new DriveTrain();
-    userDrive = new UserDrive(driveTrain, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY), Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX));
+    userDrive = new UserDrive(driveTrain, driveRight, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY));
     
   }
 
