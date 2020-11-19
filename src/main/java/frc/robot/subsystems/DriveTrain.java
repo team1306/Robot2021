@@ -26,10 +26,10 @@ public class DriveTrain extends SubsystemBase {
   // TODO Delete this??
   // declares instance variables (motors for each wheel and two encoders)
   private final WPI_TalonSRX rightFront;
-  private final WPI_TalonSRX rightMid;
+  
   private final WPI_TalonSRX rightBack;
   private final WPI_TalonSRX leftFront;
-  private final WPI_TalonSRX leftMid;
+  
   private final WPI_TalonSRX leftBack;
 
   /**
@@ -39,17 +39,14 @@ public class DriveTrain extends SubsystemBase {
 
     // initialize motors
     rightFront = new WPI_TalonSRX(Constants.K_DRIVE_RIGHT_FRONT_ID);
-    rightMid = new WPI_TalonSRX(Constants.K_DRIVE_RIGHT_MIDDLE_ID);
     rightBack = new WPI_TalonSRX(Constants.K_DRIVE_RIGHT_BACK_ID);
 
     leftFront = new WPI_TalonSRX(Constants.K_DRIVE_LEFT_FRONT_ID);
-    leftMid = new WPI_TalonSRX(Constants.K_DRIVE_LEFT_MIDDLE_ID);
     leftBack = new WPI_TalonSRX(Constants.K_DRIVE_LEFT_BACK_ID);
 
-    rightMid.follow(rightFront);
+    
     rightBack.follow(rightFront);
 
-    leftMid.follow(leftFront);
     leftBack.follow(leftBack);
 
   }
