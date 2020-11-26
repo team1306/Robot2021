@@ -43,6 +43,7 @@ public class UserDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("execute is running in UserDrive");
     driveTrain.tankDrive(.1, 0);
   }
 
