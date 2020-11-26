@@ -43,7 +43,7 @@ public class UserDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveTrain.tankDrive(driveRight.get(), driveLeft.get());
+    driveTrain.tankDrive(.1, 0);
   }
 
   // Called once the command ends or is interrupted.
