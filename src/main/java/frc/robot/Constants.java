@@ -14,12 +14,10 @@ public final class Constants {
 
     // CAN ids
     public static final int K_DRIVE_LEFT_FRONT_ID = 1;
-    public static final int K_DRIVE_LEFT_MIDDLE_ID = 2;
-    public static final int K_DRIVE_LEFT_BACK_ID = 3;
+    public static final int K_DRIVE_LEFT_BACK_ID = 2;
 
-    public static final int K_DRIVE_RIGHT_FRONT_ID = 4;
-    public static final int K_DRIVE_RIGHT_MIDDLE_ID = 5;
-    public static final int K_DRIVE_RIGHT_BACK_ID = 6;
+    public static final int K_DRIVE_RIGHT_FRONT_ID = 3;
+    public static final int K_DRIVE_RIGHT_BACK_ID = 4;
 
     public static final int K_SHOOTER_ID = 7;
 
