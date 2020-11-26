@@ -44,7 +44,7 @@ public class UserDrive extends CommandBase {
   @Override
   public void execute() {
     System.out.println("execute is running in UserDrive");
-    driveTrain.tankDrive(.1, 0);
+    driveTrain.tankDrive(.5, 0);
   }
 
   // Called once the command ends or is interrupted.
