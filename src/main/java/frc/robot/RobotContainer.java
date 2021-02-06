@@ -7,11 +7,18 @@
 
 package frc.robot;
 
+import frc.robot.commands.UserDrive;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+// import frc.robot.commands.ExampleCommand;
+//import frc.robot.commands.autonomous.MoveOffLine;
+import frc.robot.subsystems.DriveTrain;
 import edu.wpi.first.wpilibj2.command.Command;
+// import frc.robot.commands.*;
+
+import frc.robot.utils.Controller;
+import frc.robot.utils.UserAnalog;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -20,19 +27,41 @@ import edu.wpi.first.wpilibj2.command.Command;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final Command userDrive;
+  private final SwerveDrive driveTrain;
+  
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final DriveTrain m_exampleSubsystem = new DriveTrain();
+  //private final Command autoCommand = (Command)(new MoveOffLine(1.0));
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  
+  
 
+  //private final Command practiceauto = new Command(moveOffLine(1.0));
+  //private final ExampleCommand practiceaut2o = new ExampleCommand(m_exampleSubsystem);
+  private UserAnalog driveRight;
+  private UserAnalog driveLeft;
 
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    System.out.println("robotContainer is running");
+    Controller.init();
+
+    UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+    UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+    
+    driveRight = () -> {
+     return UserAnalog.clamp(driveForward.get() - driveBackward.get());
+    };
+
     // Configure the button bindings
-    configureButtonBindings();
+    driveTrain = new SwerveDrive();
+    userDrive = new UserSwerveDrive(driveTrain, driveRight, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY));
+    
   }
 
   /**
@@ -52,6 +81,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return userDrive;
   }
 }
