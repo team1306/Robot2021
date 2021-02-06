@@ -3,6 +3,8 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.DigitalInput;
+// change to UserDigital
+// TODO DigitalInput is for limit switches
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -21,6 +23,7 @@ public class ClimberCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public ClimberCommand(Climber m_subsystem, DigitalInput fold, DigitalInput extend, DigitalInput retract) {
+    // TODO look for ways to toggle extend and retract on one button
     m_climber = m_subsystem;
     unfold = fold;
     isExtendPressed = extend;

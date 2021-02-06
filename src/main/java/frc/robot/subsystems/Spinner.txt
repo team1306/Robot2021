@@ -20,10 +20,10 @@ import frc.robot.utils.Encoder;
 public class Spinner extends SubsystemBase {
 
     // DEFAULT COLOR VARIABLES
-    public final String BLUE = "#00FFFF";
+    /*public final String BLUE = "#00FFFF";
     public final String GREEN = "#00FF00";
     public final String RED = "#FF0000";
-    public final String YELLOW = "#FFFF00";
+    public final String YELLOW = "#FFFF00";*/
 
     private final CANSparkMax spinner;
     private final CANSparkMax arm;

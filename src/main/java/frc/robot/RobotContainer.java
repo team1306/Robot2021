@@ -28,7 +28,7 @@ import frc.robot.utils.UserAnalog;
  */
 public class RobotContainer {
   private final Command userDrive;
-  private final DriveTrain driveTrain;
+  private final SwerveDrive driveTrain;
   
 
   // The robot's subsystems and commands are defined here...
@@ -59,8 +59,8 @@ public class RobotContainer {
     };
 
     // Configure the button bindings
-    driveTrain = new DriveTrain();
-    userDrive = new UserDrive(driveTrain, driveRight, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY));
+    driveTrain = new SwerveDrive();
+    userDrive = new UserSwerveDrive(driveTrain, driveRight, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY));
     
   }
 

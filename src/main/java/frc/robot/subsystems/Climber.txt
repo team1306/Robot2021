@@ -17,6 +17,7 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
 
     private final CANSparkMax climber;
+    // TODO look into 2018 robot code
 
   /**
    * Creates a new Climber subsystem.

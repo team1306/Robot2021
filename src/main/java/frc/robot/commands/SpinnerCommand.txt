@@ -39,9 +39,11 @@ public class SpinnerCommand extends CommandBase {
   public void execute() {
     if(isSpinnerOn.get()) { // if spinner button pressed
       if(m_spinner.getArmAngle() > Constants.K_GOAL_ANGLE) { // write method for arm angle testing
+        // TODO limit switch look up on WPI
         m_spinner.spin();
       } else { // if arm is NOT extended
         m_spinner.extend();
+        // piston goes fast
         m_spinner.spin();
       }
     } else if(isArmExtended.get()) { // press arm to extend
