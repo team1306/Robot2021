@@ -7,15 +7,12 @@
 
 package frc.robot;
 
-import frc.robot.commands.UserDrive;
+import frc.robot.commands.UserSwerveDrive;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-// import frc.robot.commands.ExampleCommand;
-//import frc.robot.commands.autonomous.MoveOffLine;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.commands.*;
 
 import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
@@ -27,21 +24,16 @@ import frc.robot.utils.UserAnalog;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
   private final Command userDrive;
   private final SwerveDrive driveTrain;
-  
 
-  // The robot's subsystems and commands are defined here...
-  // private final DriveTrain m_exampleSubsystem = new DriveTrain();
-  //private final Command autoCommand = (Command)(new MoveOffLine(1.0));
-
-  
-  
-
-  //private final Command practiceauto = new Command(moveOffLine(1.0));
-  //private final ExampleCommand practiceaut2o = new ExampleCommand(m_exampleSubsystem);
-  private UserAnalog driveRight;
-  private UserAnalog driveLeft;
+  // The robot's inputs that it recieves from the controller are defined here
+  private UserAnalog driveX;
+  private UserAnalog driveY;
+  private UserAnalog turnLeft;
+  private UserAnalog turnRight;
+  private UserAnalog turn;
 
 
   /**
@@ -51,17 +43,18 @@ public class RobotContainer {
     System.out.println("robotContainer is running");
     Controller.init();
 
-    UserAnalog driveForward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
-    UserAnalog driveBackward = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+    //configure the button bindings 
+    configureButtonBindings();
     
-    driveRight = () -> {
-     return UserAnalog.clamp(driveForward.get() - driveBackward.get());
-    };
-
-    // Configure the button bindings
     driveTrain = new SwerveDrive();
-    userDrive = new UserSwerveDrive(driveTrain, driveRight, Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY));
-    
+
+    if(turnLeft.get() > .05) {
+      turn = turnLeft;
+    } else {
+      turn = turnRight;
+    }
+
+    userDrive = new UserSwerveDrive(driveTrain, driveY, driveX, turn);
   }
 
   /**
@@ -71,6 +64,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+    driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+    turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_LTRIGGER);
+    turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_RTRIGGER);
   }
 
 
@@ -83,4 +80,6 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return userDrive;
   }
+
+  
 }

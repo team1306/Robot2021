@@ -14,19 +14,25 @@ import frc.robot.utils.UserAnalog;
 
 /**
  * An example command that uses an example subsystem.
- * TODO change UserDrive to create a SwerveDrive object
  */
 public class UserSwerveDrive extends CommandBase {
   private final SwerveDrive m_swerveDrive;
-  private final UserAnalog driveLeft;
-  private final UserAnalog driveRight;
+  private final UserAnalog driveX;
+  private final UserAnalog driveY;
   private final UserAnalog driveTurn;
 
   //çhange names
-  public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveRight, UserAnalog driveLeft, UserAnalog driveTurn) {
+  /**
+   * 
+   * @param m_swerveDrive
+   * @param driveY analog input for up/down movement
+   * @param driveX analog input for left/right movement
+   * @param driveTurn analog input for turning
+   */
+  public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveY, UserAnalog driveX, UserAnalog driveTurn) {
     this.m_swerveDrive = m_swerveDrive;
-    this.driveLeft = driveLeft;
-    this.driveRight = driveRight;
+    this.driveX = driveX;
+    this.driveY = driveY;
     this.driveTurn = driveTurn;
   }
 
@@ -44,13 +50,13 @@ public class UserSwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveDrive.swerveDrive(driveRight.get(), driveLeft.get(), driveTurn.get());
+    m_swerveDrive.driveTrain(driveX.get(), driveY.get(), driveTurn.get());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_swerveDrive.swerveDrive(0,0,0);
+    m_swerveDrive.driveTrain(0,0,0);
   }
 
   // Returns true when the command should end.

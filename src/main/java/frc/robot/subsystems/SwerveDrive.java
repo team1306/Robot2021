@@ -16,12 +16,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwerveDrive extends SubsystemBase {
-  // TODO figure out where these instance fields will be used
   // (speed motor ID, angle motor ID)
-  SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_ANGLE_LEFT_FRONT_ID);
-  SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_ANGLE_RIGHT_FRONT_ID);
-  SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_ANGLE_LEFT_BACK_ID);
-  SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_ANGLE_RIGHT_BACK_ID);
+  SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_TURN_LEFT_FRONT_ID, Constants.K_ENCODER_LEFT_FRONT_ID);
+  SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_TURN_RIGHT_FRONT_ID, Constants.K_ENCODER_RIGHT_FRONT_ID);
+  SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_TURN_LEFT_BACK_ID, Constants.K_ENCODER_LEFT_BACK_ID);
+  SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_TURN_RIGHT_BACK_ID, Constants.K_ENCODER_RIGHT_BACK_ID);
 
   Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
   Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
@@ -46,7 +45,9 @@ public class SwerveDrive extends SubsystemBase {
    * @param y1 y-coordinate movement
    * @param turn rotation of the wheels
    */
-  public void swerveDrive(double x1, double y1, double turn) {
+  public void driveTrain(double x1, double y1, double turn) {
+    resetEncoders();
+    
     chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
 
     // Convert to module states
@@ -71,7 +72,6 @@ public class SwerveDrive extends SubsystemBase {
 
   /**
    * Resets encoder values to zero
-   * TODO learn more about encoders/whether this will work
    */
   public void resetEncoders() {
     frontRight.resetEncoder();

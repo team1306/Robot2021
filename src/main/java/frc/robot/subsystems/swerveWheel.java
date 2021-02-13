@@ -1,64 +1,48 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.utils.Encoder;
 
 public class SwerveWheel extends SubsystemBase { 
-    private final CANSparkMax speedMotor;
-    private final CANSparkMax angleMotor;
-    //private final int wheelPosition;
-    private final CANEncoder angleEnc;
-    private final Encoder enc = Encoder.Grayhill256;
-    private final com.revrobotics.CANPIDController pidController;
+    private final TalonFX speedMotor;
+    private final TalonFX angleMotor;
+    private final CANCoder angleEnc;
+    private double integral;
+    private double error = 0;
+    private double previousError = 0;
+    private double derivitive; 
+   
+    //private final Encoder enc = Encoder.Grayhill256;
 
     private final double KP = 1 ;
-    private final double KI = 1 ;
-    private final double KD = 1 ;
+    private final double KI = 0 ;
+    private final double KD = 0 ;
 
     /**
      * Creates and initializes SwerveWheel object as well as a PID controller
      * @param speedMotorID motor in charge of speed
      * @param angleMotorID motor in charge of angle
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID) {
+    public SwerveWheel(int speedMotorID, int angleMotorID, int CANCoderID) {
         //motor providing forward acceleration
-        speedMotor = new CANSparkMax(speedMotorID, MotorType.kBrushless);
-        speedMotor.setIdleMode(IdleMode.kBrake);
+        speedMotor = new TalonFX(speedMotorID);
+        // speedMotor.setIdleMode(IdleMode.kBrake);
 
         //motor providing rotation on speedMotor
-        angleMotor = new CANSparkMax(angleMotorID, MotorType.kBrushless);
-        angleEnc = angleMotor.getEncoder(EncoderType.kHallSensor, (int) enc.rotationsToPulses(1));
+        angleMotor = new TalonFX(angleMotorID);
+
+        angleEnc = new CANCoder(CANCoderID);
+
         
-        //creating pidController for controlling angleMotor
-        //rewrite to be file specific
-        pidController = angleMotor.getPIDController();
-        pidController.setP(KP);
-        pidController.setI(KI);
-        pidController.setD(KD);
-    }
-
-    /**
-     * Accepts a speed and angle 
-     * Assigns values to the wheel
-     * Can be used for manual testing, 
-     * @param speed a value between [-1,1]
-     * @param angle an angle between [0, 360]
-     */
-    public void drive(double speed, double angle) {
-        speedMotor.set(speed);
-
-        angle = convertAngleValue(angle);
-
-        pidController.setReference(angle, ControlType.kPosition);
+        angleMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+        
+        
     }
 
     /**
@@ -71,7 +55,9 @@ public class SwerveWheel extends SubsystemBase {
 
         // convert to rotations per second from meters per second
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS); 
-        speedMotor.set(speedValueRotations);
+
+        // TODO: convert to pulses per 100 ms
+        speedMotor.set(TalonFXControlMode.Velocity, speedValueRotations);
 
         //this method returns the angle of the point on the circle created by swerve
         double angleValue = swerve.angle.getDegrees();
@@ -79,8 +65,18 @@ public class SwerveWheel extends SubsystemBase {
         //converts angleValue to a position value    
         double angle = convertAngleValue(angleValue);
 
-        pidController.setReference(takeShortestPathRotations(angleValue), ControlType.kPosition);
+        error = angle - angleEnc.getPosition();
+        integral += error * .2;
+        derivitive = (error - previousError) / .2;
+        previousError = error;
+        double angleMotorPower = KP * error + KI * integral + KD * derivitive; 
+        
+
+        
+        angleMotor.set(TalonFXControlMode.Position, angleMotorPower);
     }
+
+    
 
     /**converts a value in degrees into a value between -1 and 1
     * 0 is the point (1,0)
