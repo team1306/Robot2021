@@ -31,6 +31,10 @@ public final class Constants {
 
     public static final int K_INTAKE = 12;
 
+    public static final boolean DIRECTION_FORWARD = true;
+    
+    
+
     // TODO Robot information
     public static final double K_TRACK_WIDTH_METERS = 0.7175;
     public static final double K_WHEEL_RADIUS_INCHES = 3.75;//pnuematic, so ish
