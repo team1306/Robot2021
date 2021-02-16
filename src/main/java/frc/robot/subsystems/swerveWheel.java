@@ -16,13 +16,13 @@ public class SwerveWheel extends SubsystemBase {
     private double integral;
     private double error = 0;
     private double previousError = 0;
-    private double derivitive; 
+    private double derivative; 
    
     //private final Encoder enc = Encoder.Grayhill256;
 
-    private final double KP = 1 ;
-    private final double KI = 0 ;
-    private final double KD = 0 ;
+    private final double KP = 1;
+    private final double KI = 0;
+    private final double KD = 0;
 
     /**
      * Creates and initializes SwerveWheel object as well as a PID controller
@@ -56,24 +56,21 @@ public class SwerveWheel extends SubsystemBase {
         // convert to rotations per second from meters per second
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS); 
 
-        // TODO: convert to pulses per 100 ms
-        speedMotor.set(TalonFXControlMode.Velocity, speedValueRotations);
+        speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 1000);
 
         //this method returns the angle of the point on the circle created by swerve
         double angleValue = swerve.angle.getDegrees();
 
         //converts angleValue to a position value    
-        double angle = convertAngleValue(angleValue);
+        double angle = convertAngleValue(takeShortestPath(angleValue));
 
         error = angle - angleEnc.getPosition();
         integral += error * .2;
-        derivitive = (error - previousError) / .2;
+        derivative = (error - previousError) / .2;
         previousError = error;
         double angleMotorPower = KP * error + KI * integral + KD * derivitive; 
         
-
-        
-        angleMotor.set(TalonFXControlMode.Position, angleMotorPower);
+        angleMotor.set(TalonFXControlMode.PercentOutput, angleMotorPower);
     }
 
     
@@ -115,20 +112,8 @@ public class SwerveWheel extends SubsystemBase {
      */
     public static double takeShortestPathDegrees(double degreesPath) {
 
-        while(Math.abs(degreesPath) >= 360) { // deleting any unnecessary loops
-            if(degreesPath > 0) {
-                degreesPath -= 360;
-            } else {
-                degreesPath += 360;
-            }
-        }
-
-        while(Math.abs(degreesPath) > 180) { // deleting any half-loops
-            if(degreesPath > 0) {
-                degreesPath -= 180;
-            } else {
-                degreesPath += 180;
-            }
+        while(degreesPath > 360) {
+            degreesPath -= 360;
         }
 
         return degreesPath;
