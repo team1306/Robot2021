@@ -10,17 +10,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class SwerveWheel extends SubsystemBase { 
+    //Fields for motors in swerve wheel
     private final TalonFX speedMotor;
     private final TalonFX angleMotor;
     private final CANCoder angleEnc;
-    private double integral;
-    private double error = 0;
-    private double previousError = 0;
-    private double derivative; 
-   
+
     //private final Encoder enc = Encoder.Grayhill256;
 
     //possibly make these wheel specific 
+    //constants for PID loop
     private final double KP = 1;
     private final double KI = 0;
     private final double KD = 0;
@@ -45,7 +43,6 @@ public class SwerveWheel extends SubsystemBase {
 
         
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-        
         angleMotor.configNominalOutputForward(0);
         angleMotor.configNominalOutputReverse(0);
         angleMotor.configPeakOutputForward(1);
@@ -53,7 +50,6 @@ public class SwerveWheel extends SubsystemBase {
 
         angleMotor.configAllowableClosedloopError(0, 0, 0);
 
-        //angleMotor.config_kF(0, Constants.kGains.kF, Constants.kTimeoutMs);
 		angleMotor.config_kP(0, KP, 0);
 		angleMotor.config_kI(0, KI, 0);
 		angleMotor.config_kD(0, KD, 0);
