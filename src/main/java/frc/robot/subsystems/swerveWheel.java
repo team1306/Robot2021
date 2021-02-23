@@ -19,7 +19,7 @@ public class SwerveWheel extends SubsystemBase {
 
     //possibly make these wheel specific 
     //constants for PID loop
-    private final double KP = 1;
+    private final double KP = .000001;
     private final double KI = 0;
     private final double KD = 0;
 
@@ -34,6 +34,7 @@ public class SwerveWheel extends SubsystemBase {
         //motor providing forward acceleration
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configureFactoryDefault();
+        angleMotor.configureFactoryDefault();
         // speedMotor.setIdleMode(IdleMode.kBrake);
 
         //motor providing rotation on speedMotor

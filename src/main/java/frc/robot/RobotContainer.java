@@ -35,6 +35,8 @@ public class RobotContainer {
   private UserAnalog turnRight;
   private UserAnalog turn;
 
+  private UserSwerveDrive userSwerveDrive;
+
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -47,16 +49,10 @@ public class RobotContainer {
     configureButtonBindings();
 
     autoCommand = null;
-    
-    if(turnLeft.get() > .05) {
-      turn = turnLeft;
-    } else {
-      turn = turnRight;
-    }
 
     SwerveDrive driveTrain = new SwerveDrive();
     Robot.swerveDrive = driveTrain;
-    new UserSwerveDrive(driveTrain, driveY, driveX, turn);
+    userSwerveDrive = new UserSwerveDrive(driveTrain, driveY, driveX, turn);
   }
 
   /**
@@ -68,8 +64,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
     driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
-    turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_LTRIGGER);
-    turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_RTRIGGER);
+    turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
   }
 
 

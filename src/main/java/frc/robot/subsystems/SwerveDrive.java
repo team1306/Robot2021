@@ -52,6 +52,8 @@ public class SwerveDrive extends SubsystemBase {
 
     // Convert to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+    //TODO: find max speed of robot wheels
+    //SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
 
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
@@ -74,10 +76,10 @@ public class SwerveDrive extends SubsystemBase {
    * Resets encoder values to zero
    */
   public void resetEncoders() {
-    frontRight.resetEncoder();
-    frontLeft.resetEncoder();
-    backRight.resetEncoder();
-    backLeft.resetEncoder(); // different backLeft(other ones got commented out)
+    //frontRight.resetEncoder();
+    //frontLeft.resetEncoder();
+    //backRight.resetEncoder();
+    //backLeft.resetEncoder(); // different backLeft(other ones got commented out)
   }
 
   /**
