@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,11 +20,11 @@ public class SwerveWheel extends SubsystemBase {
 
     //possibly make these wheel specific 
     //constants for PID loop
-    private final double KP = .000001;
+    private final double KP = .0001;
     private final double KI = 0;
     private final double KD = 0;
 
-    private final boolean phaseReading;
+    private final boolean phaseReading = true;
 
     /**
      * Creates and initializes SwerveWheel object as well as a PID controller
@@ -33,30 +34,35 @@ public class SwerveWheel extends SubsystemBase {
     public SwerveWheel(int speedMotorID, int angleMotorID, int CANCoderID) {
         //motor providing forward acceleration
         speedMotor = new TalonFX(speedMotorID);
-        speedMotor.configureFactoryDefault();
-        angleMotor.configureFactoryDefault();
+        speedMotor.configFactoryDefault();
+
+        speedMotor.config_kP(0, KP, 0);
+		speedMotor.config_kI(0, KI, 0);
+		speedMotor.config_kD(0, KD, 0);
         // speedMotor.setIdleMode(IdleMode.kBrake);
 
         //motor providing rotation on speedMotor
         angleMotor = new TalonFX(angleMotorID);
+        angleMotor.configFactoryDefault();
+
+        
 
         angleEnc = new CANCoder(CANCoderID);
 
-        
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-        angleMotor.configNominalOutputForward(0);
-        angleMotor.configNominalOutputReverse(0);
-        angleMotor.configPeakOutputForward(1);
-        angleMotor.configPeakOutputForward(-1);
+        // angleMotor.configNominalOutputForward(0);
+        // angleMotor.configNominalOutputReverse(0);
+        // angleMotor.configPeakOutputForward(1);
+        // angleMotor.configPeakOutputForward(-1);
 
-        angleMotor.configAllowableClosedloopError(0, 0, 0);
+        // angleMotor.configAllowableClosedloopError(0, 0, 0);
 
 		angleMotor.config_kP(0, KP, 0);
 		angleMotor.config_kI(0, KI, 0);
 		angleMotor.config_kD(0, KD, 0);
         
-        angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        angleMotor.setSensorPhase(phaseReading);
+        // angleMotor.setInverted(Constants.DIRECTION_FORWARD);
+        // angleMotor.setSensorPhase(phaseReading);
     }
 
     /**
@@ -69,19 +75,26 @@ public class SwerveWheel extends SubsystemBase {
 
         // convert to rotations per second from meters per second then to rotations per millisecond 
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS); 
-        speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 1000);
+        speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 1000));
 
         //this method returns the angle of the point on the circle created by swerve
         double angleValue = swerve.angle.getDegrees();
 
         //converts angleValue to a position value between [-1, 1]  
         //TODO: simplify this, use optimize function, and only consider 90 degree turns  
-        double angle = convertAngleValue(takeShortestPath(angleValue));
+        double angle = convertAngleValue(takeShortestPathDegrees(angleValue));
 
         angleMotor.set(TalonFXControlMode.Position, angle * 4096);
     }
 
-    
+    public void sketchyDrive() {
+        System.out.println(angleEnc.getAbsolutePosition());
+
+        speedMotor.set(TalonFXControlMode.PercentOutput, .2);
+        angleMotor.set(TalonFXControlMode.Position, 250);
+
+        SmartDashboard.putNumber("Angle Encoder", angleEnc.getAbsolutePosition());
+    }
 
     /**converts a value in degrees into a value between -1 and 1
     * 0 is the point (1,0)

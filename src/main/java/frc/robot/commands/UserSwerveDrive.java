@@ -31,9 +31,11 @@ public class UserSwerveDrive extends CommandBase {
    */
   public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveY, UserAnalog driveX, UserAnalog driveTurn) {
     this.m_swerveDrive = m_swerveDrive;
+    this.addRequirements(m_swerveDrive);
     this.driveX = driveX;
     this.driveY = driveY;
     this.driveTurn = driveTurn;
+    this.m_swerveDrive.setDefaultCommand(this);
   }
 
   /**

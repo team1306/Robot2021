@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import frc.robot.commands.UserSwerveDrive;
 
 public class SwerveDrive extends SubsystemBase {
   // (speed motor ID, angle motor ID)
@@ -57,19 +58,23 @@ public class SwerveDrive extends SubsystemBase {
 
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
-    frontLeft.drive(frontLeftState);
-
+    //frontLeft.drive(frontLeftState);
+    //frontLeft.sketchyDrive();
+    
     // Front right module state
     SwerveModuleState frontRightState = moduleStates[1];
-    frontRight.drive(frontRightState);
+    //frontRight.drive(frontRightState);
+    //frontRight.sketchyDrive();
 
     // Back left module state
     SwerveModuleState backLeftState = moduleStates[2];
-    backLeft.drive(backLeftState);
+    //backLeft.drive(backLeftState);
+    //backLeft.sketchyDrive();
 
     // Back right module state
     SwerveModuleState backRightState = moduleStates[3];
-    backRight.drive(backRightState);
+    //backRight.drive(backRightState);
+    backRight.sketchyDrive();
   }
 
   /**

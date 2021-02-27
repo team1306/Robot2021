@@ -25,14 +25,11 @@ import frc.robot.utils.UserAnalog;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Command userDrive;
   private final Command autoCommand;
 
   // The robot's inputs that it recieves from the controller are defined here
   private UserAnalog driveX;
   private UserAnalog driveY;
-  private UserAnalog turnLeft;
-  private UserAnalog turnRight;
   private UserAnalog turn;
 
   private UserSwerveDrive userSwerveDrive;
@@ -75,7 +72,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return userDrive;
+    return autoCommand;
   }
 
   
