@@ -59,22 +59,22 @@ public class SwerveDrive extends SubsystemBase {
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
     //frontLeft.drive(frontLeftState);
-    //frontLeft.sketchyDrive();
+    frontLeft.sketchyDrive(frontLeftState);
     
     // Front right module state
     SwerveModuleState frontRightState = moduleStates[1];
     //frontRight.drive(frontRightState);
-    //frontRight.sketchyDrive();
+    frontRight.sketchyDrive(frontRightState);
 
     // Back left module state
     SwerveModuleState backLeftState = moduleStates[2];
     //backLeft.drive(backLeftState);
-    //backLeft.sketchyDrive();
+    backLeft.sketchyDrive(backLeftState);
 
     // Back right module state
     SwerveModuleState backRightState = moduleStates[3];
     //backRight.drive(backRightState);
-    backRight.sketchyDrive();
+    backRight.sketchyDrive(backRightState);
   }
 
   /**

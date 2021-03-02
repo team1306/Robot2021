@@ -32,6 +32,8 @@ public final class Constants {
     public static final int K_INTAKE = 12;
 
     public static final boolean DIRECTION_FORWARD = true;
+
+    public static final int UNITS_PER_ROTATION = 4096;
     
     
 
@@ -42,6 +44,8 @@ public final class Constants {
 
     public static final double MAX_VOLTS = 24;
     public static final int ROTATIONS_ON_ENCODER = 4096;
+
+    public static final double FASTEST_SPEED_METERS = 4.8768;
 
     /**
      * meters
