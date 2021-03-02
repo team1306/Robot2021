@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
@@ -52,7 +53,8 @@ public class UserSwerveDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveDrive.driveTrain(driveX.get(), driveY.get(), driveTurn.get());
+    m_swerveDrive.driveTrain(driveX.get() * Constants.FASTEST_SPEED_METERS, driveY.get() * Constants.FASTEST_SPEED_METERS, 
+    driveTurn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
   }
 
   // Called once the command ends or is interrupted.

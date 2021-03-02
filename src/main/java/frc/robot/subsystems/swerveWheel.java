@@ -76,7 +76,7 @@ public class SwerveWheel extends SubsystemBase {
 
         // convert to rotations per second from meters per second then to rotations per millisecond 
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS); 
-        speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 1000));
+        speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 10));
 
         //this method returns the angle of the point on the circle created by swerve
         double angleValue = swerve.angle.getDegrees();
@@ -94,18 +94,33 @@ public class SwerveWheel extends SubsystemBase {
         double speedDrive = convertToPercentOutput(swerve);
 
         double angleValue = swerve.angle.getDegrees();
-
-
-
+        
 
         speedMotor.set(TalonFXControlMode.PercentOutput, speedDrive);
         angleMotor.set(TalonFXControlMode.Position, (angleValue / 360.0) * 4096);
 
-        SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
         SmartDashboard.putNumber("Angle Value", angleValue);
         SmartDashboard.putNumber("speedDrive", speedDrive);
         SmartDashboard.putNumber("target position", (angleValue / 360.0));
     }
+
+    /**
+     * returns angle of swerve module in degrees
+     */
+    public double getAngleValueDegrees() {
+        return angleEnc.getAbsolutePosition();
+    } 
+
+    /**
+     * returns percent output of speed of the swerve module
+     * @param swerve
+     * @return
+     */
+    public double getSpeedDrive(SwerveModuleState swerve) {
+        return convertToPercentOutput(swerve);
+    }
+ 
+    
 
     /**converts a value in degrees into a value between -1 and 1
     * 0 is the point (1,0)
@@ -136,18 +151,14 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     /**
-     * Finds the shortest rotational path a wheel can take IN DEGREES
-     * Accounts for negative and positive rotations that are multiples of 180
+     * finds the shortest turn
      * @param rotation in degrees
      * consider rotation direction
      * test cases with robot
      */
     public static double takeShortestPathDegrees(double degreesPath) {
-        while(degreesPath > 360) {
-            degreesPath -= 360;
-        }
-
-        return degreesPath;
+        degreesPath = (degreesPath % 360 + 360) % 360;
+        return (degreesPath > 180) ? (360 - degreesPath) : degreesPath;
     }
 
     /**
@@ -166,13 +177,12 @@ public class SwerveWheel extends SubsystemBase {
         return speedMPS / Constants.FASTEST_SPEED_METERS;
     }
 
-    public double angleToPercentOutput(SwerveModuleState swerve) {
-        double targetAngleValue = swerve.angle.getDegrees() / 360;
+    public void runAngleEncoderDashboard() {
+        SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
 
-        if(targetAngleValue > (angleEnc.getPosition() / 360)) {
-            return .2;
-        } else {
-            return -.2;
-        }
+        SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+        SmartDashboard.putNumber("Angle Value", angleValue);
+        SmartDashboard.putNumber("speedDrive", speedDrive);
+        SmartDashboard.putNumber("target position", (angleValue / 360.0));
     }
 }

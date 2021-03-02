@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SwerveDrive;
@@ -62,7 +63,14 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+    SmartDashboard.putNumber("Angle Encoder Front Left", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+    SmartDashboard.putNumber("Angle Encoder Front Right", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+    SmartDashboard.putNumber("Angle Encoder ", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+    SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+
+  }
 
   /**
    * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.

@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.graalvm.compiler.hotspot.nodes.FastAcquireBiasedLockNode;
+
 import edu.wpi.first.wpilibj.util.Units;
 
 /**
@@ -34,8 +36,7 @@ public final class Constants {
     public static final boolean DIRECTION_FORWARD = true;
 
     public static final int UNITS_PER_ROTATION = 4096;
-    
-    
+    public static final int ROTATIONS_ON_ENCODER = 4096;
 
     // TODO Robot information
     public static final double K_TRACK_WIDTH_METERS = 0.7175;
@@ -43,7 +44,6 @@ public final class Constants {
     public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
 
     public static final double MAX_VOLTS = 24;
-    public static final int ROTATIONS_ON_ENCODER = 4096;
 
     public static final double FASTEST_SPEED_METERS = 4.8768;
 
@@ -51,6 +51,10 @@ public final class Constants {
      * meters
      */
     public static final double WHEEL_DISTANCE_TO_CENTER = 0.50289434 / 2; // meters
+    /**
+     * radians per second!!!
+     */
+    public static final double FASTEST_ANGULAR_VELOCITY = (2 * Math.PI) * (WHEEL_DISTANCE_TO_CENTER * 2 * Math.PI) / FASTEST_SPEED_METERS;
 
     //wheel base is y
     //track front is width of front of the robot and the x value

@@ -31,6 +31,7 @@ public class SwerveDrive extends SubsystemBase {
   SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel,
       backRightWheel);
 
+  
   private ChassisSpeeds chassisSpeeds;
 
   /**
@@ -42,9 +43,9 @@ public class SwerveDrive extends SubsystemBase {
 
   /**
    * Creates four new SwerveModuleStates and assigns them to their respective wheels
-   * @param x1 x-coordinate movement
-   * @param y1 y-coordinate movement
-   * @param turn rotation of the wheels
+   * @param x1 x-coordinate movement in meters per second
+   * @param y1 y-coordinate movement in meters per second
+   * @param turn rotation of the wheels in radians per second
    */
   public void driveTrain(double x1, double y1, double turn) {
     resetEncoders();
@@ -53,8 +54,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Convert to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
-    //TODO: find max speed of robot wheels
-    //SwerveDriveKinematics.normalizeWheelSpeeds(states, kMaxSpeed);
+    SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
 
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
