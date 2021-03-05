@@ -21,9 +21,11 @@ public class SwerveWheel extends SubsystemBase {
 
     //possibly make these wheel specific 
     //constants for PID loop
-    private final double KP = .1;
+    private final double KP = .05;
     private final double KI = 0;
     private final double KD = 0;
+
+    private SwerveModuleState swerve = null;
 
     private final boolean phaseReading = true;
 
@@ -51,19 +53,19 @@ public class SwerveWheel extends SubsystemBase {
         angleEnc = new CANCoder(CANCoderID);
 
         angleMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-        angleMotor.configNominalOutputForward(0);
-        angleMotor.configNominalOutputReverse(0);
-        angleMotor.configPeakOutputForward(1);
-        angleMotor.configPeakOutputForward(-1);
+        // angleMotor.configNominalOutputForward(0);
+        // angleMotor.configNominalOutputReverse(0);
+        // angleMotor.configPeakOutputForward(1);
+        // angleMotor.configPeakOutputForward(-1);
 
-        angleMotor.configAllowableClosedloopError(0, 0, 0);
+        // angleMotor.configAllowableClosedloopError(0, 0, 0);
 
 		angleMotor.config_kP(0, KP, 0);
 		angleMotor.config_kI(0, KI, 0);
 		angleMotor.config_kD(0, KD, 0);
         
-        angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        angleMotor.setSensorPhase(phaseReading);
+        // angleMotor.setInverted(Constants.DIRECTION_FORWARD);
+        // angleMotor.setSensorPhase(phaseReading);
     }
 
     /**
@@ -72,6 +74,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param swerve swerve module
      */
     public void drive(SwerveModuleState swerve) {
+        this.swerve = swerve;
         double speedMPS = swerve.speedMetersPerSecond;
 
         // convert to rotations per second from meters per second then to rotations per millisecond 
@@ -81,14 +84,20 @@ public class SwerveWheel extends SubsystemBase {
         //this method returns the angle of the point on the circle created by swerve
         double angleValue = swerve.angle.getDegrees();
 
+        angleValue = takeShortestPathDegrees(angleValue);
+
+        double currentPosition = angleEnc.getAbsolutePosition();
+
+
         //converts angleValue to a position value between [-1, 1]  
         //TODO: simplify this, use optimize function, and only consider 90 degree turns  
         double angle = convertAngleValue(takeShortestPathDegrees(angleValue));
 
-        angleMotor.set(TalonFXControlMode.Position, angle * 4096);
+        angleMotor.set(TalonFXControlMode.PercentOutput,  angleValue / 1440);
     }
 
     public void sketchyDrive(SwerveModuleState swerve) {
+        this.swerve = swerve;
         System.out.println(angleEnc.getAbsolutePosition());
 
         double speedDrive = convertToPercentOutput(swerve);
@@ -101,7 +110,7 @@ public class SwerveWheel extends SubsystemBase {
 
         SmartDashboard.putNumber("Angle Value", angleValue);
         SmartDashboard.putNumber("speedDrive", speedDrive);
-        SmartDashboard.putNumber("target position", (angleValue / 360.0));
+        SmartDashboard.putNumber("target position", (angleValue / 360.0) * 4096);
     }
 
     /**
@@ -177,12 +186,13 @@ public class SwerveWheel extends SubsystemBase {
         return speedMPS / Constants.FASTEST_SPEED_METERS;
     }
 
-    public void runAngleEncoderDashboard() {
-        SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
+    public void smartDashboardInfo(String ID) {
+        SmartDashboard.putNumber(ID + ":Current Position", (angleEnc.getAbsolutePosition()) / 1440);
+        SmartDashboard.putNumber(ID + ":Target Angle Position", takeShortestPathDegrees(swerve.angle.getDegrees()) / 1440);
+        SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
+    }
 
-        SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
-        SmartDashboard.putNumber("Angle Value", angleValue);
-        SmartDashboard.putNumber("speedDrive", speedDrive);
-        SmartDashboard.putNumber("target position", (angleValue / 360.0));
+    public static double convertToPositiveDegrees(double position) {
+        return (position > 0) ? (position) : (360 - position);
     }
 }

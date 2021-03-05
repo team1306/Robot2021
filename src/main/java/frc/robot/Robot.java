@@ -65,11 +65,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     
-    SmartDashboard.putNumber("Angle Encoder Front Left", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
-    SmartDashboard.putNumber("Angle Encoder Front Right", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
-    SmartDashboard.putNumber("Angle Encoder ", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
-    SmartDashboard.putNumber("Angle Encoder", (angleEnc.getAbsolutePosition() / 360.0) * 4096.0);
-
   }
 
   /**

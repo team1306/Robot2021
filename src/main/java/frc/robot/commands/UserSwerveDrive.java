@@ -55,6 +55,14 @@ public class UserSwerveDrive extends CommandBase {
   public void execute() {
     m_swerveDrive.driveTrain(driveX.get() * Constants.FASTEST_SPEED_METERS, driveY.get() * Constants.FASTEST_SPEED_METERS, 
     driveTurn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
+
+    m_swerveDrive.frontLeft.smartDashboardInfo("Front Left");
+    m_swerveDrive.backLeft.smartDashboardInfo("Back Left");
+    m_swerveDrive.frontRight.smartDashboardInfo("Front Right");
+    m_swerveDrive.backRight.smartDashboardInfo("Back Right");
+
+
+
   }
 
   // Called once the command ends or is interrupted.

@@ -18,10 +18,10 @@ import frc.robot.commands.UserSwerveDrive;
 
 public class SwerveDrive extends SubsystemBase {
   // (speed motor ID, angle motor ID)
-  SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_TURN_LEFT_FRONT_ID, Constants.K_ENCODER_LEFT_FRONT_ID);
-  SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_TURN_RIGHT_FRONT_ID, Constants.K_ENCODER_RIGHT_FRONT_ID);
-  SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_TURN_LEFT_BACK_ID, Constants.K_ENCODER_LEFT_BACK_ID);
-  SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_TURN_RIGHT_BACK_ID, Constants.K_ENCODER_RIGHT_BACK_ID);
+  public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_TURN_LEFT_FRONT_ID, Constants.K_ENCODER_LEFT_FRONT_ID);
+  public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_TURN_RIGHT_FRONT_ID, Constants.K_ENCODER_RIGHT_FRONT_ID);
+  public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_TURN_LEFT_BACK_ID, Constants.K_ENCODER_LEFT_BACK_ID);
+  public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_TURN_RIGHT_BACK_ID, Constants.K_ENCODER_RIGHT_BACK_ID);
 
   Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
   Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
@@ -58,23 +58,23 @@ public class SwerveDrive extends SubsystemBase {
 
     // Front left module state
     SwerveModuleState frontLeftState = moduleStates[0];
-    //frontLeft.drive(frontLeftState);
-    frontLeft.sketchyDrive(frontLeftState);
+    frontLeft.drive(frontLeftState);
+    //frontLeft.sketchyDrive(frontLeftState);
     
     // Front right module state
     SwerveModuleState frontRightState = moduleStates[1];
-    //frontRight.drive(frontRightState);
-    frontRight.sketchyDrive(frontRightState);
+    frontRight.drive(frontRightState);
+    //frontRight.sketchyDrive(frontRightState);
 
     // Back left module state
     SwerveModuleState backLeftState = moduleStates[2];
-    //backLeft.drive(backLeftState);
-    backLeft.sketchyDrive(backLeftState);
+    backLeft.drive(backLeftState);
+    //backLeft.sketchyDrive(backLeftState);
 
     // Back right module state
     SwerveModuleState backRightState = moduleStates[3];
-    //backRight.drive(backRightState);
-    backRight.sketchyDrive(backRightState);
+    backRight.drive(backRightState);
+    //backRight.sketchyDrive(backRightState);
   }
 
   /**
