@@ -24,13 +24,13 @@ public class SwerveWheel extends SubsystemBase {
 
     //possibly make these wheel specific 
     //constants for PID loop
-    private final double KP = .05;
+    private final double KP = .005;
     private final double KI = 0;
     private final double KD = 0;
 
     private SwerveModuleState swerve = null;
 
-    private final boolean phaseReading = true;
+    private final boolean phaseReading = false;
 
     /**
      * Creates and initializes SwerveWheel object as well as a PID controller
@@ -79,7 +79,7 @@ public class SwerveWheel extends SubsystemBase {
 		angleMotor.config_kD(0, KD, 0);
         
         // angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        // angleMotor.setSensorPhase(phaseReading);
+        angleMotor.setSensorPhase(phaseReading);
     }
 
     /**
@@ -103,7 +103,7 @@ public class SwerveWheel extends SubsystemBase {
 
         //converts angleValue to a position value between [-1, 1]  
         //TODO: simplify this, use optimize function, and only consider 90 degree turns  
-        angleMotor.set(TalonFXControlMode.Position,  (angleValue / 360) * 4096);
+        angleMotor.set(TalonFXControlMode.Position,  (100.0 / 360.0) * 4096.0);
     }
 
     /**
@@ -173,8 +173,9 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     public void smartDashboardInfo(String ID) {
-        SmartDashboard.putNumber(ID + ":Current Position", angleEnc.getAbsolutePosition());
+        SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
         SmartDashboard.putNumber(ID + ":Target Angle Position", convertToPositiveDegrees(swerve.angle.getDegrees()));
         SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
+        SmartDashboard.putNumber(ID + ":Turn motor velocity", angleMotor.getSelectedSensorVelocity());
     }
 }
