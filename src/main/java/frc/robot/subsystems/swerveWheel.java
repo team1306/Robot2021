@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -48,17 +51,28 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
 
-        angleMotor.setNeutralMode(NeutralMode.Brake);
         
         angleEnc = new CANCoder(CANCoderID);
 
-        angleMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+        angleEnc.configFactoryDefault();
+
+        TalonFXConfiguration angleTalonFXConfiguration = new TalonFXConfiguration();
+
+        // Use the CANCoder as the remote sensor for the primary TalonFX PID
+        angleTalonFXConfiguration.remoteFilter0.remoteSensorDeviceID = angleEnc.getDeviceID();
+        angleTalonFXConfiguration.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
+    
+        angleTalonFXConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+        angleMotor.configAllSettings(angleTalonFXConfiguration);
+
         // angleMotor.configNominalOutputForward(0);
         // angleMotor.configNominalOutputReverse(0);
         // angleMotor.configPeakOutputForward(1);
         // angleMotor.configPeakOutputForward(-1);
 
         // angleMotor.configAllowableClosedloopError(0, 0, 0);
+
+        angleMotor.setNeutralMode(NeutralMode.Brake);
 
 		angleMotor.config_kP(0, KP, 0);
 		angleMotor.config_kI(0, KI, 0);
@@ -82,35 +96,14 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.set(TalonFXControlMode.Velocity, ((speedValueRotations * 4096) / 10));
 
         //this method returns the angle of the point on the circle created by swerve
+        //returns [-180, 180]
         double angleValue = swerve.angle.getDegrees();
 
-        angleValue = takeShortestPathDegrees(angleValue);
-
-        double currentPosition = angleEnc.getAbsolutePosition();
-
+        angleValue = convertToPositiveDegrees(angleValue);
 
         //converts angleValue to a position value between [-1, 1]  
         //TODO: simplify this, use optimize function, and only consider 90 degree turns  
-        double angle = convertAngleValue(takeShortestPathDegrees(angleValue));
-
-        angleMotor.set(TalonFXControlMode.PercentOutput,  angleValue / 1440);
-    }
-
-    public void sketchyDrive(SwerveModuleState swerve) {
-        this.swerve = swerve;
-        System.out.println(angleEnc.getAbsolutePosition());
-
-        double speedDrive = convertToPercentOutput(swerve);
-
-        double angleValue = swerve.angle.getDegrees();
-        
-
-        speedMotor.set(TalonFXControlMode.PercentOutput, speedDrive);
-        angleMotor.set(TalonFXControlMode.Position, (angleValue / 360.0) * 4096);
-
-        SmartDashboard.putNumber("Angle Value", angleValue);
-        SmartDashboard.putNumber("speedDrive", speedDrive);
-        SmartDashboard.putNumber("target position", (angleValue / 360.0) * 4096);
+        angleMotor.set(TalonFXControlMode.Position,  (angleValue / 360) * 4096);
     }
 
     /**
@@ -165,16 +158,9 @@ public class SwerveWheel extends SubsystemBase {
      * consider rotation direction
      * test cases with robot
      */
-    public static double takeShortestPathDegrees(double degreesPath) {
-        degreesPath = (degreesPath % 360 + 360) % 360;
-        return (degreesPath > 180) ? (360 - degreesPath) : degreesPath;
-    }
-
-    /**
-     * Converts the shortest rotational path in degrees to rotations
-     */
-    public double takeShortestPathRotations(double degreesPath) {
-        return takeShortestPathDegrees(degreesPath) / 360;
+    public static double convertToPositiveDegrees(double degreesPath) {
+        degreesPath = (degreesPath > 0) ? degreesPath : 360 - degreesPath;
+        return ((degreesPath % 360) + 360) % 360;
     }
 
     /**
@@ -187,12 +173,8 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     public void smartDashboardInfo(String ID) {
-        SmartDashboard.putNumber(ID + ":Current Position", (angleEnc.getAbsolutePosition()) / 1440);
-        SmartDashboard.putNumber(ID + ":Target Angle Position", takeShortestPathDegrees(swerve.angle.getDegrees()) / 1440);
+        SmartDashboard.putNumber(ID + ":Current Position", angleEnc.getAbsolutePosition());
+        SmartDashboard.putNumber(ID + ":Target Angle Position", convertToPositiveDegrees(swerve.angle.getDegrees()));
         SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
-    }
-
-    public static double convertToPositiveDegrees(double position) {
-        return (position > 0) ? (position) : (360 - position);
     }
 }
