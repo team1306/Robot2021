@@ -13,33 +13,31 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
 
-    // motors
-    
-    public static final int K_DRIVE_LEFT_FRONT_ID = 1;
-    public static final int K_DRIVE_LEFT_BACK_ID = 2;
-    public static final int K_DRIVE_RIGHT_FRONT_ID = 3;
-    public static final int K_DRIVE_RIGHT_BACK_ID = 4;
+    // motors and encoders on the robot
+    public static final int K_DRIVE_FRONT_LEFT_ID = 1;
+    public static final int K_DRIVE_BACK_LEFT_ID = 2;
+    public static final int K_DRIVE_FRONT_RIGHT_ID = 3;
+    public static final int K_DRIVE_BACK_RIGHT_ID = 4;
 
-    public static final int K_TURN_LEFT_FRONT_ID = 5;
-    public static final int K_TURN_LEFT_BACK_ID = 6;
-    public static final int K_TURN_RIGHT_FRONT_ID = 7;
-    public static final int K_TURN_RIGHT_BACK_ID = 8;
+    public static final int K_TURN_FRONT_LEFT_ID = 5;
+    public static final int K_TURN_BACK_LEFT_ID = 6;
+    public static final int K_TURN_FRONT_RIGHT_ID = 7;
+    public static final int K_TURN_BACK_RIGHT_ID = 8;
 
-    public static final int K_ENCODER_LEFT_FRONT_ID = 9;
-    public static final int K_ENCODER_LEFT_BACK_ID = 10;
-    public static final int K_ENCODER_RIGHT_FRONT_ID = 11;
-    public static final int K_ENCODER_RIGHT_BACK_ID = 12;
+    public static final int K_ENCODER_FRONT_LEFT_ID = 9;
+    public static final int K_ENCODER_BACK_LEFT_ID = 10;
+    public static final int K_ENCODER_FRONT_RIGHT_ID = 11;
+    public static final int K_ENCODER_BACK_RIGHT_ID = 12;
 
     public static final int K_INTAKE = 12;
 
     public static final boolean DIRECTION_FORWARD = true;
 
     public static final int UNITS_PER_ROTATION = 4096;
-    public static final int ROTATIONS_ON_ENCODER = 4096;
 
-    // TODO Robot information
+    // robot information
     public static final double K_TRACK_WIDTH_METERS = 0.7175;
-    public static final double K_WHEEL_RADIUS_INCHES = 3.75;//pnuematic, so ish
+    public static final double K_WHEEL_RADIUS_INCHES = 3.75; //pnuematic, so ish
     public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
 
     public static final double MAX_VOLTS = 24;

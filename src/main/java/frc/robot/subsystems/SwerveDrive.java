@@ -14,84 +14,62 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-import frc.robot.commands.UserSwerveDrive;
 
+/**
+ * The SwerveDrive class uses four SwerveWheel objects which make up the
+ * drivetrain. This class is responsible for the math that keeps track of how
+ * the swerve drive moves
+ */
 public class SwerveDrive extends SubsystemBase {
-  // (speed motor ID, angle motor ID)
-  public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_FRONT_ID, Constants.K_TURN_LEFT_FRONT_ID, Constants.K_ENCODER_LEFT_FRONT_ID);
-  public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_FRONT_ID, Constants.K_TURN_RIGHT_FRONT_ID, Constants.K_ENCODER_RIGHT_FRONT_ID);
-  public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_LEFT_BACK_ID, Constants.K_TURN_LEFT_BACK_ID, Constants.K_ENCODER_LEFT_BACK_ID);
-  public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_RIGHT_BACK_ID, Constants.K_TURN_RIGHT_BACK_ID, Constants.K_ENCODER_RIGHT_BACK_ID);
+    // (speed motor ID, angle motor ID)
+    public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID, Constants.K_ENCODER_FRONT_LEFT_ID);
+    public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID, Constants.K_ENCODER_FRONT_RIGHT_ID);
+    public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID, Constants.K_ENCODER_BACK_LEFT_ID);
+    public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID);
 
-  Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
-  Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
-  Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, Constants.ROBOT_WHEELBASE / 2);
-  Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, -Constants.ROBOT_WHEELBASE / 2);
+    Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
+    Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
+    Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, Constants.ROBOT_WHEELBASE / 2);
+    Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, -Constants.ROBOT_WHEELBASE / 2);
 
-  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel,
-      backRightWheel);
+    SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel);
+    private ChassisSpeeds chassisSpeeds;
 
-  
-  private ChassisSpeeds chassisSpeeds;
+    /**
+     * Nothing needs to be done in the default constructor
+     */
+    public SwerveDrive() {
+    }
 
-  /**
-   * TODO Create default SwerveDrive constructor.
-   */
-  public SwerveDrive() {
+    /**
+     * Creates four new SwerveModuleStates and assigns them to their respective
+     * wheels
+     * 
+     * @param x1    x-coordinate movement in meters per second
+     * @param y1    y-coordinate movement in meters per second
+     * @param turn  rotation of the wheels in radians per second
+     */
+    public void driveTrain(double x1, double y1, double turn) {
+        chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
 
-  }
+        // convert to module states
+        SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
 
-  /**
-   * Creates four new SwerveModuleStates and assigns them to their respective wheels
-   * @param x1 x-coordinate movement in meters per second
-   * @param y1 y-coordinate movement in meters per second
-   * @param turn rotation of the wheels in radians per second
-   */
-  public void driveTrain(double x1, double y1, double turn) {
-    resetEncoders();
-    
-    chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
+        SwerveModuleState frontLeftState = moduleStates[0];
+        frontLeft.drive(frontLeftState);
+        // frontLeft.sketchyDrive(frontLeftState);
 
-    // Convert to module states
-    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
+        SwerveModuleState frontRightState = moduleStates[1];
+        frontRight.drive(frontRightState);
+        // frontRight.sketchyDrive(frontRightState);
 
-    // Front left module state
-    SwerveModuleState frontLeftState = moduleStates[0];
-    frontLeft.drive(frontLeftState);
-    //frontLeft.sketchyDrive(frontLeftState);
-    
-    // Front right module state
-    SwerveModuleState frontRightState = moduleStates[1];
-    frontRight.drive(frontRightState);
-    //frontRight.sketchyDrive(frontRightState);
+        SwerveModuleState backLeftState = moduleStates[2];
+        backLeft.drive(backLeftState);
+        // backLeft.sketchyDrive(backLeftState);
 
-    // Back left module state
-    SwerveModuleState backLeftState = moduleStates[2];
-    backLeft.drive(backLeftState);
-    //backLeft.sketchyDrive(backLeftState);
-
-    // Back right module state
-    SwerveModuleState backRightState = moduleStates[3];
-    backRight.drive(backRightState);
-    //backRight.sketchyDrive(backRightState);
-  }
-
-  /**
-   * Resets encoder values to zero
-   */
-  public void resetEncoders() {
-    //frontRight.resetEncoder();
-    //frontLeft.resetEncoder();
-    //backRight.resetEncoder();
-    //backLeft.resetEncoder(); // different backLeft(other ones got commented out)
-  }
-
-  /**
-   * Test method which returns value of the front right encoder
-   * @return position of front right encoder
-   */
-  public double getFrontRightEnc() {
-    return frontRight.getPosition();
-  }
+        SwerveModuleState backRightState = moduleStates[3];
+        backRight.drive(backRightState);
+        // backRight.sketchyDrive(backRightState);
+    }
 }

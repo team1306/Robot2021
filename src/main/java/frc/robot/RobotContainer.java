@@ -18,62 +18,59 @@ import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 
 /**
- * This class is where the bulk of the robot should be declared.  Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
- * (including subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final Command autoCommand;
+    // The robot's subsystems and commands are defined here...
+    private final Command autoCommand;
 
-  // The robot's inputs that it recieves from the controller are defined here
-  private UserAnalog driveX;
-  private UserAnalog driveY;
-  private UserAnalog turn;
+    // The robot's inputs that it recieves from the controller are defined here
+    private UserAnalog driveX;
+    private UserAnalog driveY;
+    private UserAnalog turn;
 
-  private UserSwerveDrive userSwerveDrive;
+    private UserSwerveDrive userSwerveDrive;
 
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        System.out.println("robotContainer is running");
+        Controller.init();
 
-  /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    System.out.println("robotContainer is running");
-    Controller.init();
+        // configure the button bindings
+        configureButtonBindings();
 
-    //configure the button bindings 
-    configureButtonBindings();
+        autoCommand = null;
 
-    autoCommand = null;
+        SwerveDrive driveTrain = new SwerveDrive();
+        Robot.swerveDrive = driveTrain;
+        userSwerveDrive = new UserSwerveDrive(driveTrain, driveY, driveX, turn);
+    }
 
-    SwerveDrive driveTrain = new SwerveDrive();
-    Robot.swerveDrive = driveTrain;
-    userSwerveDrive = new UserSwerveDrive(driveTrain, driveY, driveX, turn);
-  }
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+        turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
+    }
 
-  /**
-   * Use this method to define your button->command mappings.  Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
-   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
-    driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
-    turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
-  }
-
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return autoCommand;
-  }
-
-  
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // An ExampleCommand will run in autonomous
+        return autoCommand;
+    }
 }

@@ -13,16 +13,8 @@ package frc.robot.utils;
  */
 
 public class EncoderConverter {
-    // unused/unowned encoders commented out for clarity
-    // public static final Encoder Grayhill25 = new Encoder(4 * 25);
-    // public static final Encoder Grayhill32 = new Encoder(4 * 32);
-    // public static final Encoder Grayhill50 = new Encoder(4 * 50);
-    // public static final Encoder Grayhill64 = new Encoder(4 * 64);
-    // public static final Encoder Grayhill128 = new Encoder(4 * 128);
     public static final EncoderConverter Grayhill256 = new EncoderConverter(4 * 256);
-
     public static final EncoderConverter VersaPlanetary = new EncoderConverter(4 * 1024);
-
     public static final EncoderConverter NeoInternal = new EncoderConverter(42 * 4);
 
     private static final int msPerMin = 1000 * 60; // constant unit transformation
