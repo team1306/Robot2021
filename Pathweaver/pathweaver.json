@@ -1,0 +1,9 @@
+{
+  "lengthUnit": "Meter",
+  "exportUnit": "Always Meters",
+  "maxVelocity": 100.0,
+  "maxAcceleration": 150.0,
+  "wheelBase": 10.0,
+  "gameName": "Bounce Path",
+  "outputDir": "BouncePath"
+}
