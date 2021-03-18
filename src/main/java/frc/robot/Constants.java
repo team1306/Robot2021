@@ -59,4 +59,8 @@ public final class Constants {
     public static final double ROBOT_WHEELBASE  = 1;
     public static final double ROBOT_TRACK_FRONT = 1;
     public static final double ROBOT_TRACK_BACK = 1;
+
+    // autonomous constants
+    public static final double A_kRamseteB = 2.0;
+    public static final double A_kRamseteZeta = 0.7;
 }

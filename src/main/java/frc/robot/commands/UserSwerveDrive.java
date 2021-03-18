@@ -17,7 +17,7 @@ import frc.robot.utils.UserAnalog;
  * actions and gather data
  */
 public class UserSwerveDrive extends CommandBase {
-    private final SwerveDrive m_swerveDrive;
+    public final SwerveDrive m_swerveDrive;
     private final UserAnalog driveX;
     private final UserAnalog driveY;
     private final UserAnalog turn;
