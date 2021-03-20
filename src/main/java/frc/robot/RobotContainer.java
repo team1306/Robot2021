@@ -91,37 +91,41 @@ public class RobotContainer {
         new TrajectoryConfig(Constants.FASTEST_SPEED_METERS, 
             Constants.FASTEST_ACCELERATION)
         // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics)  
-        // Apply the voltage constraint
+        .setKinematics(userSwerveDrive.m_swerveDrive.kinematics)  
+        // Apply the speed constraint
         .addConstraint(autoConstraint);
 
 
         String trajectoryJSON = "../deploy/path/Barrel.wpilib.json";
-        Trajectory trajectory = new Trajectory(); // <- ??
+        Trajectory trajectory;
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
-            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            System.out.println("Unable to open trajectory");
         }
+
+        TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  
+        var thetaController =
+        new ProfiledPIDController(
+            Constants.THETA_CONTROLLER_P, Constants.THETA_CONTROLLER_I, Constants.THETA_CONTROLLER_D, kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         // everything below had m_robotDrive replaced with userSwerveDrive
 
-        RamseteCommand ramseteCommand = new RamseteCommand(
-            trajectory,
-            UserSwerveDrive::getPose,
-            new RamseteController(Constants.A_kRamseteB, Constants.A_kRamseteZeta),
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                    DriveConstants.kvVoltSecondsPerMeter,
-                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            userSwerveDrive::getWheelSpeeds,
-            new PIDController(DriveConstants.kPDriveVel, 0, 0),
-            new PIDController(DriveConstants.kPDriveVel, 0, 0),
-            // RamseteCommand passes volts to the callback
-            userSwerveDrive::tankDriveVolts,
-            userSwerveDrive
-        );
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            trajecotry,
+            m_robotDrive::getPose, // Functional interface to feed supplier
+            userSwerveDrive.m_swerveDrive.kinematics,
+            // Position controllers
+            new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),
+            new PIDController(Constants.Y_CONTROLLER_P, Constants.Y_CONTROLLER_I, Constants.Y_CONTROLLER_D),
+            thetaController,
+            m_robotDrive::setModuleStates,
+            m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
         m_robotDrive.resetOdometry(trajectory.getInitialPose());

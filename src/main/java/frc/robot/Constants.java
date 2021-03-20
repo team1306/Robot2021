@@ -44,6 +44,20 @@ public final class Constants {
 
     public static final double FASTEST_SPEED_METERS = 4.8768;
 
+    public static final double FASTEST_ACCELERATION = 1;
+
+
+    public static final double X_CONTROLLER_P = 1;
+    public static final double X_CONTROLLER_I = 0;
+    public static final double X_CONTROLLER_D = 0;
+
+    public static final double Y_CONTROLLER_P = 1;
+    public static final double Y_CONTROLLER_I = 0;
+    public static final double Y_CONTROLLER_D = 0;
+
+    public static final double THETA_CONTROLLER_P = 1;
+    public static final double THETA_CONTROLLER_I = 0;
+    public static final double THETA_CONTROLLER_D = 0;
     
 
     /**
