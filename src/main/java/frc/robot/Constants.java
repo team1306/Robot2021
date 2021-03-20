@@ -44,6 +44,8 @@ public final class Constants {
 
     public static final double FASTEST_SPEED_METERS = 4.8768;
 
+    
+
     /**
      * meters
      */
@@ -63,4 +65,7 @@ public final class Constants {
     // autonomous constants
     public static final double A_kRamseteB = 2.0;
     public static final double A_kRamseteZeta = 0.7;
+    public static final double ksVolts = 1;
+    public static final double kvVoltSecondsPerMeter = 1;
+    public static final double kaVoltSecondsSquaredPerMeter = 1;
 }
