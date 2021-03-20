@@ -89,7 +89,7 @@ public class RobotContainer {
         // Create config for trajectory
         TrajectoryConfig config =
         new TrajectoryConfig(Constants.FASTEST_SPEED_METERS, 
-            AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+            Constants.FASTEST_ACCELERATION)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics)  
         // Apply the voltage constraint
