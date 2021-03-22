@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
@@ -24,9 +25,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 
@@ -92,12 +95,11 @@ public class RobotContainer {
             Constants.FASTEST_ACCELERATION)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(userSwerveDrive.m_swerveDrive.kinematics)  
-        // Apply the speed constraint
+        // Apply the voltage constraint
         .addConstraint(autoConstraint);
 
-
         String trajectoryJSON = "../deploy/path/Barrel.wpilib.json";
-        Trajectory trajectory;
+        Trajectory trajectory = new Trajectory(null); // todo what is trajectory list?????
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -106,7 +108,7 @@ public class RobotContainer {
         }
 
         TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+            Constants.kMaxAngularSpeedRadians, Constants.kMaxAngularVelocityRadians);
   
         var thetaController =
         new ProfiledPIDController(
@@ -115,23 +117,24 @@ public class RobotContainer {
 
         // everything below had m_robotDrive replaced with userSwerveDrive
 
+        // TODO add new methods + test
         SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
-            trajecotry,
-            m_robotDrive::getPose, // Functional interface to feed supplier
+            trajectory,
+            userSwerveDrive::getPose, // Functional interface to feed supplier
             userSwerveDrive.m_swerveDrive.kinematics,
             // Position controllers
             new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),
             new PIDController(Constants.Y_CONTROLLER_P, Constants.Y_CONTROLLER_I, Constants.Y_CONTROLLER_D),
             thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
+            userSwerveDrive.m_swerveDrive::setModuleStates,
+            userSwerveDrive.m_swerveDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        m_robotDrive.resetOdometry(trajectory.getInitialPose());
+        userSwerveDrive.m_swerveDrive.resetOdometry(trajectory.getInitialPose());
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> userSwerveDrive.m_swerveDrive.driveTrain(0, 0, 0));
+        return swerveControllerCommand.andThen(() -> userSwerveDrive.m_swerveDrive.driveTrain(0, 0, 0));
         // changed from .tankDriveVolts(0, 0));
     }
 }

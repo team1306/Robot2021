@@ -31,13 +31,13 @@ public class SwerveWheel extends SubsystemBase {
     private final double SpeedMotor_KI = 0;
     private final double SpeedMotor_KD = 0;
 
-    private final double AngleMotor_KP = .001;
-    private final double AngleMotor_KI = .0000001;
+    private final double AngleMotor_KP = .2;
+    private final double AngleMotor_KI = .0001;
     private final double AngleMotor_KD = 0;
 
     private SwerveModuleState swerve = null;
 
-    private final boolean phaseReading = true;
+    private final boolean phaseReading = false;
 
     /**
      * Creates and initializes SwerveWheel object
@@ -46,7 +46,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param angleMotorID ID of the rotation motor
      * @param encoderID    ID of the encoder
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID) {
+    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean phase) {
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
@@ -77,15 +77,16 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor.config_kI(0, AngleMotor_KI, 0);
         angleMotor.config_kD(0, AngleMotor_KD, 0);
 
-        //angleMotor.configNominalOutputForward(0);
-        //angleMotor.configNominalOutputReverse(0);
-        angleMotor.configPeakOutputForward(.5);
-        angleMotor.configPeakOutputReverse(-.5);
+        angleMotor.configNominalOutputForward(0);
+        angleMotor.configNominalOutputReverse(0);
+        angleMotor.configPeakOutputForward(1);
+        angleMotor.configPeakOutputReverse(-1);
 
         //angleMotor.setNeutralMode(NeutralMode.Brake);
 
         angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        angleMotor.setSensorPhase(phaseReading);
+        angleMotor.setSensorPhase(phase);
+        angleMotor.configFeedbackNotContinuous(false, 0);
     }
 
     /**
@@ -109,7 +110,7 @@ public class SwerveWheel extends SubsystemBase {
 
         double angleValue = swerve.angle.getDegrees();
 
-        angleMotor.set(ControlMode.Position, (0 / 360.0) * 4096.0);
+        angleMotor.set(ControlMode.Position, (angleValue / 360.0) * 4096);
 
     }
 

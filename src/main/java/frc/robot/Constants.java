@@ -29,7 +29,7 @@ public final class Constants {
     public static final int K_ENCODER_FRONT_RIGHT_ID = 11;
     public static final int K_ENCODER_BACK_RIGHT_ID = 12;
 
-    public static final int K_INTAKE = 12;
+    public static final int K_INTAKE = 13;
 
     public static final boolean DIRECTION_FORWARD = true;
 
@@ -82,4 +82,8 @@ public final class Constants {
     public static final double ksVolts = 1;
     public static final double kvVoltSecondsPerMeter = 1;
     public static final double kaVoltSecondsSquaredPerMeter = 1;
+    public static final double kMaxAngularSpeedRadians = 1;
+    public static final double kMaxAngularVelocityRadians = 1;
+
+    // todo change those^^^!!!!
 }

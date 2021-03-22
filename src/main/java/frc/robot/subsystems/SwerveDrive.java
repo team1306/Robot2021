@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
@@ -16,16 +17,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * The SwerveDrive class uses four SwerveWheel objects which make up the
+ * The SwerveDrive class uses four SwerveWheel objects which make up the[]\
  * drivetrain. This class is responsible for the math that keeps track of how
  * the swerve drive moves
  */
 public class SwerveDrive extends SubsystemBase {
     // (speed motor ID, angle motor ID)
-    public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID, Constants.K_ENCODER_FRONT_LEFT_ID);
-    public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID, Constants.K_ENCODER_FRONT_RIGHT_ID);
-    public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID, Constants.K_ENCODER_BACK_LEFT_ID);
-    public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID);
+    public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID, Constants.K_ENCODER_FRONT_LEFT_ID, false);
+    public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID, Constants.K_ENCODER_FRONT_RIGHT_ID, false);
+    public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID, Constants.K_ENCODER_BACK_LEFT_ID, false);
+    public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID, false);
 
     Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, Constants.ROBOT_WHEELBASE / 2);
     Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_TRACK_FRONT, -Constants.ROBOT_WHEELBASE / 2);
@@ -34,6 +35,8 @@ public class SwerveDrive extends SubsystemBase {
 
     public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel);
     private ChassisSpeeds chassisSpeeds;
+
+    SwerveModuleState[] moduleStates;
 
     /**
      * Nothing needs to be done in the default constructor
@@ -51,9 +54,9 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void driveTrain(double x1, double y1, double turn) {
         chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
+        moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
         // convert to module states
-        SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
         SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
 
         SwerveModuleState frontLeftState = moduleStates[0];
@@ -71,5 +74,14 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backRightState = moduleStates[3];
         backRight.drive(backRightState);
         // backRight.sketchyDrive(backRightState);
+    }
+
+    public void setModuleStates(SwerveModuleState[] states) {
+        moduleStates = states;
+    }
+
+    // TODO add method
+    public void resetOdometry(Pose2d pose) {
+
     }
 }
