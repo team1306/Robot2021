@@ -33,6 +33,9 @@ public class SwerveDrive extends SubsystemBase {
     Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, Constants.ROBOT_WHEELBASE / 2);
     Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_TRACK_BACK, -Constants.ROBOT_WHEELBASE / 2);
 
+    public SwerveDriveOdometry odometry;
+    private AHRS navx; //Gyro we use, navX Sensor
+
     public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel);
     private ChassisSpeeds chassisSpeeds;
 
@@ -42,6 +45,7 @@ public class SwerveDrive extends SubsystemBase {
      * Nothing needs to be done in the default constructor
      */
     public SwerveDrive() {
+        
     }
 
     /**
@@ -74,7 +78,20 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState backRightState = moduleStates[3];
         backRight.drive(backRightState);
         // backRight.sketchyDrive(backRightState);
+
+        
+
+        navx = new AHRS();
+			
+		navx.reset(); //Resets Yaw
+        navx.resetDisplacement();
+        
+        odometry =  new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d()));
     }
+
+    public double getAngle() {
+        return navx.getAngle();
+    } 
 
     public void setModuleStates(SwerveModuleState[] states) {
         moduleStates = states;
@@ -82,6 +99,14 @@ public class SwerveDrive extends SubsystemBase {
 
     // TODO add method
     public void resetOdometry(Pose2d pose) {
+        
+    }
 
+    public Pose2d getPose() {
+        return odometry.getPose();
+    }
+
+    public SwerveDriveOdometry updatePose() {
+        odometry.update(getAngle(), moduleStates[0].getState(), moduleStates[1].getState(), moduleStates[2].getState(), moduleStates[3].getState());
     }
 }

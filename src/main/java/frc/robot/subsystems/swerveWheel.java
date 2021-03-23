@@ -50,7 +50,8 @@ public class SwerveWheel extends SubsystemBase {
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
-        
+        angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
+
         // initializing speedMotor and setting its PID loop
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
@@ -105,10 +106,16 @@ public class SwerveWheel extends SubsystemBase {
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS);
         speedMotor.set(ControlMode.Velocity, ((speedValueRotations * 4096.0) / 10.0));
 
-        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getAbsolutePosition());
+        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getPosition());
         swerve = optimize(swerve, currentRotation);
 
-        double angleValue = swerve.angle.getDegrees();
+        double targetAngle = swerve.angle.getDegrees();
+
+        Rotation2d targetPosition = swerve.angle.minus(currentRotation);
+
+        double deltaTicks = (targetPosition.getDegrees / 360) * 4096;
+
+        double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
 
         angleMotor.set(ControlMode.Position, (angleValue / 360.0) * 4096);
 
