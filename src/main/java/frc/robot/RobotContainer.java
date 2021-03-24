@@ -121,7 +121,7 @@ public class RobotContainer {
         SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
             trajectory,
-            userSwerveDrive.m_swerveDrive::getPose(), // Functional interface to feed supplier
+            userSwerveDrive.m_swerveDrive::getPose, // Functional interface to feed supplier
             userSwerveDrive.m_swerveDrive.kinematics,
             // Position controllers
             new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),

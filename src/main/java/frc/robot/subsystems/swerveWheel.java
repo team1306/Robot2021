@@ -113,11 +113,11 @@ public class SwerveWheel extends SubsystemBase {
 
         Rotation2d targetPosition = swerve.angle.minus(currentRotation);
 
-        double deltaTicks = (targetPosition.getDegrees / 360) * 4096;
+        double deltaTicks = (targetPosition.getDegrees() / 360) * 4096;
 
         double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
 
-        angleMotor.set(ControlMode.Position, (angleValue / 360.0) * 4096);
+        angleMotor.set(ControlMode.Position, targetTicks);
 
     }
 
