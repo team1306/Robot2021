@@ -32,8 +32,8 @@ public class SwerveWheel extends SubsystemBase {
     private final double SpeedMotor_KI = 0;
     private final double SpeedMotor_KD = 0;
 
-    private final double AngleMotor_KP = .2;
-    private final double AngleMotor_KI = .0001;
+    private final double AngleMotor_KP = .05;
+    private final double AngleMotor_KI = .000;
     private final double AngleMotor_KD = 0;
 
     private SwerveModuleState swerve = null;
@@ -51,7 +51,7 @@ public class SwerveWheel extends SubsystemBase {
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
-        angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
+        //angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
 
         // initializing speedMotor and setting its PID loop
         speedMotor = new TalonFX(speedMotorID);
@@ -72,23 +72,23 @@ public class SwerveWheel extends SubsystemBase {
         angleTalonFXConfiguration.remoteFilter0.remoteSensorDeviceID = angleEnc.getDeviceID();
         angleTalonFXConfiguration.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
 
+        angleTalonFXConfiguration.slot0.kP = AngleMotor_KP;
+        angleTalonFXConfiguration.slot0.kI = AngleMotor_KI;
+        angleTalonFXConfiguration.slot0.kD = AngleMotor_KD;
+      
         angleTalonFXConfiguration.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
         angleMotor.configAllSettings(angleTalonFXConfiguration);
 
-        angleMotor.config_kP(0, AngleMotor_KP, 0);
-        angleMotor.config_kI(0, AngleMotor_KI, 0);
-        angleMotor.config_kD(0, AngleMotor_KD, 0);
-
-        angleMotor.configNominalOutputForward(0);
-        angleMotor.configNominalOutputReverse(0);
-        angleMotor.configPeakOutputForward(1);
-        angleMotor.configPeakOutputReverse(-1);
+        //angleMotor.configNominalOutputForward(0);
+        //angleMotor.configNominalOutputReverse(0);
+        //angleMotor.configPeakOutputForward(1);
+        //angleMotor.configPeakOutputReverse(-1);
 
         //angleMotor.setNeutralMode(NeutralMode.Brake);
 
         angleMotor.setInverted(Constants.DIRECTION_FORWARD);
         angleMotor.setSensorPhase(phase);
-        angleMotor.configFeedbackNotContinuous(false, 0);
+        //angleMotor.configFeedbackNotContinuous(false, 0);
     }
 
     /**
@@ -108,7 +108,6 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.set(ControlMode.Velocity, ((speedValueRotations * 4096.0) / 10.0));
 
         Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getPosition());
-        swerve = optimize(swerve, currentRotation);
 
         double targetAngle = swerve.angle.getDegrees();
 
@@ -119,7 +118,6 @@ public class SwerveWheel extends SubsystemBase {
         double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
 
         angleMotor.set(ControlMode.Position, targetTicks);
-
     }
 
     public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
