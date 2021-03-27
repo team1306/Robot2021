@@ -7,10 +7,14 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -103,10 +107,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return odometry.getPose();
+        return odometry.getPoseMeters();
     }
 
-    public SwerveDriveOdometry updatePose() {
-        odometry.update(getAngle(), moduleStates[0].getState(), moduleStates[1].getState(), moduleStates[2].getState(), moduleStates[3].getState());
+    public void updatePose() {
+        odometry.update(Rotation2d.fromDegrees(getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
     }
 }

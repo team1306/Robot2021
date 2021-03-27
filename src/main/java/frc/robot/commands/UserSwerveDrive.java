@@ -83,11 +83,6 @@ public class UserSwerveDrive extends CommandBase {
         return false;
     }
 
-    // TODO add method
-    public Pose2d getPose() {
-        return m_swerveDrive.getPose();
-    }
-
     public void setModuleStates(SwerveModuleState[] states) {
         m_swerveDrive.setModuleStates(states);
     }

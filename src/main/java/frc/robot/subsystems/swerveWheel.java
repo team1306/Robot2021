@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -113,11 +114,11 @@ public class SwerveWheel extends SubsystemBase {
 
         Rotation2d targetPosition = swerve.angle.minus(currentRotation);
 
-        double deltaTicks = (targetPosition.getDegrees / 360) * 4096;
+        double deltaTicks = (targetPosition.getDegrees() / 360) * 4096;
 
         double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
 
-        angleMotor.set(ControlMode.Position, (angleValue / 360.0) * 4096);
+        angleMotor.set(ControlMode.Position, targetTicks);
 
     }
 
