@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -33,10 +34,12 @@ public class SwerveWheel extends SubsystemBase {
     private final double SpeedMotor_KD = 0;
 
     private final double AngleMotor_KP = .05;
-    private final double AngleMotor_KI = .000;
+    private final double AngleMotor_KI = .0002;
     private final double AngleMotor_KD = 0;
 
     private SwerveModuleState swerve = null;
+
+    //private final double driveMultiplier;
 
     private final boolean phaseReading = false;
 
@@ -47,7 +50,8 @@ public class SwerveWheel extends SubsystemBase {
      * @param angleMotorID ID of the rotation motor
      * @param encoderID    ID of the encoder
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean phase) {
+    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean setInverted) {
+        
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
@@ -60,7 +64,9 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.config_kP(0, SpeedMotor_KP, 0);
         speedMotor.config_kI(0, SpeedMotor_KI, 0);
         speedMotor.config_kD(0, SpeedMotor_KD, 0);
-        // speedMotor.setIdleMode(IdleMode.kBrake);
+        speedMotor.setInverted(setInverted);
+        speedMotor.setNeutralMode(NeutralMode.Brake);
+        //speedMotor.setIdleMode(IdleMode.kBrake);
 
         // initializing angleMotor and setting its PID loop
         angleMotor = new TalonFX(angleMotorID);
@@ -86,9 +92,10 @@ public class SwerveWheel extends SubsystemBase {
 
         //angleMotor.setNeutralMode(NeutralMode.Brake);
 
-        angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        angleMotor.setSensorPhase(phase);
+        //angleMotor.setInverted(Constants.DIRECTION_FORWARD);
+        //angleMotor.setSensorPhase(phase);
         //angleMotor.configFeedbackNotContinuous(false, 0);
+        angleMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     /**
@@ -99,6 +106,9 @@ public class SwerveWheel extends SubsystemBase {
      * @param swerve swerve module to assign values to
      */
     public void drive(SwerveModuleState swerve) {
+        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getPosition());
+
+        swerve = optimize(swerve, currentRotation);
         this.swerve = swerve;
         double speedMPS = swerve.speedMetersPerSecond;
 
@@ -107,8 +117,9 @@ public class SwerveWheel extends SubsystemBase {
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS);
         speedMotor.set(ControlMode.Velocity, ((speedValueRotations * 4096.0) / 10.0));
 
-        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getPosition());
 
+        
+        
         double targetAngle = swerve.angle.getDegrees();
 
         Rotation2d targetPosition = swerve.angle.minus(currentRotation);
@@ -198,8 +209,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param ID ID of the device to collect data from
      */
     public void shuffleboard(String ID) {
-        SmartDashboard.putNumber(ID + ":Current Position",
-                (angleMotor.getSelectedSensorPosition()));
+        SmartDashboard.putNumber(ID + ":Current Position", (angleMotor.getSelectedSensorPosition()));
         SmartDashboard.putNumber(ID + ":Target Angle Position", convertToPositiveDegrees(swerve.angle.getDegrees()));
         SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
         SmartDashboard.putNumber(ID + ":Turn motor velocity", angleMotor.getSelectedSensorVelocity());

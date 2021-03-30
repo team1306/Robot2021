@@ -42,7 +42,7 @@ public final class Constants {
 
     public static final double MAX_VOLTS = 24;
 
-    public static final double FASTEST_SPEED_METERS = 4.8768;
+    public static final double FASTEST_SPEED_METERS = 12;
 
     public static final double FASTEST_ACCELERATION = 1;
 
@@ -60,21 +60,18 @@ public final class Constants {
     public static final double THETA_CONTROLLER_D = 0;
     
 
-    /**
-     * meters
-     */
-    public static final double WHEEL_DISTANCE_TO_CENTER = 0.50289434 / 2; // meters
-    /**
-     * radians per second!!!
-     */
-    public static final double FASTEST_ANGULAR_VELOCITY = (2 * Math.PI) * (WHEEL_DISTANCE_TO_CENTER * 2 * Math.PI) / FASTEST_SPEED_METERS;
-
     //wheel base is y
     //track front is width of front of the robot and the x value
     //track back is width of the back of the robot and the other x value
-    public static final double ROBOT_WHEELBASE  = 1;
-    public static final double ROBOT_TRACK_FRONT = 1;
-    public static final double ROBOT_TRACK_BACK = 1;
+    public static final double ROBOT_DISTANCE_BETWEEN_WHEELS = (16.0/36.0);
+    /**
+     * meters
+     */
+    public static final double WHEEL_DISTANCE_TO_CENTER = Math.sqrt(ROBOT_DISTANCE_BETWEEN_WHEELS * ROBOT_DISTANCE_BETWEEN_WHEELS * 2); // meters
+    /**
+     * radians per second!!!
+     */
+    public static final double FASTEST_ANGULAR_VELOCITY = FASTEST_SPEED_METERS * 2.0 * Math.PI / (WHEEL_DISTANCE_TO_CENTER * 2.0 * Math.PI);
 
     // autonomous constants
     public static final double A_kRamseteB = 2.0;
