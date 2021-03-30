@@ -58,16 +58,11 @@ public class UserSwerveDrive extends CommandBase {
     @Override
     public void execute() {
 
-        if(Math.sqrt(driveX.get() * driveX.get() + driveY.get() * driveY.get() + turn.get() * turn.get()) > 1) {
-            double curr = Math.sqrt(driveX.get() * driveX.get() + driveY.get() * driveY.get() + turn.get() * turn.get());
+        
 
-            m_swerveDrive.driveTrain(Constants.FASTEST_SPEED_METERS * driveX.get() / curr, 
-                                     Constants.FASTEST_SPEED_METERS * driveY.get() / curr, 
-                                     Constants.FASTEST_SPEED_METERS * turn.get() / curr);
-        } else {
-            m_swerveDrive.driveTrain(-driveX.get() * Constants.FASTEST_SPEED_METERS, driveY.get() * Constants.FASTEST_SPEED_METERS, 
-            turn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
-        }
+        m_swerveDrive.driveTrain(-driveX.get() * Constants.FASTEST_SPEED_METERS, 
+                                      driveY.get() * Constants.FASTEST_SPEED_METERS, 
+                                      turn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
 
         // getting data to put onto shuffleboard 
         m_swerveDrive.frontLeft.shuffleboard("Front Left");
