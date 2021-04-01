@@ -31,6 +31,8 @@ public final class Constants {
 
     public static final int K_INTAKE = 13;
 
+    public static final int NAVX_ID = 14;
+
     public static final boolean DIRECTION_FORWARD = true;
 
     public static final int UNITS_PER_ROTATION = 4096;

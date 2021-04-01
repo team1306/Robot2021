@@ -32,7 +32,9 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
-
+import frc.robot.utils.UserDigital;
+import frc.robot.subsystems.Intake;
+import frc.robot.commands.IntakeCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -49,7 +51,11 @@ public class RobotContainer {
     private UserAnalog driveY;
     private UserAnalog turn;
 
+    private UserDigital forwardIntake;
+    private UserDigital backwardIntake;
+
     private UserSwerveDrive userSwerveDrive;
+    private IntakeCommand intakeCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,6 +72,10 @@ public class RobotContainer {
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
         userSwerveDrive = new UserSwerveDrive(driveTrain, driveY, driveX, turn);
+
+        Intake m_intake = new Intake();
+        Robot.intake = m_intake;
+        intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
     }
 
     /**
@@ -75,9 +85,11 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
-        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
-        turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
+        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
+        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+        turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+        forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
+        backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }
 
     /**
@@ -86,56 +98,55 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // // Create a speed constraint to ensure we don't accelerate too fast
-        // SwerveDriveKinematicsConstraint autoConstraint  = new SwerveDriveKinematicsConstraint(userSwerveDrive.m_swerveDrive.kinematics, Constants.FASTEST_SPEED_METERS);
+        // Create a speed constraint to ensure we don't accelerate too fast
+        SwerveDriveKinematicsConstraint autoConstraint  = new SwerveDriveKinematicsConstraint(userSwerveDrive.m_swerveDrive.kinematics, Constants.FASTEST_SPEED_METERS);
         
-        // // Create config for trajectory
-        // TrajectoryConfig config =
-        // new TrajectoryConfig(Constants.FASTEST_SPEED_METERS, 
-        //     Constants.FASTEST_ACCELERATION)
-        // // Add kinematics to ensure max speed is actually obeyed
-        // .setKinematics(userSwerveDrive.m_swerveDrive.kinematics)  
-        // // Apply the voltage constraint
-        // .addConstraint(autoConstraint);
+        // Create config for trajectory
+        TrajectoryConfig config =
+        new TrajectoryConfig(Constants.FASTEST_SPEED_METERS, 
+            Constants.FASTEST_ACCELERATION)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(userSwerveDrive.m_swerveDrive.kinematics)  
+        // Apply the voltage constraint
+        .addConstraint(autoConstraint);
 
-        // String trajectoryJSON = "../deploy/path/Barrel.wpilib.json";
-        // Trajectory trajectory = new Trajectory(null); // todo what is trajectory list?????
-        // try {
-        //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        //     trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        // } catch (IOException ex) {
-        //     System.out.println("Unable to open trajectory");
-        // }
+        String trajectoryJSON = "../deploy/path/Barrel.wpilib.json";
+        Trajectory trajectory = new Trajectory(null); // todo what is trajectory list?????
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        } catch (IOException ex) {
+            System.out.println("Unable to open trajectory");
+        }
 
-        // TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        //     Constants.kMaxAngularSpeedRadians, Constants.kMaxAngularVelocityRadians);
+        TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
+            Constants.kMaxAngularSpeedRadians, Constants.kMaxAngularVelocityRadians);
   
-        // var thetaController =
-        // new ProfiledPIDController(
-        //     Constants.THETA_CONTROLLER_P, Constants.THETA_CONTROLLER_I, Constants.THETA_CONTROLLER_D, kThetaControllerConstraints);
-        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        var thetaController =
+        new ProfiledPIDController(
+            Constants.THETA_CONTROLLER_P, Constants.THETA_CONTROLLER_I, Constants.THETA_CONTROLLER_D, kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        // // everything below had m_robotDrive replaced with userSwerveDrive
+        // everything below had m_robotDrive replaced with userSwerveDrive
 
-        // // TODO add new methods + test
-        // SwerveControllerCommand swerveControllerCommand =
-        // new SwerveControllerCommand(
-        //     trajectory,
-        //     userSwerveDrive.m_swerveDrive::getPose, // Functional interface to feed supplier
-        //     userSwerveDrive.m_swerveDrive.kinematics,
-        //     // Position controllers
-        //     new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),
-        //     new PIDController(Constants.Y_CONTROLLER_P, Constants.Y_CONTROLLER_I, Constants.Y_CONTROLLER_D),
-        //     thetaController,
-        //     userSwerveDrive.m_swerveDrive::setModuleStates,
-        //     userSwerveDrive.m_swerveDrive);
+        // TODO add new methods + test
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            trajectory,
+            userSwerveDrive.m_swerveDrive::getPose, // Functional interface to feed supplier
+            userSwerveDrive.m_swerveDrive.kinematics,
+            // Position controllers
+            new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),
+            new PIDController(Constants.Y_CONTROLLER_P, Constants.Y_CONTROLLER_I, Constants.Y_CONTROLLER_D),
+            thetaController,
+            userSwerveDrive.m_swerveDrive::setModuleStates,
+            userSwerveDrive.m_swerveDrive);
 
-        // // Reset odometry to the starting pose of the trajectory.
-        // userSwerveDrive.m_swerveDrive.resetOdometry(trajectory.getInitialPose());
+        // Reset odometry to the starting pose of the trajectory.
+        userSwerveDrive.m_swerveDrive.resetOdometry(trajectory.getInitialPose());
 
-        // // Run path following command, then stop at the end.
-        // return swerveControllerCommand.andThen(() -> userSwerveDrive.m_swerveDrive.driveTrain(0, 0, 0));
-        // // changed from .tankDriveVolts(0, 0));
-        return null;
+        // Run path following command, then stop at the end.
+        return swerveControllerCommand.andThen(() -> userSwerveDrive.m_swerveDrive.driveTrain(0, 0, 0));
+        // changed from .tankDriveVolts(0, 0));
     }
 }

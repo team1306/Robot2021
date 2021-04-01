@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
 import frc.robot.Constants;
 
 /**
@@ -38,7 +39,7 @@ public class SwerveDrive extends SubsystemBase {
     Translation2d backRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
 
     public SwerveDriveOdometry odometry;
-    //private AHRS navx; //Gyro we use, navX Sensor
+    private AHRS navx; //Gyro we use, navX Sensor
 
     public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel);
     private ChassisSpeeds chassisSpeeds;
@@ -83,18 +84,16 @@ public class SwerveDrive extends SubsystemBase {
         backRight.drive(backRightState);
         // backRight.sketchyDrive(backRightState);
 
-        
-
-        //navx = new AHRS();
+        navx = new AHRS(Port.kMXP);
 			
-		//navx.reset(); //Resets Yaw
-        //navx.resetDisplacement();
+		navx.reset(); //Resets Yaw
+        navx.resetDisplacement();
         
         odometry =  new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d()));
     }
 
     public double getAngle() {
-        return 0.0;// navx.getAngle();
+        return navx.getAngle();
     } 
 
     public void setModuleStates(SwerveModuleState[] states) {
