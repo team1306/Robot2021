@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
 
@@ -36,7 +37,7 @@ public class UserSwerveDrive extends CommandBase {
      * @param driveX        analog input for left/right movement
      * @param turn          analog input for turning
      */
-    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveY, UserAnalog driveX, UserAnalog turn) {
+    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turn) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
         this.driveX = driveX;
@@ -60,8 +61,8 @@ public class UserSwerveDrive extends CommandBase {
 
         
 
-        m_swerveDrive.driveTrain(-driveX.get() * Constants.FASTEST_SPEED_METERS, 
-                                      driveY.get() * Constants.FASTEST_SPEED_METERS, 
+        m_swerveDrive.driveTrain(driveX.get() * Constants.FASTEST_SPEED_METERS, 
+                                      -driveY.get() * Constants.FASTEST_SPEED_METERS, 
                                       turn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
 
         // getting data to put onto shuffleboard 
@@ -69,6 +70,7 @@ public class UserSwerveDrive extends CommandBase {
         m_swerveDrive.backLeft.shuffleboard("Back Left");
         m_swerveDrive.frontRight.shuffleboard("Front Right");
         m_swerveDrive.backRight.shuffleboard("Back Right");
+        smartdashboard();
 
     }
 
@@ -91,5 +93,12 @@ public class UserSwerveDrive extends CommandBase {
     public void setModuleStates(SwerveModuleState[] states) {
         m_swerveDrive.setModuleStates(states);
     }
+
+    public void smartdashboard() {
+        SmartDashboard.putNumber("Drive X: ", driveX.get());
+        SmartDashboard.putNumber("Drive Y: ", -driveY.get());
+        SmartDashboard.putNumber("Turn: ", turn.get());
+    }
+    
 
 }

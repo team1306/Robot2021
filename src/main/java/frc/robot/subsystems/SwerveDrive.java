@@ -51,6 +51,13 @@ public class SwerveDrive extends SubsystemBase {
      */
     public SwerveDrive() {
         
+        // navx = new AHRS();
+        
+		// navx.reset(); //Resets Yaw
+        // navx.resetDisplacement();
+        
+        // odometry =  new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d()));
+        
     }
 
     /**
@@ -84,12 +91,6 @@ public class SwerveDrive extends SubsystemBase {
         backRight.drive(backRightState);
         // backRight.sketchyDrive(backRightState);
 
-        navx = new AHRS(Port.kMXP);
-			
-		navx.reset(); //Resets Yaw
-        navx.resetDisplacement();
-        
-        odometry =  new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d()));
     }
 
     public double getAngle() {

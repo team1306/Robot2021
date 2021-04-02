@@ -55,12 +55,16 @@ public class SwerveWheel extends SubsystemBase {
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
+        angleEnc.setPositionToAbsolute();
+
+        
         //angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
 
         // initializing speedMotor and setting its PID loop
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
 
+        
         speedMotor.config_kP(0, SpeedMotor_KP, 0);
         speedMotor.config_kI(0, SpeedMotor_KI, 0);
         speedMotor.config_kD(0, SpeedMotor_KD, 0);
@@ -94,7 +98,7 @@ public class SwerveWheel extends SubsystemBase {
 
         //angleMotor.setInverted(Constants.DIRECTION_FORWARD);
         //angleMotor.setSensorPhase(phase);
-        //angleMotor.configFeedbackNotContinuous(false, 0);
+        angleMotor.configFeedbackNotContinuous(false, 0);
         angleMotor.setNeutralMode(NeutralMode.Brake);
     }
 
@@ -117,14 +121,9 @@ public class SwerveWheel extends SubsystemBase {
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS);
         speedMotor.set(ControlMode.Velocity, ((speedValueRotations * 4096.0) / 10.0));
 
-
-        
-        
-        double targetAngle = swerve.angle.getDegrees();
-
         Rotation2d targetPosition = swerve.angle.minus(currentRotation);
 
-        double deltaTicks = (targetPosition.getDegrees() / 360) * 4096;
+        double deltaTicks = (targetPosition.getDegrees() / 360.0) * 4096.0;
 
         double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
 
@@ -150,6 +149,11 @@ public class SwerveWheel extends SubsystemBase {
     public static double convertToPositiveDegrees(double degreesPath) {
         degreesPath = (degreesPath > 0) ? degreesPath : 360 - degreesPath;
         return ((degreesPath % 360) + 360) % 360;
+    }
+
+    public static double convertToPositiveEncoderTicks(double ticks) {
+        ticks = (ticks > 0) ? ticks : 4096 - ticks;
+        return ((ticks % 4096) + 4096) % 4096;
     }
 
     /**
@@ -209,12 +213,14 @@ public class SwerveWheel extends SubsystemBase {
      * @param ID ID of the device to collect data from
      */
     public void shuffleboard(String ID) {
+        SmartDashboard.putNumber(ID + "Position", angleEnc.getPosition());
+        SmartDashboard.putNumber(ID + "Absolute Position", angleEnc.getAbsolutePosition());
         SmartDashboard.putNumber(ID + ":Current Position", (angleMotor.getSelectedSensorPosition()));
         SmartDashboard.putNumber(ID + ":Target Angle Position", convertToPositiveDegrees(swerve.angle.getDegrees()));
         SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
         SmartDashboard.putNumber(ID + ":Turn motor velocity", angleMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
         SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
-
+        
     }
 }
