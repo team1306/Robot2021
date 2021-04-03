@@ -84,5 +84,10 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadians = 1;
     public static final double kMaxAngularVelocityRadians = 1;
 
+    public static final double FRONT_LEFT_OFFSET = 0;
+    public static final double FRONT_RIGHT_OFFSET = 0;
+    public static final double BACK_LEFT_OFFSET = 0;
+    public static final double BACK_RIGHT_OFFSET = 0;
+
     // todo change those^^^!!!!
 }

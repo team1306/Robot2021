@@ -33,7 +33,7 @@ public class SwerveWheel extends SubsystemBase {
     private final double SpeedMotor_KI = 0;
     private final double SpeedMotor_KD = 0;
 
-    private final double AngleMotor_KP = .05;
+    private final double AngleMotor_KP = .1;
     private final double AngleMotor_KI = .0002;
     private final double AngleMotor_KD = 0;
 
@@ -50,13 +50,13 @@ public class SwerveWheel extends SubsystemBase {
      * @param angleMotorID ID of the rotation motor
      * @param encoderID    ID of the encoder
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean setInverted) {
+    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean setInverted, double offset) {
         
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
         angleEnc.configFactoryDefault();
         angleEnc.setPositionToAbsolute();
-
+        angleEnc.configMagnetOffset(offset);
         
         //angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
 
@@ -99,7 +99,6 @@ public class SwerveWheel extends SubsystemBase {
         //angleMotor.setInverted(Constants.DIRECTION_FORWARD);
         //angleMotor.setSensorPhase(phase);
         angleMotor.configFeedbackNotContinuous(false, 0);
-        angleMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     /**
@@ -110,14 +109,14 @@ public class SwerveWheel extends SubsystemBase {
      * @param swerve swerve module to assign values to
      */
     public void drive(SwerveModuleState swerve) {
-        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getPosition());
+        Rotation2d currentRotation = Rotation2d.fromDegrees(convertToPositiveEncoderTicks((angleMotor.getSelectedSensorPosition()) / 4096) * 360);
 
-        swerve = optimize(swerve, currentRotation);
+        // swerve = optimize(swerve, currentRotation); // makes each individual wheel mess up instead of in sync
         this.swerve = swerve;
         double speedMPS = swerve.speedMetersPerSecond;
 
         // convert to rotations per second from meters per second then to rotations per
-        // millisecond
+        // 100 millisecond
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS);
         speedMotor.set(ControlMode.Velocity, ((speedValueRotations * 4096.0) / 10.0));
 
@@ -221,6 +220,5 @@ public class SwerveWheel extends SubsystemBase {
         SmartDashboard.putNumber(ID + ":Turn motor velocity", angleMotor.getSelectedSensorVelocity());
         SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
         SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
-        
     }
 }
