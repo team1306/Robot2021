@@ -33,7 +33,7 @@ public class SwerveWheel extends SubsystemBase {
     private final double SpeedMotor_KI = 0;
     private final double SpeedMotor_KD = 0;
 
-    private final double AngleMotor_KP = .1;
+    private final double AngleMotor_KP = .01;
     private final double AngleMotor_KI = .0002;
     private final double AngleMotor_KD = 0;
 
@@ -91,13 +91,13 @@ public class SwerveWheel extends SubsystemBase {
 
         //angleMotor.configNominalOutputForward(0);
         //angleMotor.configNominalOutputReverse(0);
-        //angleMotor.configPeakOutputForward(1);
-        //angleMotor.configPeakOutputReverse(-1);
+        angleMotor.configPeakOutputForward(.2);
+        angleMotor.configPeakOutputReverse(-.2);
 
-        //angleMotor.setNeutralMode(NeutralMode.Brake);
+        angleMotor.setNeutralMode(NeutralMode.Brake);
 
         //angleMotor.setInverted(Constants.DIRECTION_FORWARD);
-        //angleMotor.setSensorPhase(phase);
+        angleMotor.setSensorPhase(phaseReading);
         angleMotor.configFeedbackNotContinuous(false, 0);
     }
 
@@ -109,7 +109,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param swerve swerve module to assign values to
      */
     public void drive(SwerveModuleState swerve) {
-        Rotation2d currentRotation = Rotation2d.fromDegrees(convertToPositiveEncoderTicks((angleMotor.getSelectedSensorPosition()) / 4096) * 360);
+        Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getAbsolutePosition());
 
         // swerve = optimize(swerve, currentRotation); // makes each individual wheel mess up instead of in sync
         this.swerve = swerve;
@@ -124,9 +124,9 @@ public class SwerveWheel extends SubsystemBase {
 
         double deltaTicks = (targetPosition.getDegrees() / 360.0) * 4096.0;
 
-        double targetTicks = deltaTicks + angleMotor.getSelectedSensorPosition();
+        double targetTicks = deltaTicks + ((angleEnc.getAbsolutePosition() / 360.0) * 4096);
 
-        angleMotor.set(ControlMode.Position, targetTicks);
+        angleMotor.set(ControlMode.Position, 1024);
     }
 
     public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
