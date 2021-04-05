@@ -10,9 +10,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.UserDrive;
 import frc.robot.commands.UserSwerveDrive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.TankDrive;
 import frc.robot.utils.UserAnalog;
 
 /**
@@ -28,12 +30,12 @@ public class Robot extends TimedRobot {
 
     private RobotContainer m_robotContainer;
 
-    public static SwerveDrive swerveDrive = null;
+    public static TankDrive tankDrive = null;
     public static Intake intake = null;
     UserAnalog driveX;
     UserAnalog driveY;
     UserAnalog turn;
-    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turn);
+    UserDrive userDrive = new UserDrive(tankDrive, driveX, driveY);
 
     // public static Intake intake = null;
 
@@ -80,11 +82,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        userSwerveDrive.m_swerveDrive.frontLeft.shuffleboard("Front Left");
-        userSwerveDrive.m_swerveDrive.backLeft.shuffleboard("Back Left");
-        userSwerveDrive.m_swerveDrive.frontRight.shuffleboard("Front Right");
-        userSwerveDrive.m_swerveDrive.backRight.shuffleboard("Back Right");
-        userSwerveDrive.smartdashboard();
+        //userSwerveDrive.m_swerveDrive.frontLeft.shuffleboard("Front Left");
+        //userSwerveDrive.m_swerveDrive.backLeft.shuffleboard("Back Left");
+        //userSwerveDrive.m_swerveDrive.frontRight.shuffleboard("Front Right");
+        //userSwerveDrive.m_swerveDrive.backRight.shuffleboard("Back Right");
+        //userSwerveDrive.smartdashboard();
     }
 
     /**

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstrai
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.TankDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -35,6 +36,9 @@ import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 import frc.robot.subsystems.Intake;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.UserDrive;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -54,7 +58,7 @@ public class RobotContainer {
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
 
-    private UserSwerveDrive userSwerveDrive;
+    private UserDrive userDrive;
     private IntakeCommand intakeCommand;
 
     /**
@@ -69,9 +73,9 @@ public class RobotContainer {
 
         autoCommand = null;
 
-        SwerveDrive driveTrain = new SwerveDrive();
-        Robot.swerveDrive = driveTrain;
-        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turn);
+        TankDrive tankDrive = new TankDrive();
+        Robot.tankDrive = tankDrive;
+        userDrive = new UserDrive(tankDrive, driveX, driveY);
 
         Intake m_intake = new Intake();
         Robot.intake = m_intake;
@@ -87,7 +91,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
         driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-        turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }
@@ -98,57 +101,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // // Create a speed constraint to ensure we don't accelerate too fast
-        // SwerveDriveKinematicsConstraint autoConstraint  = new SwerveDriveKinematicsConstraint(userSwerveDrive.m_swerveDrive.kinematics, Constants.FASTEST_SPEED_METERS);
-        
-        // // Create config for trajectory
-        // TrajectoryConfig config =
-        // new TrajectoryConfig(Constants.FASTEST_SPEED_METERS, 
-        //     Constants.FASTEST_ACCELERATION)
-        // // Add kinematics to ensure max speed is actually obeyed
-        // .setKinematics(userSwerveDrive.m_swerveDrive.kinematics)  
-        // // Apply the voltage constraint
-        // .addConstraint(autoConstraint);
-
-        // String trajectoryJSON = "../deploy/path/Barrel.wpilib.json";
-        // Trajectory trajectory = new Trajectory(null); // todo what is trajectory list?????
-        // try {
-        //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        //     trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        // } catch (IOException ex) {
-        //     System.out.println("Unable to open trajectory");
-        // }
-
-        // TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        //     Constants.kMaxAngularSpeedRadians, Constants.kMaxAngularVelocityRadians);
-  
-        // var thetaController =
-        // new ProfiledPIDController(
-        //     Constants.THETA_CONTROLLER_P, Constants.THETA_CONTROLLER_I, Constants.THETA_CONTROLLER_D, kThetaControllerConstraints);
-        // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-        // // everything below had m_robotDrive replaced with userSwerveDrive
-
-        // // TODO add new methods + test
-        // SwerveControllerCommand swerveControllerCommand =
-        // new SwerveControllerCommand(
-        //     trajectory,
-        //     userSwerveDrive.m_swerveDrive::getPose, // Functional interface to feed supplier
-        //     userSwerveDrive.m_swerveDrive.kinematics,
-        //     // Position controllers
-        //     new PIDController(Constants.X_CONTROLLER_P, Constants.X_CONTROLLER_I, Constants.X_CONTROLLER_D),
-        //     new PIDController(Constants.Y_CONTROLLER_P, Constants.Y_CONTROLLER_I, Constants.Y_CONTROLLER_D),
-        //     thetaController,
-        //     userSwerveDrive.m_swerveDrive::setModuleStates,
-        //     userSwerveDrive.m_swerveDrive);
-
-        // // Reset odometry to the starting pose of the trajectory.
-        // userSwerveDrive.m_swerveDrive.resetOdometry(trajectory.getInitialPose());
-
-        // // Run path following command, then stop at the end.
-        // return swerveControllerCommand.andThen(() -> userSwerveDrive.m_swerveDrive.driveTrain(0, 0, 0));
-        // // changed from .tankDriveVolts(0, 0));
-
         return null;
     }
 }
