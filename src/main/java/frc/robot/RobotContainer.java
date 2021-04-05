@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.UserSwerveDrive;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -27,7 +25,6 @@ import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstrai
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.TankDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -35,8 +32,6 @@ import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 import frc.robot.subsystems.Intake;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.UserDrive;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 /**
@@ -58,7 +53,7 @@ public class RobotContainer {
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
 
-    private UserDrive userDrive;
+    private DriveCommand userDrive;
     private IntakeCommand intakeCommand;
 
     /**
@@ -73,12 +68,12 @@ public class RobotContainer {
 
         autoCommand = null;
 
-        TankDrive tankDrive = new TankDrive();
-        Robot.tankDrive = tankDrive;
-        userDrive = new UserDrive(tankDrive, driveX, driveY);
+        // driveX = new UserAnalog();
+
+        DriveTrain tankDrive = new DriveTrain();
+        userDrive = new DriveCommand(tankDrive, driveX, driveY);
 
         Intake m_intake = new Intake();
-        Robot.intake = m_intake;
         intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
     }
 

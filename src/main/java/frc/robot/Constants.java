@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.util.Units;
  */
 public final class Constants {
 
-    public static final int K_DRIVE_RIGHT_FRONT_ID = 1;
-    public static final int K_DRIVE_RIGHT_BACK_ID = 2;
+    // public static final int K_DRIVE_FRONT_LEFT = 1;
+    // public static final int K_DRIVE_RIGHT_BACK_ID = 2;
 
-    public static final int K_DRIVE_LEFT_FRONT_ID = 3;
-    public static final int K_DRIVE_LEFT_BACK_ID = 4;
+    // public static final int K_DRIVE_LEFT_FRONT_ID = 3;
+    // public static final int K_DRIVE_LEFT_BACK_ID = 4;
 
 
     // motors and encoders on the robot
