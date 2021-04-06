@@ -17,14 +17,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.DriveCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.utils.RobotMap;
 
 /**
  * Drivetrain subsystem to drive the robot. Uses DifferentialDrive
  */
 
-public class DriveTrain extends Subsystem {
+public class DriveTrain extends SubsystemBase {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
   private TalonFX leftLeader;
@@ -42,11 +43,16 @@ public class DriveTrain extends Subsystem {
 
   public DriveTrain() {
     // Initialize motors
-    leftLeader = new TalonFX(RobotMap.LeftDriveLeader);
-    rightLeader = new TalonFX(RobotMap.RightDriveLeader);
+    leftLeader = new TalonFX(Constants.K_DRIVE_FRONT_LEFT_ID);
+    rightLeader = new TalonFX(Constants.K_DRIVE_FRONT_RIGHT_ID);
 
-    leftFollower = new TalonFX(RobotMap.LeftDriveFollower);
-    rightFollower = new TalonFX(RobotMap.RightDriveFollower);
+    leftFollower = new TalonFX(Constants.K_DRIVE_BACK_LEFT_ID);
+    rightFollower = new TalonFX(Constants.K_DRIVE_BACK_RIGHT_ID);
+
+    leftLeader.configFactoryDefault();
+    rightLeader.configFactoryDefault();
+    leftFollower.configFactoryDefault();
+    rightFollower.configFactoryDefault();
 
     leftFollower.follow(leftLeader);
     rightFollower.follow(rightLeader);
@@ -77,6 +83,8 @@ public class DriveTrain extends Subsystem {
       left = -left;
       right = -right;
     }
+    System.out.println("Drive Train drive is running.");
+
     leftLeader.set(ControlMode.PercentOutput, left);
     rightLeader.set(ControlMode.PercentOutput, right);
   }
@@ -102,13 +110,5 @@ public class DriveTrain extends Subsystem {
     speed=speed*speedMultiplyer;
     rotation=rotation*turnMultiplyer;
     tankDrive.arcadeDrive(speed, rotation);
-  }
-
-  @Override
-  /**
-   * Initializes the Drivetrain default (when not run) to driving.
-   */
-  public void initDefaultCommand() {
-    //setDefaultCommand(new DriveCommand());
   }
 }

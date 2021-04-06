@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utils.UserAnalog;
@@ -15,7 +16,7 @@ import frc.robot.utils.UserAnalog;
 /**
  * Command to drive the robot based on controller input.
  */
-public class DriveCommand extends Command {
+public class DriveCommand extends CommandBase {
 
   UserAnalog right;
   UserAnalog left;
@@ -24,37 +25,33 @@ public class DriveCommand extends Command {
 
   public DriveCommand(DriveTrain driveTrain, UserAnalog right, UserAnalog left) {
     // Use requires() here to declare subsystem dependencies
+    System.out.println("Drive Command constructor is running.");
     this.right = right;
+
     this.left = left;
     this.driveTrain = driveTrain;
+    this.addRequirements(driveTrain);
+    this.driveTrain.setDefaultCommand(this);
+
   }
 
   // Called just before this Command runs the first time
   @Override
-  protected void initialize() {
+  public void initialize() {
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
-  protected void execute() {
+  public void execute() {
+    System.out.println("Drive Command execute is running.");
+
     //Depending on the driver's preference, pass joystick values to drivetrain.
       driveTrain.drive(left.get(), right.get());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
-  protected boolean isFinished() {
+  public boolean isFinished() {
     return false;
-  }
-
-  // Called once after isFinished returns true
-  @Override
-  protected void end() {
-  }
-
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
-  @Override
-  protected void interrupted() {
   }
 }

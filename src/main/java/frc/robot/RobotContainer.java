@@ -69,6 +69,7 @@ public class RobotContainer {
         autoCommand = null;
 
         // driveX = new UserAnalog();
+        System.out.println("Robot Container is running.");
 
         DriveTrain tankDrive = new DriveTrain();
         userDrive = new DriveCommand(tankDrive, driveX, driveY);
@@ -84,8 +85,9 @@ public class RobotContainer {
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
-        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+        //TODO robot moves backwards 
+        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_LTRIGGER);
+        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_RTRIGGER);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }

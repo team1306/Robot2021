@@ -26,10 +26,6 @@ public class Robot extends TimedRobot {
 
     private RobotContainer m_robotContainer;
 
-    public static SwerveDrive swerveDrive = null;
-    public static Intake intake = null;
-
-    public static TankDrive tankDrive = null;
     // public static Intake intake = null;
 
     /**
