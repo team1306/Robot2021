@@ -19,16 +19,18 @@ import frc.robot.utils.UserAnalog;
 public class DriveCommand extends CommandBase {
 
   UserAnalog right;
-  UserAnalog left;
+  UserAnalog forward;
+  UserAnalog backward;
   DriveTrain driveTrain;
   private final boolean isArcade = true;
 
-  public DriveCommand(DriveTrain driveTrain, UserAnalog right, UserAnalog left) {
+  public DriveCommand(DriveTrain driveTrain, UserAnalog turn, UserAnalog forward, UserAnalog backward) {
     // Use requires() here to declare subsystem dependencies
     System.out.println("Drive Command constructor is running.");
-    this.right = right;
+    this.right = turn;
 
-    this.left = left;
+    this.forward = forward;
+    this.backward = backward;
     this.driveTrain = driveTrain;
     this.addRequirements(driveTrain);
     this.driveTrain.setDefaultCommand(this);
@@ -46,7 +48,7 @@ public class DriveCommand extends CommandBase {
     System.out.println("Drive Command execute is running.");
 
     //Depending on the driver's preference, pass joystick values to drivetrain.
-      driveTrain.drive(left.get(), right.get());
+      driveTrain.arcadeDrive(forward.get() - backward.get(), right.get(), true);
   }
 
   // Make this return true when this Command no longer needs to run execute()

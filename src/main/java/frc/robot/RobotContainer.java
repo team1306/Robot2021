@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import frc.robot.subsystems.SwerveDrive;
+//import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -48,7 +48,8 @@ public class RobotContainer {
     // The robot's inputs that it recieves from the controller are defined here
     private UserAnalog driveX;
     private UserAnalog driveY;
-    private UserAnalog turn;
+    private UserAnalog turnLeft;
+    private UserAnalog turnRight;
 
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
@@ -72,7 +73,7 @@ public class RobotContainer {
         System.out.println("Robot Container is running.");
 
         DriveTrain tankDrive = new DriveTrain();
-        userDrive = new DriveCommand(tankDrive, driveX, driveY);
+        userDrive = new DriveCommand(tankDrive, driveX, turnRight, turnLeft);
 
         Intake m_intake = new Intake();
         intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
@@ -86,8 +87,11 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         //TODO robot moves backwards 
-        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_LTRIGGER);
-        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.BUTTON_RTRIGGER);
+        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RY);
+
+        turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+        turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }

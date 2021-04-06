@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.utils.RobotMap;
 
@@ -34,12 +36,17 @@ public class DriveTrain extends SubsystemBase {
   private TalonFX leftFollower;
   private TalonFX rightFollower;
 
+  private TalonFX angleMotorFrontLeft;
+  private TalonFX angleMotorFrontRight;
+  private TalonFX angleMotorBackLeft;
+  private TalonFX angleMotorBackRight;
+
   //public SensorCollection leftSensors;
   //public SensorCollection rightSensors;
 
   private DifferentialDrive tankDrive;
 
-  public static boolean reverse = false;
+  public static boolean reverse = true;
 
   public DriveTrain() {
     // Initialize motors
@@ -57,6 +64,20 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.follow(leftLeader);
     rightFollower.follow(rightLeader);
 
+    angleMotorFrontLeft = new TalonFX(Constants.K_TURN_FRONT_LEFT_ID);
+    angleMotorFrontRight = new TalonFX(Constants.K_TURN_FRONT_RIGHT_ID);
+    angleMotorBackLeft = new TalonFX(Constants.K_TURN_BACK_LEFT_ID);
+    angleMotorBackRight = new TalonFX(Constants.K_TURN_BACK_RIGHT_ID);
+
+    angleMotorFrontLeft.configFactoryDefault();
+    angleMotorFrontRight.configFactoryDefault();
+    angleMotorBackLeft.configFactoryDefault();
+    angleMotorBackRight.configFactoryDefault();
+
+    angleMotorFrontLeft.setNeutralMode(NeutralMode.Brake);
+    angleMotorFrontRight.setNeutralMode(NeutralMode.Brake);
+    angleMotorBackLeft.setNeutralMode(NeutralMode.Brake);
+    angleMotorBackRight.setNeutralMode(NeutralMode.Brake);
     // Initialize sensor values
     //leftSensors = leftLeader.getSensorCollection();
     //rightSensors = rightLeader.getSensorCollection();
@@ -85,10 +106,60 @@ public class DriveTrain extends SubsystemBase {
     }
     System.out.println("Drive Train drive is running.");
 
-    leftLeader.set(ControlMode.PercentOutput, left);
+    leftLeader.set(ControlMode.PercentOutput, -left);
     rightLeader.set(ControlMode.PercentOutput, right);
   }
 
+  public void driveArcade(double rotation, double forward, double backward) {
+    double turn = forward - backward;
+
+
+
+  }
+
+  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+    
+    xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+
+    zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
+
+    // Square the inputs (while preserving the sign) to increase fine control
+    // while permitting full power.
+    if (squareInputs) {
+      xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
+      zRotation = Math.copySign(zRotation * zRotation, zRotation);
+    }
+
+    double leftMotorOutput;
+    double rightMotorOutput;
+
+    double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
+
+    if (xSpeed >= 0.0) {
+      // First quadrant, else second quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      } else {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
+      }
+    } else {
+      // Third quadrant, else fourth quadrant
+      if (zRotation >= 0.0) {
+        leftMotorOutput = xSpeed + zRotation;
+        rightMotorOutput = maxInput;
+      } else {
+        leftMotorOutput = maxInput;
+        rightMotorOutput = xSpeed - zRotation;
+      }
+    }
+
+    leftLeader.set(ControlMode.PercentOutput, MathUtil.clamp(leftMotorOutput, -1.0, 1.0));
+    double maxOutput = 1;
+    rightLeader.set(ControlMode.PercentOutput, MathUtil.clamp(rightMotorOutput, -1.0, 1.0));
+
+  }
   /**
    * Pushes up edu.wpi.first.wpilibj.drive.DifferentialDrive.arcadeDrive
    * 
