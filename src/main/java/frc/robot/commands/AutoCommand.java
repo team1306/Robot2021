@@ -8,6 +8,7 @@ import java.util.function.DoubleConsumer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
@@ -23,6 +24,30 @@ public class AutoCommand extends ParallelCommandGroup {
 
     public AutoCommand(DriveTrain drive, Intake intake) {
         super();
+
+        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        try {
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            RamseteCommand ramseteCommand = new RamseteCommand(
+                trajectory,
+                drive::getPose,
+                new RamseteController(Constants.A_kRamseteB, Constants.A_kRamseteZeta),
+                new SimpleMotorFeedforward(Constants.ksVolts,
+                                           Constants.kvVoltSecondsPerMeter,
+                                           Constants.kaVoltSecondsSquaredPerMeter),
+                Constants.kDriveKinematics,
+                drive::getWheelSpeeds,
+                new PIDController(0.1, 0, 0), // 0.1 was substituted in for Constants.kPDriveVel, which is the P constant of Drive Velocity ?
+                new PIDController(0.1, 0, 0), // TODO tune this constant when testing 
+                // RamseteCommand passes volts to the callback
+                drive::tankDriveVolts,
+                drive
+            );
+        
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         // current pos - goal pos -> first lambda
         // rightside setspeed var -> second lambda
@@ -36,32 +61,6 @@ public class AutoCommand extends ParallelCommandGroup {
 
     @Override
     public void initialize() {
-        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        try {
-            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-            
-            RamseteCommand ramseteCommand = new RamseteCommand(
-                trajectory,
-                m_robotDrive::getPose,
-                new RamseteController(Constants.A_kRamseteB, Constants.A_kRamseteZeta),
-                new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                           DriveConstants.kvVoltSecondsPerMeter,
-                                           DriveConstants.kaVoltSecondsSquaredPerMeter),
-                DriveConstants.kDriveKinematics,
-                m_robotDrive::getWheelSpeeds,
-                new PIDController(Constants.kPDriveVel, 0, 0),
-                new PIDController(Constants.kPDriveVel, 0, 0),
-                // RamseteCommand passes volts to the callback
-                m_robotDrive::tankDriveVolts,
-                m_robotDrive
-            );
-        
-
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         
     }
 

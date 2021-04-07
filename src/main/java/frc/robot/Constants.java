@@ -1,6 +1,6 @@
 package frc.robot;
 
-
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
 
 /**
@@ -96,7 +96,10 @@ public final class Constants {
     public static final double ksVolts = 0.22;
     public static final double kvVoltSecondsPerMeter = 1.98;
     public static final double kaVoltSecondsSquaredPerMeter = 0.2;
-    public static final int kDriveKinematics = 0; 
+
+    public static final double kEncoderDistancePerPulse = (K_WHEEL_RADIUS_METERS * Math.PI * 2) / (6.8 * 4096);
+
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(K_TRACK_WIDTH_METERS);
 
     // todo change those^^^!!!!
 }
