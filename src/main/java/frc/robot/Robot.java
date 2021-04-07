@@ -79,11 +79,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        System.out.println("autonomousInit() RAN");
         autoCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
         if (autoCommand != null) {
             autoCommand.schedule();
+            System.out.println("the IF STATEMENT in autonomousInit() RAN");
         }
     }
 

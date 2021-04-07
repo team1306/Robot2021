@@ -29,6 +29,8 @@ public class AutoCommand extends ParallelRaceGroup {
     public AutoCommand(DriveTrain drive, Intake intake) {
         super();
 
+        System.out.println("CONSTRUCTOR for AutoCommand IS RUNNING");
+
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         try {
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -58,28 +60,6 @@ public class AutoCommand extends ParallelRaceGroup {
         this.addCommands(ramseteCommand, new AutoIntakeCommand(intake));
         this.addRequirements(drive, intake);
     }
-
-    @Override
-    public void initialize() {
-        
-    }
-
-    @Override
-    public void execute() {
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-}
-
-interface DoubleGetter{ 
-    double get();
-}
-
-interface DoubleSetter{
-    void set(double val);
 }
 
 class AutoIntakeCommand extends CommandBase {
