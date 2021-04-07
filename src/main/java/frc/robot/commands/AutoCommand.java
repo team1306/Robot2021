@@ -9,18 +9,22 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 
-public class AutoCommand extends ParallelCommandGroup {
+//ParallelCommandGroup
+public class AutoCommand extends ParallelRaceGroup {
     String trajectoryJSON = "paths/YourPath.wpilib.json";
     Trajectory trajectory = new Trajectory();
+    RamseteCommand ramseteCommand;
 
     public AutoCommand(DriveTrain drive, Intake intake) {
         super();
@@ -28,7 +32,7 @@ public class AutoCommand extends ParallelCommandGroup {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         try {
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-            RamseteCommand ramseteCommand = new RamseteCommand(
+            ramseteCommand = new RamseteCommand(
                 trajectory,
                 drive::getPose,
                 new RamseteController(Constants.A_kRamseteB, Constants.A_kRamseteZeta),
@@ -51,11 +55,7 @@ public class AutoCommand extends ParallelCommandGroup {
         
         // current pos - goal pos -> first lambda
         // rightside setspeed var -> second lambda
-
-        PIDCommand leftSide = new PIDCommand(new PIDController(1.0, 0.0, 0.0), () -> { return 2.0; }, 0, (double var) -> { var+=1; }); 
-        PIDCommand rightSide = new PIDCommand(new PIDController(1.0, 0.0, 0.0), () -> { return 2.0; }, 0, (double var) -> { var+=1; }); 
-
-        this.addCommands(leftSide, rightSide);
+        this.addCommands(ramseteCommand, new AutoIntakeCommand(intake));
         this.addRequirements(drive, intake);
     }
 
@@ -80,4 +80,17 @@ interface DoubleGetter{
 
 interface DoubleSetter{
     void set(double val);
+}
+
+class AutoIntakeCommand extends CommandBase {
+    Intake m_intake;
+
+    public AutoIntakeCommand(Intake m_intake) {
+        m_intake = new Intake();
+    }
+
+    @Override
+    public void execute() {
+        m_intake.spin(true, false);
+    }
 }
