@@ -85,9 +85,6 @@ public final class Constants {
     // autonomous constants
     public static final double A_kRamseteB = 2.0;
     public static final double A_kRamseteZeta = 0.7;
-    public static final double ksVolts = 1;
-    public static final double kvVoltSecondsPerMeter = 1;
-    public static final double kaVoltSecondsSquaredPerMeter = 1;
     public static final double kMaxAngularSpeedRadians = 1;
     public static final double kMaxAngularVelocityRadians = 1;
 
@@ -95,6 +92,11 @@ public final class Constants {
     public static final double FRONT_RIGHT_OFFSET = 0;
     public static final double BACK_LEFT_OFFSET = 0;
     public static final double BACK_RIGHT_OFFSET = 0;
+
+    public static final double ksVolts = 0.22;
+    public static final double kvVoltSecondsPerMeter = 1.98;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.2;
+    public static final int kDriveKinematics = 0; 
 
     // todo change those^^^!!!!
 }

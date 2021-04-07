@@ -112,9 +112,6 @@ public class DriveTrain extends SubsystemBase {
 
   public void driveArcade(double rotation, double forward, double backward) {
     double turn = forward - backward;
-
-
-
   }
 
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {

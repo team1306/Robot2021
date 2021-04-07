@@ -45,6 +45,8 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Command autoCommand;
 
+    private final boolean runAuto = false;
+
     // The robot's inputs that it recieves from the controller are defined here
     private UserAnalog driveX;
     private UserAnalog driveY;
@@ -54,8 +56,9 @@ public class RobotContainer {
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
 
-    private DriveCommand userDrive;
-    private IntakeCommand intakeCommand;
+    public DriveCommand userDrive;
+    public AutoCommand auto; 
+    public IntakeCommand intakeCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -77,6 +80,8 @@ public class RobotContainer {
 
         Intake m_intake = new Intake();
         intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
+
+        auto = new AutoCommand(tankDrive, m_intake);
     }
 
     /**
@@ -102,6 +107,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        if(runAuto) {
+            
+        } else {
+            return null;
+        }
     }
 }
