@@ -7,27 +7,9 @@
 
 package frc.robot;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-//import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
@@ -45,6 +27,8 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Command autoCommand;
 
+    private final boolean runAuto = false;
+
     // The robot's inputs that it recieves from the controller are defined here
     private UserAnalog driveX;
     private UserAnalog driveY;
@@ -54,8 +38,9 @@ public class RobotContainer {
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
 
-    private DriveCommand userDrive;
-    private IntakeCommand intakeCommand;
+    public DriveCommand userDrive;
+    public AutoCommand auto; 
+    public IntakeCommand intakeCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -77,6 +62,8 @@ public class RobotContainer {
 
         Intake m_intake = new Intake();
         intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
+
+        auto = new AutoCommand(tankDrive, m_intake);
     }
 
     /**
@@ -102,6 +89,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        System.out.println("getAutonomousCommand() IN RobotContainer IS RUNNING");
+        if(runAuto) {
+            return auto;
+        } else {
+            return null;
+        }
     }
 }

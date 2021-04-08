@@ -9,19 +9,18 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
-import frc.robot.utils.RobotMap;
 
 /**
  * Drivetrain subsystem to drive the robot. Uses DifferentialDrive
@@ -41,12 +40,18 @@ public class DriveTrain extends SubsystemBase {
   private TalonFX angleMotorBackLeft;
   private TalonFX angleMotorBackRight;
 
+  private AHRS navx;
+
+  private final DifferentialDriveOdometry m_odometry;
+
   //public SensorCollection leftSensors;
   //public SensorCollection rightSensors;
 
   private DifferentialDrive tankDrive;
 
   public static boolean reverse = true;
+  private double oldTicksLeft;
+  private double oldTicksRight;
 
   public DriveTrain() {
     // Initialize motors
@@ -63,6 +68,11 @@ public class DriveTrain extends SubsystemBase {
 
     leftFollower.follow(leftLeader);
     rightFollower.follow(rightLeader);
+
+    leftLeader.setInverted(true);
+    leftFollower.setInverted(true);
+    rightLeader.setInverted(true);
+    rightFollower.setInverted(true);
 
     angleMotorFrontLeft = new TalonFX(Constants.K_TURN_FRONT_LEFT_ID);
     angleMotorFrontRight = new TalonFX(Constants.K_TURN_FRONT_RIGHT_ID);
@@ -84,7 +94,14 @@ public class DriveTrain extends SubsystemBase {
 
     // Initialize DifferentialDrive object for use later
     //tankDrive = new DifferentialDrive(leftLeader, rightLeader);
-    //tankDrive.setDeadband(0.05);
+    //tankDrive.setDeadband(0.05);\
+    
+    // m_leftEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
+    // m_rightEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
+
+    // resetEncoders();
+    navx = new AHRS(Port.kMXP);
+    m_odometry = new DifferentialDriveOdometry(navx.getRotation2d());
   }
 
   /**
@@ -112,9 +129,6 @@ public class DriveTrain extends SubsystemBase {
 
   public void driveArcade(double rotation, double forward, double backward) {
     double turn = forward - backward;
-
-
-
   }
 
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
@@ -181,5 +195,39 @@ public class DriveTrain extends SubsystemBase {
     speed=speed*speedMultiplyer;
     rotation=rotation*turnMultiplyer;
     tankDrive.arcadeDrive(speed, rotation);
+  }
+
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    double leftOutput = leftVolts / Constants.MAX_VOLTS;
+    double rightOutput = -rightVolts / Constants.MAX_VOLTS;
+
+    leftLeader.set(ControlMode.PercentOutput, leftOutput);
+    rightLeader.set(ControlMode.PercentOutput, rightOutput);
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(leftLeader.getSelectedSensorVelocity() * Constants.kEncoderDistancePerPulse * 10, 
+                                            rightLeader.getSelectedSensorVelocity() * Constants.kEncoderDistancePerPulse * 10);
+  } // the 10 is to compensate for the 100ms from getSelectedSensorVelocity() 
+
+  @Override
+  public void periodic() {
+    // Update the odometry in the periodic block
+    double currentTicksLeft = leftLeader.getSelectedSensorPosition();
+    double deltaDistanceTicksLeft = currentTicksLeft - oldTicksLeft;
+    oldTicksLeft = currentTicksLeft;
+
+    double currentTicksRight = rightLeader.getSelectedSensorPosition();
+    double deltaDistanceTicksRight = currentTicksRight - oldTicksRight;
+    oldTicksRight = currentTicksRight;
+
+    m_odometry.update(
+        navx.getRotation2d(), 
+        deltaDistanceTicksLeft * Constants.kEncoderDistancePerPulse, 
+        deltaDistanceTicksRight * Constants.kEncoderDistancePerPulse);
   }
 }

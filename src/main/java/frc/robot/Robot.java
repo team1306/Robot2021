@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -79,12 +80,17 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        System.out.println("autonomousInit() RAN");
         autoCommand = m_robotContainer.getAutonomousCommand();
 
+        
         // schedule the autonomous command (example)
-        if (autoCommand != null) {
+        if(autoCommand != null) {
             autoCommand.schedule();
+            System.out.println("the IF STATEMENT in autonomousInit() RAN");
         }
+        
+        
     }
 
     /**

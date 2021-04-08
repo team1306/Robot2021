@@ -19,9 +19,9 @@ public class Intake extends SubsystemBase {
 
     public void spin(boolean output, boolean input){
         if(output) {
-            intakeMotor.set(ControlMode.PercentOutput, -1);
+            intakeMotor.set(ControlMode.PercentOutput, -.25);
         } else if(input) {
-            intakeMotor.set(ControlMode.PercentOutput, 1);
+            intakeMotor.set(ControlMode.PercentOutput, .25);
         }else {
             intakeMotor.set(ControlMode.PercentOutput, 0);
         }
