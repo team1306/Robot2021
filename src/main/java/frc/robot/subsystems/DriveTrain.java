@@ -69,6 +69,11 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.follow(leftLeader);
     rightFollower.follow(rightLeader);
 
+    leftLeader.setInverted(true);
+    leftFollower.setInverted(true);
+    rightLeader.setInverted(true);
+    rightFollower.setInverted(true);
+
     angleMotorFrontLeft = new TalonFX(Constants.K_TURN_FRONT_LEFT_ID);
     angleMotorFrontRight = new TalonFX(Constants.K_TURN_FRONT_RIGHT_ID);
     angleMotorBackLeft = new TalonFX(Constants.K_TURN_BACK_LEFT_ID);
@@ -95,8 +100,8 @@ public class DriveTrain extends SubsystemBase {
     // m_rightEncoder.setDistancePerPulse(Constants.kEncoderDistancePerPulse);
 
     // resetEncoders();
-    m_odometry = new DifferentialDriveOdometry(navx.getRotation2d());
     navx = new AHRS(Port.kMXP);
+    m_odometry = new DifferentialDriveOdometry(navx.getRotation2d());
   }
 
   /**

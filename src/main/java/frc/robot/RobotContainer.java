@@ -58,7 +58,7 @@ public class RobotContainer {
         System.out.println("Robot Container is running.");
 
         DriveTrain tankDrive = new DriveTrain();
-        // userDrive = new DriveCommand(tankDrive, driveX, turnRight, turnLeft);
+        userDrive = new DriveCommand(tankDrive, driveX, turnRight, turnLeft);
 
         Intake m_intake = new Intake();
         intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
@@ -89,7 +89,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        System.out.println("getAutonomousCommand() IN RobotContainer IS RUNNING")
+        System.out.println("getAutonomousCommand() IN RobotContainer IS RUNNING");
         if(runAuto) {
             return auto;
         } else {
