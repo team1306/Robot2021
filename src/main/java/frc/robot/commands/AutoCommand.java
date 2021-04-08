@@ -57,8 +57,8 @@ public class AutoCommand extends ParallelCommandGroup {
                                            Constants.kaVoltSecondsSquaredPerMeter),
                 Constants.kDriveKinematics,
                 drive::getWheelSpeeds,
-                new PIDController(0.025, 0, 0), // 0.1 was substituted in for Constants.kPDriveVel, which is the P constant of Drive Velocity ?
-                new PIDController(0.025, 0, 0), // TODO tune this constant when testing 
+                new PIDController(0.1, 0, 0), // 0.1 was substituted in for Constants.kPDriveVel, which is the P constant of Drive Velocity ?
+                new PIDController(0.1, 0, 0), // TODO tune this constant when testing 
                 // RamseteCommand passes volts to the callback
                 drive::tankDriveVolts,
                 drive

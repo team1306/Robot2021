@@ -27,7 +27,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Command autoCommand;
 
-    private final boolean runAuto = false;
+    private final boolean runAuto = true;
 
     // The robot's inputs that it recieves from the controller are defined here
     private UserAnalog driveX;
