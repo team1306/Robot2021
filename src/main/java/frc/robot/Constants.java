@@ -41,6 +41,7 @@ public final class Constants {
     public static final double K_TRACK_WIDTH_METERS = 0.7175;
     public static final double K_WHEEL_RADIUS_INCHES = 3.75; //pnuematic, so ish
     public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
+    public static final double K_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * K_WHEEL_RADIUS_METERS;
 
     public static final double MAX_VOLTS = 24;
 

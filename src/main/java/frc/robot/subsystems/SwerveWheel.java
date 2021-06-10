@@ -54,9 +54,9 @@ public class SwerveWheel extends SubsystemBase {
         
         // initializing the encoder
         angleEnc = new CANCoder(encoderID);
-        angleEnc.configFactoryDefault();
-        angleEnc.setPositionToAbsolute();
-        angleEnc.configMagnetOffset(offset);
+        angleEnc.configFactoryDefault(); 
+        angleEnc.setPositionToAbsolute(); 
+        angleEnc.configMagnetOffset(offset); 
         
         //angleEnc.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 0);
 
@@ -71,7 +71,7 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.setInverted(setInverted);
         speedMotor.setNeutralMode(NeutralMode.Brake);
         //speedMotor.setIdleMode(IdleMode.kBrake);
-
+e
         // initializing angleMotor and setting its PID loop
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
@@ -104,17 +104,18 @@ public class SwerveWheel extends SubsystemBase {
     /**
      * Calculates and assigns the vector that a swerve module is supposed to be
      * moving at. Includes the angle of the wheel and the speed that the wheel is
-     * supposed to be moving at
+     * supposed to be moving at. 
      * 
-     * @param swerve swerve module to assign values to
+     * @param swerve the swerve module contains values for the target speed and rotation of module
      */
     public void drive(SwerveModuleState swerve) {
+        //gets the current absolute rotation from the motor encoder
         Rotation2d currentRotation = Rotation2d.fromDegrees(angleEnc.getAbsolutePosition());
 
-        // swerve = optimize(swerve, currentRotation); // makes each individual wheel mess up instead of in sync
+        // swerve = optimize(swerve, currentRotation); 
         this.swerve = swerve;
         double speedMPS = swerve.speedMetersPerSecond;
-
+ 
         // convert to rotations per second from meters per second then to rotations per
         // 100 millisecond
         double speedValueRotations = speedMPS / (2 * Math.PI * Constants.K_WHEEL_RADIUS_METERS);
@@ -124,7 +125,6 @@ public class SwerveWheel extends SubsystemBase {
 
         double deltaTicks = (targetPosition.getDegrees() / 360.0) * 4096.0;
 
-        double targetTicks = deltaTicks + ((angleEnc.getAbsolutePosition() / 360.0) * 4096);
 
         angleMotor.set(ControlMode.Position, 1024);
     }
