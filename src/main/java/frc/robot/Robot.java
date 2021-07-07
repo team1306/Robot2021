@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.UserSwerveDrive;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.utils.UserAnalog;
 
@@ -29,7 +28,6 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
 
     public static SwerveDrive swerveDrive = null;
-    public static Intake intake = null;
     UserAnalog driveX;
     UserAnalog driveY;
     UserAnalog turn;

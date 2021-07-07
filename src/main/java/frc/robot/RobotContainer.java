@@ -33,8 +33,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.utils.Controller;
 import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
-import frc.robot.subsystems.Intake;
-import frc.robot.commands.IntakeCommand;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -55,7 +54,6 @@ public class RobotContainer {
     private UserDigital backwardIntake;
 
     private UserSwerveDrive userSwerveDrive;
-    private IntakeCommand intakeCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -73,9 +71,6 @@ public class RobotContainer {
         Robot.swerveDrive = driveTrain;
         userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turn);
 
-        Intake m_intake = new Intake();
-        Robot.intake = m_intake;
-        intakeCommand = new IntakeCommand(m_intake, forwardIntake, backwardIntake);
     }
 
     /**

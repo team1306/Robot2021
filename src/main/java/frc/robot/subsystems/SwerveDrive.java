@@ -49,48 +49,37 @@ public class SwerveDrive extends SubsystemBase {
     /**
      * Nothing needs to be done in the default constructor
      */
-    public SwerveDrive() {
-        
-        // navx = new AHRS();
-        
-		// navx.reset(); //Resets Yaw
-        // navx.resetDisplacement();
-        
-        // odometry =  new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d()));
-        
+    public SwerveDrive() {      
     }
 
     /**
      * Creates four new SwerveModuleStates and assigns them to their respective
      * wheels
      * 
-     * @param x1    x-coordinate movement in meters per second
-     * @param y1    y-coordinate movement in meters per second
+     * @param x    x-coordinate movement in meters per second
+     * @param y    y-coordinate movement in meters per second
      * @param turn  rotation of the wheels in radians per second
      */
-    public void driveTrain(double x1, double y1, double turn) {
-        chassisSpeeds = new ChassisSpeeds(x1, y1, turn);
+    public void driveTrain(double x, double y, double turn) {
+        //Converts from a the x-coord, y-coord and turns into an array of module states
+        chassisSpeeds = new ChassisSpeeds(x, y, turn);
         moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
-        // convert to module states
+        // making sure module states have possible values
         SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
 
+        //Getting and assigning the module states to the wheels
         SwerveModuleState frontLeftState = moduleStates[0];
         frontLeft.drive(frontLeftState);
-        // frontLeft.sketchyDrive(frontLeftState);
 
         SwerveModuleState frontRightState = moduleStates[1];
         frontRight.drive(frontRightState);
-        // frontRight.sketchyDrive(frontRightState);
 
         SwerveModuleState backLeftState = moduleStates[2];
         backLeft.drive(backLeftState);
-        // backLeft.sketchyDrive(backLeftState);
 
         SwerveModuleState backRightState = moduleStates[3];
         backRight.drive(backRightState);
-        // backRight.sketchyDrive(backRightState);
-
     }
 
     public double getAngle() {
