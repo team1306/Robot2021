@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -19,7 +20,7 @@ import frc.robot.Constants;
  * 
  * This class will also provide data to UserDrive to be used for SmartDashboard.
  */
-public class SwerveWheelRetake extends SubsystemBase {
+public class SwerveWheel extends SubsystemBase {
 
     // used for controlling wheel direction
     TalonFX angleMotor;
@@ -29,9 +30,9 @@ public class SwerveWheelRetake extends SubsystemBase {
     // errorThatShouldResultInMaxOutput = 1023)
     // TODO: don't start the robot with these values, can use the previous equation
     // to calculate
-    double angleMotor_P = 1.0;
-    double angleMotor_I = 1.0;
-    double angleMotor_D = 1.0;
+    double angleMotor_P = 2;
+    double angleMotor_I = 0;
+    double angleMotor_D = 0;
 
     // used for controlling wheel speed
     TalonFX speedMotor;
@@ -41,9 +42,9 @@ public class SwerveWheelRetake extends SubsystemBase {
     // errorThatShouldResultInMaxOutput = 1023)
     // TODO: don't start the robot with these values, can use the previous equation
     // to calculate
-    double speedMotor_P = 1.0;
-    double speedMotor_I = 1.0;
-    double speedMotor_D = 1.0;
+    double speedMotor_P = 2;
+    double speedMotor_I = 0;
+    double speedMotor_D = 0;
 
     // used for accuracy on wheel rotation
     CANCoder angleEnc;
@@ -53,9 +54,14 @@ public class SwerveWheelRetake extends SubsystemBase {
      * 
      * @param angleMotorID
      * @param speedMotorID
-     * @param encoderID
+     * @param encoderID 
+     * @param offset in degrees
      */
-    public SwerveWheelRetake(int angleMotorID, int speedMotorID, int encoderID) {
+    public SwerveWheel(int angleMotorID, int speedMotorID, int encoderID, double offset) {
+         // initialize and reset the encoder
+         angleEnc = new CANCoder(encoderID);
+         angleEnc.configFactoryDefault();
+
         // initialize and reset the angle motor
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
@@ -65,9 +71,11 @@ public class SwerveWheelRetake extends SubsystemBase {
         angleMotor.config_kI(0, speedMotor_I);
         angleMotor.config_kD(0, speedMotor_D);
 
-        // TODO: use external encoder
+        // TODO: sync internal encoder with external encoder at robot boot to make sure the absolute position is the same
         // TODO: possible use of configSelectedFeedbackCoefficient to do everything in unit of choice
         // can just use degrees, because it is default
+
+        
 
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
@@ -78,11 +86,12 @@ public class SwerveWheelRetake extends SubsystemBase {
         speedMotor.config_kI(0, angleMotor_I);
         speedMotor.config_kD(0, angleMotor_D);
 
-        // initialize and reset the encoder
-        angleEnc = new CANCoder(encoderID);
-        angleEnc.configFactoryDefault();
+        //Configuring the offset so that all wheels 0 is at the same spot
+        //Moves the wheels to that spot
+        angleEnc.configMagnetOffset(offset);
+        angleMotor.setSelectedSensorPosition( angleEnc.getAbsolutePosition() * Constants.DEGREES_TO_ENCODER_TICKS);
+        angleMotor.set(ControlMode.Position, 0);
 
-        //TODO: Configuring the offset so that wheel are set right at the beginning of the match
     }
 
     /**
