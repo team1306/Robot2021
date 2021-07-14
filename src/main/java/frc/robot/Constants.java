@@ -14,20 +14,28 @@ import edu.wpi.first.wpilibj.util.Units;
 public final class Constants {
 
     // motors and encoders on the robot
-    public static final int K_DRIVE_FRONT_LEFT_ID = 1;
-    public static final int K_DRIVE_BACK_LEFT_ID = 2;
-    public static final int K_DRIVE_FRONT_RIGHT_ID = 3;
-    public static final int K_DRIVE_BACK_RIGHT_ID = 4;
+    //if drive start at 1, if turn start at 5, if encoder start at 9
+    //if on left +1 points
+    //if on back + 2 points
+    public static final int K_DRIVE_FRONT_RIGHT_ID = 1;
+    public static final int K_DRIVE_FRONT_LEFT_ID = 2;
+    public static final int K_DRIVE_BACK_RIGHT_ID = 3;
+    public static final int K_DRIVE_BACK_LEFT_ID = 4;
 
-    public static final int K_TURN_FRONT_LEFT_ID = 5;
-    public static final int K_TURN_BACK_LEFT_ID = 6;
-    public static final int K_TURN_FRONT_RIGHT_ID = 7;
-    public static final int K_TURN_BACK_RIGHT_ID = 8;
+    public static final int K_TURN_FRONT_RIGHT_ID = 5;
+    public static final int K_TURN_FRONT_LEFT_ID = 6;
+    public static final int K_TURN_BACK_RIGHT_ID = 7;
+    public static final int K_TURN_BACK_LEFT_ID = 8;
 
-    public static final int K_ENCODER_FRONT_LEFT_ID = 9;
-    public static final int K_ENCODER_BACK_LEFT_ID = 10;
-    public static final int K_ENCODER_FRONT_RIGHT_ID = 11;
-    public static final int K_ENCODER_BACK_RIGHT_ID = 12;
+    public static final int K_ENCODER_FRONT_RIGHT_ID = 9;
+    public static final int K_ENCODER_FRONT_LEFT_ID = 10;
+    public static final int K_ENCODER_BACK_RIGHT_ID = 11;
+    public static final int K_ENCODER_BACK_LEFT_ID = 12;
+
+    public static final double K_FRONT_RIGHT_OFFSET = 0;
+    public static final double K_FRONT_LEFT_OFFSET = 0;
+    public static final double K_BACK_RIGHT_OFFSET = 0;
+    public static final double K_BACK_LEFT_OFFSET = 0;
 
     public static final int K_INTAKE = 13;
 
@@ -45,10 +53,12 @@ public final class Constants {
 
     public static final double MAX_VOLTS = 24;
 
+    public static final double DEGREES_TO_ENCODER_TICKS = 360.0 / 4096.0;
+    public static final double ENCODER_TICKS_TO_DEGREES = 4096.0 / 360.0;
+
     public static final double FASTEST_SPEED_METERS = 12;
 
     public static final double FASTEST_ACCELERATION = 1;
-
 
     public static final double X_CONTROLLER_P = 1;
     public static final double X_CONTROLLER_I = 0;
@@ -62,7 +72,6 @@ public final class Constants {
     public static final double THETA_CONTROLLER_I = 0;
     public static final double THETA_CONTROLLER_D = 0;
     
-
     //wheel base is y
     //track front is width of front of the robot and the x value
     //track back is width of the back of the robot and the other x value
@@ -76,19 +85,4 @@ public final class Constants {
      */
     public static final double FASTEST_ANGULAR_VELOCITY = FASTEST_SPEED_METERS * 2.0 * Math.PI / (WHEEL_DISTANCE_TO_CENTER * 2.0 * Math.PI);
 
-    // autonomous constants
-    public static final double A_kRamseteB = 2.0;
-    public static final double A_kRamseteZeta = 0.7;
-    public static final double ksVolts = 1;
-    public static final double kvVoltSecondsPerMeter = 1;
-    public static final double kaVoltSecondsSquaredPerMeter = 1;
-    public static final double kMaxAngularSpeedRadians = 1;
-    public static final double kMaxAngularVelocityRadians = 1;
-
-    public static final double FRONT_LEFT_OFFSET = 0;
-    public static final double FRONT_RIGHT_OFFSET = 0;
-    public static final double BACK_LEFT_OFFSET = 0;
-    public static final double BACK_RIGHT_OFFSET = 0;
-
-    // todo change those^^^!!!!
 }
