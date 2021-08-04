@@ -23,14 +23,13 @@ import frc.robot.utils.UserAnalog;
  */
 public class Robot extends TimedRobot {
     private Command autoCommand;
-    private static Command testCommand = null;
-
     private RobotContainer m_robotContainer;
 
-    public static SwerveDrive swerveDrive = null;
-    UserAnalog driveX;
-    UserAnalog driveY;
-    UserAnalog turn;
+    public static SwerveDrive swerveDrive = new SwerveDrive();
+    //TODO fill with actual values
+    UserAnalog driveX = () -> 0;
+    UserAnalog driveY = () -> 0;
+    UserAnalog turn = () -> 0;
     UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turn);
 
     // public static Intake intake = null;
@@ -135,5 +134,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        CommandScheduler.getInstance().run();
     }
 }

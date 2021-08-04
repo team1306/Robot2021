@@ -90,7 +90,8 @@ public class SwerveDrive extends SubsystemBase {
 
     // TODO add method
     public void resetOdometry(Pose2d pose) {
-        
+        // a Pose2D object is the position of the robot on a field (x, y, theta)
+        // SwerveDriveKinematics
     }
 
     public Pose2d getPose() {

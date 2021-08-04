@@ -89,9 +89,9 @@ public class UserSwerveDrive extends CommandBase {
     }
 
     public void smartdashboard() {
-        SmartDashboard.putNumber("Drive X: ", driveX.get());
-        SmartDashboard.putNumber("Drive Y: ", -driveY.get());
-        SmartDashboard.putNumber("Turn: ", turn.get());
+        // SmartDashboard.putNumber("Drive X: ", driveX.get());
+        // SmartDashboard.putNumber("Drive Y: ", -driveY.get());
+        // SmartDashboard.putNumber("Turn: ", turn.get());
     }
     
 

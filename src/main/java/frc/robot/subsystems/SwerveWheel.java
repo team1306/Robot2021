@@ -30,7 +30,7 @@ public class SwerveWheel extends SubsystemBase {
     // values are based off of 1023 being full output (i.e. kP *
     // errorThatShouldResultInMaxOutput = 1023)
     // to calculate
-    double angleMotor_P = 2;
+    double angleMotor_P = .1;
     double angleMotor_I = 0;
     double angleMotor_D = 0;
 
@@ -41,7 +41,7 @@ public class SwerveWheel extends SubsystemBase {
     // values are based off of 1023 being full output (i.e. kP *
     // errorThatShouldResultInMaxOutput = 1023)
     // to calculate
-    double speedMotor_P = 2;
+    double speedMotor_P = .1;
     double speedMotor_I = 0;
     double speedMotor_D = 0;
 
@@ -118,8 +118,12 @@ public class SwerveWheel extends SubsystemBase {
         state = SwerveModuleState.optimize(state, currentAngle);
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        setSpeed(state.speedMetersPerSecond);
-        setRotation(state.angle);
+        //setSpeed(state.speedMetersPerSecond);
+        //setPercent(.2);
+        setTurnPercent(.1);
+        //setRotation(state.angle);
+
+       // ControlMode.PercentOutput(0.2);
     }
 
     // setting motor speed
@@ -132,6 +136,14 @@ public class SwerveWheel extends SubsystemBase {
 
         // set motor equal to ^^
         speedMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
+    }
+
+    private void setPercent(double percentOutput) {
+        speedMotor.set(ControlMode.PercentOutput, percentOutput);
+    }
+
+    private void setTurnPercent(double percentOutput) {
+        angleMotor.set(ControlMode.PercentOutput, percentOutput);
     }
 
     // setting angle rotation
@@ -164,10 +176,10 @@ public class SwerveWheel extends SubsystemBase {
      * @param ID ID of the device to collect data from
      */
     public void shuffleboard(String ID) {
-        SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
-        SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
-        SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
-        SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
+        // SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
+        // SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
+        // SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
+        // SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
+        // SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
     }
 }
