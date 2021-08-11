@@ -24,6 +24,7 @@ public class UserSwerveDrive extends CommandBase {
     private final UserAnalog driveX;
     private final UserAnalog driveY;
     private final UserAnalog turn;
+    private final boolean testMode = true;
 
     /**
      * Default constructor for UserSwerveDrive. Passes a SwerveDrive
@@ -59,13 +60,9 @@ public class UserSwerveDrive extends CommandBase {
                                       -driveY.get() * Constants.FASTEST_SPEED_METERS, 
                                       turn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
 
+        
         // getting data to put onto shuffleboard 
-        m_swerveDrive.frontLeft.shuffleboard("Front Left");
-        m_swerveDrive.backLeft.shuffleboard("Back Left");
-        m_swerveDrive.frontRight.shuffleboard("Front Right");
-        m_swerveDrive.backRight.shuffleboard("Back Right");
         smartdashboard();
-
     }
 
     /**
@@ -89,9 +86,14 @@ public class UserSwerveDrive extends CommandBase {
     }
 
     public void smartdashboard() {
-        // SmartDashboard.putNumber("Drive X: ", driveX.get());
-        // SmartDashboard.putNumber("Drive Y: ", -driveY.get());
-        // SmartDashboard.putNumber("Turn: ", turn.get());
+        m_swerveDrive.frontLeft.shuffleboard("Front Left");
+        m_swerveDrive.backLeft.shuffleboard("Back Left");
+        m_swerveDrive.frontRight.shuffleboard("Front Right");
+        m_swerveDrive.backRight.shuffleboard("Back Right");
+        SmartDashboard.putNumber("X Joystick Value", driveX.get());
+        SmartDashboard.putNumber("Y Joystick Value", driveY.get());
+        SmartDashboard.putNumber("Turn Value", turn.get());
+
     }
     
 

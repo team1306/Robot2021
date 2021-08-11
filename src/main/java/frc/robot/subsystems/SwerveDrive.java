@@ -67,18 +67,19 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
 
         //Getting and assigning the module states to the wheels
-        SwerveModuleState frontLeftState = moduleStates[0];
-        frontLeft.drive(frontLeftState);
+        //SwerveModuleState frontLeftState = moduleStates[0];
+        //frontLeft.drive(frontLeftState);
 
-        SwerveModuleState frontRightState = moduleStates[1];
-        frontRight.drive(frontRightState);
+        //SwerveModuleState frontRightState = moduleStates[1];
+        //frontRight.drive(frontRightState);
 
-        SwerveModuleState backLeftState = moduleStates[2];
-        backLeft.drive(backLeftState);
+        //SwerveModuleState backLeftState = moduleStates[2];
+        //backLeft.drive(backLeftState);
 
         SwerveModuleState backRightState = moduleStates[3];
         backRight.drive(backRightState);
     }
+
 
     public double getAngle() {
         return navx.getAngle();
