@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -39,11 +40,12 @@ public class SwerveWheel extends SubsystemBase {
     // used for controlling wheel speed
     TalonFX speedMotor;
 
+
     // PID constants for the speedMotor
     // values are based off of 1023 being full output (i.e. kP *
     // errorThatShouldResultInMaxOutput = 1023)
     // to calculate
-    double speedMotor_P = .1;
+    double speedMotor_P = .01;
     double speedMotor_I = 0;
     double speedMotor_D = 0;
 
@@ -53,6 +55,7 @@ public class SwerveWheel extends SubsystemBase {
     //used for relaying data to shuffleboard
     SwerveModuleState swerve = new SwerveModuleState();
 
+    double targetSpeed = 0;
     /**
      * Initializes motors
      * 
@@ -71,20 +74,22 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor.configFactoryDefault();
 
         // Configuring the PID constants for the angle motor
-        angleMotor.config_kP(0, speedMotor_P);
-        angleMotor.config_kI(0, speedMotor_I);
-        angleMotor.config_kD(0, speedMotor_D);
+        angleMotor.config_kP(0, angleMotor_P);
+        angleMotor.config_kI(0, angleMotor_I);
+        angleMotor.config_kD(0, angleMotor_D);
 
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
 
         // Configuring the PID constants for the speed motor
-        speedMotor.config_kP(0, angleMotor_P);
-        speedMotor.config_kI(0, angleMotor_I);
-        speedMotor.config_kD(0, angleMotor_D);
+        speedMotor.config_kP(0, speedMotor_P);
+        speedMotor.config_kI(0, speedMotor_I);
+        speedMotor.config_kD(0, speedMotor_D);
 
-        // Configuring the offset so that all wheels 0 is at the same spot
+        //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
+
+        // Configuring the offset so that all wheels 0 is at the same  spot
         // Moves the wheels to that spot
 
         // param in degrees
@@ -94,7 +99,7 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.DEGREES_TO_ENCODER_TICKS);
 
         // param in encoder ticks
-        angleMotor.set(ControlMode.Position, 0);
+        angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 
     }
 
@@ -121,8 +126,9 @@ public class SwerveWheel extends SubsystemBase {
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
         //setSpeed(state.speedMetersPerSecond);
-        setSpeed(state.speedMetersPerSecond);
-       // ControlMode.PercentOutput(0.2);
+        //setSpeed(state.speedMetersPerSecond);
+        //setPercent(state.speedMetersPerSecond / 5.0);
+        ControlMode.PercentOutput(0.2);
     }
 
 
@@ -131,6 +137,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param targetSpeedMPS
      */
     private void setSpeed(double targetSpeedMPS) {
+        targetSpeed = targetSpeedMPS;
         // convert to controller native units = encoder pulses / 100 ms
         // meters per second => meters per 100 ms => encoder pulses per 100ms
         double targetSpeedToMP100ms = (targetSpeedMPS / 10);
@@ -138,11 +145,11 @@ public class SwerveWheel extends SubsystemBase {
         // TODO remeasure the wheels circumference
 
         // set motor equal to ^^
-        speedMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
+        speedMotor.set(ControlMode.Velocity, 4096);
     }
 
     // TODO values are coming out of speedMetersPerSecond and angle, need to get ControlMode.Postion working
-    // OBSERVED BEHAVIOR: wheel oscillates BackRightVoltageOutput positive negative
+    // OBSERVED BEHAVIOR: wheel oscillates BackRightVoltageOutput positive neg ative
     // potential expected behavior due to the wheel being not on the ground, friction could improve
     
 
@@ -199,5 +206,7 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
         //SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
         SmartDashboard.putNumber(ID + "Voltage Output", angleMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
+
     }
 }
