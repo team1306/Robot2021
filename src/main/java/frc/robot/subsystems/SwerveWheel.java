@@ -123,12 +123,16 @@ public class SwerveWheel extends SubsystemBase {
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
         state = SwerveModuleState.optimize(state, currentAngle);
+        // there is jittering but it doesn't sound like bad jittering
+        // down stick does not work
+        // WE CHANGED IT TO SPEED MOTOR AND NOT ANGLE MOTOR !!
+        // problem before was zero movement ON SPEED motor and it didnt change !
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        //setSpeed(state.speedMetersPerSecond);
-        //setSpeed(state.speedMetersPerSecond);
+        setSpeed(state.speedMetersPerSecond);
+
         //setPercent(state.speedMetersPerSecond / 5.0);
-        ControlMode.PercentOutput(0.2);
+        // NOTES: ^up stick and up diagonals did NOT work when using PercentOutput
     }
 
 
@@ -145,7 +149,7 @@ public class SwerveWheel extends SubsystemBase {
         // TODO remeasure the wheels circumference
 
         // set motor equal to ^^
-        speedMotor.set(ControlMode.Velocity, 4096);
+        angleMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
     }
 
     // TODO values are coming out of speedMetersPerSecond and angle, need to get ControlMode.Postion working
