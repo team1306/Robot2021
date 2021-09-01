@@ -1,0 +1,14 @@
+Speed Motors:
+P: .05, I: 0, D: 0
+No behavior observed
+
+P: .065, I: 0, D: 0
+Oscillations on back left and front right motors when accelerating and at high velocities
+Expected behavior from back right and front left motors
+Maximum speed is very low compared to potential
+
+P: .1, I: 0, D: 0
+Oscillations on all motors when accelerating
+
+P: .15, I: 0, D: 0
+Intense oscillations on all motors at most times
