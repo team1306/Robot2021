@@ -45,8 +45,10 @@ public class SwerveWheel extends SubsystemBase {
     // values are based off of 1023 being full output (i.e. kP *
     // errorThatShouldResultInMaxOutput = 1023)
     // to calculate
-    double speedMotor_P = .01;
+    // p val of 0.1 behaves as expected (although motor motion is choppy)
+    double speedMotor_P = .065;//ouculations on the back left and front right motors with p value .15
     double speedMotor_I = 0;
+    //.05 doesn't do anything no behavior
     double speedMotor_D = 0;
 
     // used for accuracy on wheel rotation
@@ -147,9 +149,9 @@ public class SwerveWheel extends SubsystemBase {
         double targetSpeedToMP100ms = (targetSpeedMPS / 10);
         double targetSpeedNativeUnits = (targetSpeedToMP100ms / Constants.K_WHEEL_CIRCUMFERENCE_METERS) * 4096.0;
         // TODO remeasure the wheels circumference
-
+    
         // set motor equal to ^^
-        angleMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
+        speedMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
     }
 
     // TODO values are coming out of speedMetersPerSecond and angle, need to get ControlMode.Postion working
@@ -209,7 +211,7 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
         //SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
         //SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
-        SmartDashboard.putNumber(ID + "Voltage Output", angleMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
 
     }
