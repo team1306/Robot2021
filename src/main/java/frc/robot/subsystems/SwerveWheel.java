@@ -33,7 +33,8 @@ public class SwerveWheel extends SubsystemBase {
     // to calculate
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
-    double angleMotor_P = .1;
+    //doesnt look to be a P value problem
+    double angleMotor_P = 1.25;
     double angleMotor_I = 0;
     double angleMotor_D = 0;
 
@@ -46,9 +47,8 @@ public class SwerveWheel extends SubsystemBase {
     // errorThatShouldResultInMaxOutput = 1023)
     // to calculate
     // p val of 0.1 behaves as expected (although motor motion is choppy)
-    double speedMotor_P = .065;//ouculations on the back left and front right motors with p value .15
+    double speedMotor_P = .015;
     double speedMotor_I = 0;
-    //.05 doesn't do anything no behavior
     double speedMotor_D = 0;
 
     // used for accuracy on wheel rotation
@@ -94,6 +94,7 @@ public class SwerveWheel extends SubsystemBase {
         // Configuring the offset so that all wheels 0 is at the same  spot
         // Moves the wheels to that spot
 
+
         // param in degrees
         angleEnc.configMagnetOffset(offset);
 
@@ -124,17 +125,16 @@ public class SwerveWheel extends SubsystemBase {
         // gets the current angle from the angle enc and optimizes the module so it
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
-        state = SwerveModuleState.optimize(state, currentAngle);
+        //state = SwerveModuleState.optimize(state, currentAngle);
         // there is jittering but it doesn't sound like bad jittering
         // down stick does not work
         // WE CHANGED IT TO SPEED MOTOR AND NOT ANGLE MOTOR !!
         // problem before was zero movement ON SPEED motor and it didnt change !
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        setSpeed(state.speedMetersPerSecond);
-
-        //setPercent(state.speedMetersPerSecond / 5.0);
-        // NOTES: ^up stick and up diagonals did NOT work when using PercentOutput
+        //setSpeed(state.speedMetersPerSecond);
+        setRotation(state.angle);
+        // setTurnPercent(0.25);
     }
 
 
@@ -209,10 +209,14 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
         //SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
         //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
-        //SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
-        //SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
-        SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
+        SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
+        SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
+        //SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
+        //SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
+
+        SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition());
+        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
 
     }
 }

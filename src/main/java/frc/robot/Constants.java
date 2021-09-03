@@ -32,9 +32,9 @@ public final class Constants {
     public static final int K_ENCODER_BACK_RIGHT_ID = 11;
     public static final int K_ENCODER_BACK_LEFT_ID = 12;
 
-    public static final double K_FRONT_RIGHT_OFFSET = 90;
-    public static final double K_FRONT_LEFT_OFFSET = 180;
-    public static final double K_BACK_RIGHT_OFFSET = 0;
+    public static final double K_FRONT_RIGHT_OFFSET = 2;
+    public static final double K_FRONT_LEFT_OFFSET = -22;
+    public static final double K_BACK_RIGHT_OFFSET = -102;
     public static final double K_BACK_LEFT_OFFSET = 0;
 
     public static final int K_INTAKE = 13;
@@ -56,7 +56,7 @@ public final class Constants {
     public static final double DEGREES_TO_ENCODER_TICKS = 360.0 / 4096.0;
     public static final double ENCODER_TICKS_TO_DEGREES = 4096.0 / 360.0;
 
-    public static final double FASTEST_SPEED_METERS = 5;
+    public static final double FASTEST_SPEED_METERS = 25;
 
     public static final double FASTEST_ACCELERATION = 1;
 
