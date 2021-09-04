@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -49,7 +50,7 @@ public class SwerveWheel extends SubsystemBase {
     // p val of 0.1 behaves as expected (although motor motion is choppy)
     double speedMotor_P = .015;
     double speedMotor_I = 0;
-    double speedMotor_D = 0;
+    double speedMotor_D = 0.075;
 
     // used for accuracy on wheel rotation
     CANCoder angleEnc;
@@ -74,6 +75,7 @@ public class SwerveWheel extends SubsystemBase {
         // initialize and reset the angle motor
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
+        angleMotor.setNeutralMode(NeutralMode.Coast);
 
         // Configuring the PID constants for the angle motor
         angleMotor.config_kP(0, angleMotor_P);
@@ -83,6 +85,8 @@ public class SwerveWheel extends SubsystemBase {
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
+        speedMotor.setNeutralMode(NeutralMode.Coast);
+
 
         // Configuring the PID constants for the speed motor
         speedMotor.config_kP(0, speedMotor_P);
@@ -96,13 +100,13 @@ public class SwerveWheel extends SubsystemBase {
 
 
         // param in degrees
-        angleEnc.configMagnetOffset(offset);
+        //angleEnc.configMagnetOffset(offset);
 
         // param in encoder ticks
-        angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.DEGREES_TO_ENCODER_TICKS);
 
         // param in encoder ticks
-        angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
+        //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 
     }
 
@@ -126,14 +130,11 @@ public class SwerveWheel extends SubsystemBase {
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
         //state = SwerveModuleState.optimize(state, currentAngle);
-        // there is jittering but it doesn't sound like bad jittering
-        // down stick does not work
-        // WE CHANGED IT TO SPEED MOTOR AND NOT ANGLE MOTOR !!
-        // problem before was zero movement ON SPEED motor and it didnt change !
+        
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        //setSpeed(state.speedMetersPerSecond);
-        setRotation(state.angle);
+        setSpeed(state.speedMetersPerSecond);
+        //setRotation(state.angle);
         // setTurnPercent(0.25);
     }
 
@@ -209,14 +210,14 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
         //SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
         //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
-        SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
-        SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
-        //SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
-        //SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
+        //SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
+        //SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
+        SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
 
-        SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
+        //SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition());
+        //SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
 
     }
 }
