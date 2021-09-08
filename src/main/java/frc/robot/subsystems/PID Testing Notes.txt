@@ -52,3 +52,9 @@ only that wheel moves
 p: 2
 bouncy ( 1 wheel )
 only that wheel moves
+
+More Notes: 
+Motors output voltage reverses after jamming. 
+previus p was 1.25 oscillations around the target
+.01 no behavior
+.1 no behavior
