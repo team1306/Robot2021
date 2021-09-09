@@ -105,7 +105,7 @@ public class SwerveWheel extends SubsystemBase {
 
 
         // param in encoder ticks
-        //angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.DEGREES_TO_ENCODER_TICKS);
+        angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.GEAR_RATIO * 2048 / 360);
 
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
@@ -234,8 +234,8 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
+        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()/Constants.GEAR_RATIO);
+        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition()/ Constants.GEAR_RATIO / (2048.0) * (360.0));
 
     }
 }

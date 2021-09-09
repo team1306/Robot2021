@@ -59,7 +59,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param turn  rotation of the wheels in radians per second
      */
     public void driveTrain(double x, double y, double turn) {
-        //Converts from a the x-coord, y-coord and turns into an array of module states
+        //Converts from the x-coord, y-coord and turns into an array of module states
         chassisSpeeds = new ChassisSpeeds(x, y, turn);
         moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 

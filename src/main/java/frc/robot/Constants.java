@@ -72,6 +72,7 @@ public final class Constants {
     public static final double THETA_CONTROLLER_I = 0;
     public static final double THETA_CONTROLLER_D = 0;
     
+    public static final double GEAR_RATIO = 12.8;
     //wheel base is y
     //track front is width of front of the robot and the x value
     //track back is width of the back of the robot and the other x value

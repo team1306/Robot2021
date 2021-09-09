@@ -93,7 +93,6 @@ public class UserSwerveDrive extends CommandBase {
         SmartDashboard.putNumber("X Joystick Value", driveX.get());
         SmartDashboard.putNumber("Y Joystick Value", driveY.get());
         SmartDashboard.putNumber("Turn Value", turn.get());
-
     }
     
 

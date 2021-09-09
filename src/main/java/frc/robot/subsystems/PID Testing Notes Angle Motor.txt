@@ -1,0 +1,15 @@
+Things to verify:
+
+  angleMotor.getSelectedSensorPosition returns the correct value 
+yes
+   angleEnc.getAbsolutePosition returns the correct value 
+yes
+   syncing the angleEnc.getAbsolutePosition with the angleMotor.getSelectedSensorPosition results in the same values 
+yes
+   Confirming that the PID constants are being changed via the self-test snapshot
+
+   Confirm that error and pid targets are correct
+
+   Tune PID coefficients 
+
+   Set angleOffsets at the start of matches so that the motors start facing forwards

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
@@ -11,7 +12,7 @@ public class tests {
     static Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
     static Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
     public static void main(String[] args) {
-        System.out.println( chasisSpeedsPrintOut(chasisSpeedsTest(-.85,.85,0)));
+        System.out.println( chasisSpeedsPrintOut(chasisSpeedsTest(0,0,1)));
     }
 
 
@@ -27,6 +28,7 @@ public class tests {
         double[] returnValue = new double[8];
 
         for(int i = 0; i < 4; i++) {
+            moduleStates[i] = SwerveModuleState.optimize(moduleStates[i], Rotation2d.fromDegrees(0));
             returnValue[i] = moduleStates[i].speedMetersPerSecond;
             returnValue[i + 4] = moduleStates[i].angle.getDegrees();
         }
