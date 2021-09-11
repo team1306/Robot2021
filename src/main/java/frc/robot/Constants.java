@@ -53,8 +53,8 @@ public final class Constants {
 
     public static final double MAX_VOLTS = 24;
 
-    public static final double DEGREES_TO_ENCODER_TICKS = 360.0 / 4096.0;
-    public static final double ENCODER_TICKS_TO_DEGREES = 4096.0 / 360.0;
+    public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 2048.0;
+    public static final double DEGREES_TO_ENCODER_TICKS = 2048.0 / 360.0;
 
     public static final double FASTEST_SPEED_METERS = 25;
 

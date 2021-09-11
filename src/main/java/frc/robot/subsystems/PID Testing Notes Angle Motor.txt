@@ -7,9 +7,29 @@ yes
    syncing the angleEnc.getAbsolutePosition with the angleMotor.getSelectedSensorPosition results in the same values 
 yes
    Confirming that the PID constants are being changed via the self-test snapshot
-
+yes
    Confirm that error and pid targets are correct
-
+The error seems to be incorrect
    Tune PID coefficients 
 
    Set angleOffsets at the start of matches so that the motors start facing forwards
+
+Our current tick range is 0-2048. In the method `SetPIDTarget` in SwerveWheel.java, we tested values in the range of 0-2048
+to see how the wheels would behave. The following are what we found out:
+
+- The robot sometimes needs to be deployed code TWICE for the position to properly register - i.e. we tried to make the
+wheel go to 1024, and it didn't work, and then I deployed the code again, and it worked. who knows why ;
+- [10:49] The wheels work turning from 0 to 1024, each time only needing one deployment
+- [10:51] Going from 0 to 512 worked with one deployment (but a ONE TIME OCCASION of 1024-0 flipped twice)
+- [10:54] Continuing from 512 to 1024, 1024 to 1536, and 1536 to 2047 worked with one deployment
+- [10:57] Going from 2048 to 1536, 1536 to 1024, 1024 to 512, and 512 to 0 worked with one deployment.
+- [11:04] The robot makes unconsistent errors, such as moving twice per one enable
+- [11:14] The wheel is very sensative to controller movement, has specific setpoints that it likes going to
+            Will ocasionally rotate randomly P-value - .5
+- [11:16] The wheel does a 359 when reaching the edge of movement range
+- [11:18] Enabled optimize which resulted in oscillations around setpoint P-value: .015
+- [11:21] Reducing the P-value(.005) resulted in no behavior after the wheel reaches 0. The behavior before it 
+            reaches 0 is jittery. Automaticallys moves 0, and will not move away from 0. 
+- [11:26] Not responding to control input properly. The PID error is not resulting in movement. 
+- [11:27] Intense oscillations with a p-value of (.05).
+- [11:31] Best behavior yet, moves to setpoints with slight oscillations that fade, only can move to specific setpoints

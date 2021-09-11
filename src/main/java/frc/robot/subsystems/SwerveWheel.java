@@ -35,9 +35,9 @@ public class SwerveWheel extends SubsystemBase {
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
     //doesnt look to be a P value problem
-    double angleMotor_P = .5;
-    double angleMotor_I = .000001;
-    double angleMotor_D = 0;
+    double angleMotor_P = .01;
+    double angleMotor_I = .000000;
+    double angleMotor_D = 0.0;
 
     // used for controlling wheel speed
     TalonFX speedMotor;
@@ -82,6 +82,8 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor.config_kI(0, angleMotor_I);
         angleMotor.config_kD(0, angleMotor_D);
 
+        angleMotor.configFeedbackNotContinuous(false, 0);
+
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
@@ -105,7 +107,7 @@ public class SwerveWheel extends SubsystemBase {
 
 
         // param in encoder ticks
-        angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.GEAR_RATIO * 2048 / 360);
+        angleMotor.setSelectedSensorPosition(angleEnc.getAbsolutePosition() * Constants.GEAR_RATIO * (2048.0 / 360.0));
 
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
@@ -132,13 +134,14 @@ public class SwerveWheel extends SubsystemBase {
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
         //state = SwerveModuleState.optimize(state, currentAngle);
+         
         
 
 
-
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        setSpeed(state.speedMetersPerSecond);
-        //setRotation(state.angle);
+        //setSpeed(state.speedMetersPerSecond);
+        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        setPIDTarget(1024);
         // setTurnPercent(0.25);
     }
 
@@ -171,7 +174,12 @@ public class SwerveWheel extends SubsystemBase {
         double targetRotationEncoderPulses = targetRotation.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS;
 
         // set angle pos to ^^
-        angleMotor.set(ControlMode.Position, targetRotationEncoderPulses);
+        angleMotor.set(ControlMode.Position, targetRotationEncoderPulses * Constants.GEAR_RATIO);
+    }
+
+    // setting PID target
+    private void setPIDTarget(double encoderPulses) {
+        angleMotor.set(ControlMode.Position, encoderPulses * Constants.GEAR_RATIO);
     }
 
     /**
@@ -228,14 +236,17 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
         //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
 
+        //[-1024, 1024] expected
         SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
-        SmartDashboard.putNumber(ID + ":Target PID Target", angleMotor.getClosedLoopTarget());
+
+        //Outputing the PID target [0, 2048] expected
+        SmartDashboard.putNumber(ID + ":Target PID Target", (angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048);
         //SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
         //SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()/Constants.GEAR_RATIO);
-        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition()/ Constants.GEAR_RATIO / (2048.0) * (360.0));
+        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition() / Constants.GEAR_RATIO);
+        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
 
     }
 }
