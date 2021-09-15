@@ -33,3 +33,12 @@ wheel go to 1024, and it didn't work, and then I deployed the code again, and it
 - [11:26] Not responding to control input properly. The PID error is not resulting in movement. 
 - [11:27] Intense oscillations with a p-value of (.05).
 - [11:31] Best behavior yet, moves to setpoints with slight oscillations that fade, only can move to specific setpoints
+
+- P of .05, target of 0, error of 48 encoder ticks, target of 512 error of 40 encoder ticks,
+- changing target value from 512 to 532 had no behavior, adding on the error by 
+- adding in a I of .00005 reduced the error to 0,
+
+- Offset of -260, absolute value was 200 
+- Offset of -200, absolute value was close to 0, and orientation of actual wheel was 90 degrees Offset clockwise
+- Offset of +200, absolute value was close to 200, and orientation was 90 degrees offset counter clickwise
+- Offset of 0, absolute value was 333, and orientation was roughly 110 degrees Offset counter clockwise
