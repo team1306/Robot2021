@@ -140,10 +140,9 @@ public class SwerveWheel extends SubsystemBase {
 
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
-        setSpeed(state.speedMetersPerSecond);
-        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS / Constants.GEAR_RATIO);
-        // setTurnPercent(0.25);
+        //setSpeed(state.speedMetersPerSecond);
+        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //etPIDTarget(1024);
     }
 
 
@@ -212,19 +211,8 @@ public class SwerveWheel extends SubsystemBase {
     public double getAngle() {
         return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES;
     }
-    private boolean isChanged;
-    private SwerveModuleState optimize(SwerveModuleState desiredState) {
-        //if abs value of angle is > 90, then set negative voltage
-        //else set same state
-
-        if(Math.abs(desiredState.angle.getDegrees()) > 90){
-            return new SwerveModuleState(-(desiredState.speedMetersPerSecond),
-             Rotation2d.fromDegrees(180 - desiredState.angle.getDegrees()));
-        }
-        else{
-            return desiredState;
-        }
-    }
+    
+    
 
     /**
      * Prints out data to Shuffleboard based on the ID of the device that is passed

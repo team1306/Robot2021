@@ -42,3 +42,8 @@ wheel go to 1024, and it didn't work, and then I deployed the code again, and it
 - Offset of -200, absolute value was close to 0, and orientation of actual wheel was 90 degrees Offset clockwise
 - Offset of +200, absolute value was close to 200, and orientation was 90 degrees offset counter clickwise
 - Offset of 0, absolute value was 333, and orientation was roughly 110 degrees Offset counter clockwise
+
+.5: moves quickly to target with static targets, uncontrollable while driving
+.05: small oscillations 
+.005: large oscillations
+.0005: very large oscillations that throw off the setpoint
