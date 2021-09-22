@@ -35,8 +35,8 @@ public class SwerveWheel extends SubsystemBase {
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
     //doesnt look to be a P value problem
-    double angleMotor_P = .05;
-    double angleMotor_I = .00005;
+    double angleMotor_P = .01;
+    double angleMotor_I = 5e-5;
     double angleMotor_D = 0.0;
 
     // used for controlling wheel speed
@@ -141,9 +141,8 @@ public class SwerveWheel extends SubsystemBase {
 
         // call setSpeed and setRotation with proper values from our SwerveModuleState
         setSpeed(state.speedMetersPerSecond);
-        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS / Constants.GEAR_RATIO);
-        // setTurnPercent(0.25);
+        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //setPIDTarget(351);
     }
 
 
@@ -210,7 +209,7 @@ public class SwerveWheel extends SubsystemBase {
      * @return the current degree rotation of the angle wheel
      */
     public double getAngle() {
-        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES;
+        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES / Constants.GEAR_RATIO;
     }
     private boolean isChanged;
     private SwerveModuleState optimize(SwerveModuleState desiredState) {
@@ -243,11 +242,13 @@ public class SwerveWheel extends SubsystemBase {
         //Outputing the PID target [0, 2048] expected
         SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
         SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
+        SmartDashboard.putNumber(ID + "Voltage Out Motor", angleMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition() / Constants.GEAR_RATIO);
         SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition() + wheelOffset);
-
+        // within about a degree
+        SmartDashboard.putBoolean(ID + "Is Acceptable Error?", Math.abs((angleMotor.getClosedLoopError() / Constants.GEAR_RATIO) % 2048) < 6);
     }
 }

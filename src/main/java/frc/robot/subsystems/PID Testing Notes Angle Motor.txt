@@ -42,3 +42,13 @@ wheel go to 1024, and it didn't work, and then I deployed the code again, and it
 - Offset of -200, absolute value was close to 0, and orientation of actual wheel was 90 degrees Offset clockwise
 - Offset of +200, absolute value was close to 200, and orientation was 90 degrees offset counter clickwise
 - Offset of 0, absolute value was 333, and orientation was roughly 110 degrees Offset counter clockwise
+
+
+p of .05 and target 0 caused the front right wheel to oscillate. (not osc. in 2nd try with target = 1024 )
+p of .04  stopped oscillations, but also falls short (less so than .025)
+p of .025 stopped oscillations, but a bit slow (falls short)
+
+Once optimize is enabled the wheels switch between 0 and 1024 as their target causing the wheels 
+to oscillate at random points. Once the robot is disabled the wheels move close to the target (0 or 1024).
+Once the wheels are at the setpoint they stay there upon enabling. After several repitions all the wheels  
+are at one of two setpoints. 

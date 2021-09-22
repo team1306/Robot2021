@@ -33,7 +33,7 @@ public final class Constants {
     public static final int K_ENCODER_BACK_LEFT_ID = 12;
 
     public static final double K_FRONT_RIGHT_OFFSET = 2;
-    public static final double K_FRONT_LEFT_OFFSET = 0;
+    public static final double K_FRONT_LEFT_OFFSET = -21;
     public static final double K_BACK_RIGHT_OFFSET = -101.689;
     public static final double K_BACK_LEFT_OFFSET = -230;
 
