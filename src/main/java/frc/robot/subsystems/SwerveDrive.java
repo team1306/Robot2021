@@ -61,7 +61,7 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void driveTrain(double x, double y, double turn) {
         //Converts from the x-coord, y-coord and turns into an array of module states
-        chassisSpeeds = new ChassisSpeeds(x, y, turn);
+        chassisSpeeds = new ChassisSpeeds(y, x, turn);
         moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
         // making sure module states have possible values
@@ -72,14 +72,14 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState frontLeftState = moduleStates[0];
         frontLeft.drive(frontLeftState);
 
-        SwerveModuleState frontRightState = moduleStates[1];
-        frontRight.drive(frontRightState);
+        //SwerveModuleState frontRightState = moduleStates[1];
+        //frontRight.drive(frontRightState);
         
-        SwerveModuleState backLeftState = moduleStates[2];
-        backLeft.drive(backLeftState);
+        //SwerveModuleState backLeftState = moduleStates[2];
+        //backLeft.drive(backLeftState);
 
-        SwerveModuleState backRightState = moduleStates[3];
-        backRight.drive(backRightState);
+        //SwerveModuleState backRightState = moduleStates[3];
+        //backRight.drive(backRightState);
     }
 
 
