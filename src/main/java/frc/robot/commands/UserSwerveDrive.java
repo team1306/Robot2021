@@ -56,14 +56,30 @@ public class UserSwerveDrive extends CommandBase {
      */
     @Override
     public void execute() {
-        
-        m_swerveDrive.driveTrain(driveX.get() * Constants.FASTEST_SPEED_METERS, 
-                                      driveY.get() * Constants.FASTEST_SPEED_METERS, 
-                                      turn.get() * Constants.FASTEST_ANGULAR_VELOCITY);
+        double driveXTarget = deadzone(driveX.get());
+        double driveYTarget = deadzone(driveY.get());
+        double turnTarget = deadzone(turn.get());
+
+        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, 
+                                     - driveYTarget * Constants.FASTEST_SPEED_METERS, 
+                                      turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5);
 
         
         // getting data to put onto shuffleboard 
         smartdashboard();
+    }
+
+    /**
+     * 
+     * @param input the joystick value that should have a deadzone
+     * @return input if the absoluteValue of input is greater than .1
+     *          otherwise 0
+     */
+    public double deadzone(double input) {
+        if(Math.abs(input) > .1)
+            return input;
+
+        return 0;
     }
 
     /**

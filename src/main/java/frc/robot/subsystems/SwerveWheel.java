@@ -36,7 +36,8 @@ public class SwerveWheel extends SubsystemBase {
     //need to test on the ground
     //doesnt look to be a P value problem
     double angleMotor_P = .04;
-    double angleMotor_I = .000000;
+    double angleMotor_I = .00005;
+
     double angleMotor_D = 0.0;
 
     // used for controlling wheel speed
@@ -99,17 +100,10 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.setInverted(isRev);
         //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
 
-        // Configuring the offset so that all wheels 0 is at the same  spot
-        // Moves the wheels to that spot
-
-
-        // param in degrees
-        //angleEnc.configMagnetOffset(0);
-
-
         // param in encoder ticks
         angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * (2048.0 / 360.0));
 
+        angleMotor.setInverted(true);
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 

@@ -58,3 +58,5 @@ Motors output voltage reverses after jamming.
 previus p was 1.25 oscillations around the target
 .01 no behavior
 .1 no behavior
+
+sometimes target drive motor voltage will jump in between 0 and the actual target velocity 

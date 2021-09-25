@@ -32,10 +32,10 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID, false, Constants.K_BACK_RIGHT_OFFSET);
 
 
-    Translation2d frontLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    Translation2d backRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    Translation2d frontLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    Translation2d backRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
 
     public SwerveDriveOdometry odometry;
     private AHRS navx; //Gyro we use, navX Sensor
@@ -72,14 +72,14 @@ public class SwerveDrive extends SubsystemBase {
         SwerveModuleState frontLeftState = moduleStates[0];
         frontLeft.drive(frontLeftState);
 
-        //SwerveModuleState frontRightState = moduleStates[1];
-        //frontRight.drive(frontRightState);
+        SwerveModuleState frontRightState = moduleStates[1];
+        frontRight.drive(frontRightState);
         
-        //SwerveModuleState backLeftState = moduleStates[2];
-        //backLeft.drive(backLeftState);
+        SwerveModuleState backLeftState = moduleStates[2];
+        backLeft.drive(backLeftState);
 
-        //SwerveModuleState backRightState = moduleStates[3];
-        //backRight.drive(backRightState);
+        SwerveModuleState backRightState = moduleStates[3];
+        backRight.drive(backRightState);
     }
 
 
@@ -91,17 +91,4 @@ public class SwerveDrive extends SubsystemBase {
         moduleStates = states;
     }
 
-    // TODO add method
-    public void resetOdometry(Pose2d pose) {
-        // a Pose2D object is the position of the robot on a field (x, y, theta)
-        // SwerveDriveKinematics
-    }
-
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
-    }
-
-    public void updatePose() {
-        odometry.update(Rotation2d.fromDegrees(getAngle()), moduleStates[0], moduleStates[1], moduleStates[2], moduleStates[3]);
-    }
 }
