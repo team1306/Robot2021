@@ -35,8 +35,9 @@ public class SwerveWheel extends SubsystemBase {
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
     //doesnt look to be a P value problem
-    double angleMotor_P = .01;
-    double angleMotor_I = 5e-5;
+    double angleMotor_P = .04;
+    double angleMotor_I = .00005;
+
     double angleMotor_D = 0.0;
 
     // used for controlling wheel speed
@@ -99,17 +100,10 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.setInverted(isRev);
         //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
 
-        // Configuring the offset so that all wheels 0 is at the same  spot
-        // Moves the wheels to that spot
-
-
-        // param in degrees
-        //angleEnc.configMagnetOffset(0);
-
-
         // param in encoder ticks
         angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * (2048.0 / 360.0));
 
+        angleMotor.setInverted(true);
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 
@@ -134,7 +128,7 @@ public class SwerveWheel extends SubsystemBase {
         // gets the current angle from the angle enc and optimizes the module so it
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
-        state = SwerveModuleState.optimize(state, currentAngle);
+        state = optimize(state, currentAngle);
          
         
 
@@ -142,8 +136,51 @@ public class SwerveWheel extends SubsystemBase {
         // call setSpeed and setRotation with proper values from our SwerveModuleState
         setSpeed(state.speedMetersPerSecond);
         setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        //setPIDTarget(351);
+        //etPIDTarget(1024);
+        //setPercent(.2);
+        
     }
+
+    public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
+        double targetSpeed = desiredState.speedMetersPerSecond;
+        double delta = targetAngle - currentAngle.getDegrees();
+        if (Math.abs(delta) > 90){
+            targetSpeed = -targetSpeed;
+            targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+        }        
+        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+      }
+    
+      /**
+         * @param scopeReference Current Angle
+         * @param newAngle Target Angle
+         * @return Closest angle within scope
+         */
+        private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
+          double lowerBound;
+          double upperBound;
+          double lowerOffset = scopeReference % 360;
+          if (lowerOffset >= 0) {
+              lowerBound = scopeReference - lowerOffset;
+              upperBound = scopeReference + (360 - lowerOffset);
+          } else {
+              upperBound = scopeReference - lowerOffset;
+              lowerBound = scopeReference - (360 + lowerOffset);
+          }
+          while (newAngle < lowerBound) {
+              newAngle += 360;
+          }
+          while (newAngle > upperBound) {
+              newAngle -= 360;
+          }
+          if (newAngle - scopeReference > 180) {
+              newAngle -= 360;
+          } else if (newAngle - scopeReference < -180) {
+              newAngle += 360;
+          }
+          return newAngle;
+      }
 
 
     /**
@@ -209,21 +246,10 @@ public class SwerveWheel extends SubsystemBase {
      * @return the current degree rotation of the angle wheel
      */
     public double getAngle() {
-        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES / Constants.GEAR_RATIO;
+        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES / 12.8;
     }
-    private boolean isChanged;
-    private SwerveModuleState optimize(SwerveModuleState desiredState) {
-        //if abs value of angle is > 90, then set negative voltage
-        //else set same state
-
-        if(Math.abs(desiredState.angle.getDegrees()) > 90){
-            return new SwerveModuleState(-(desiredState.speedMetersPerSecond),
-             Rotation2d.fromDegrees(180 - desiredState.angle.getDegrees()));
-        }
-        else{
-            return desiredState;
-        }
-    }
+    
+    
 
     /**
      * Prints out data to Shuffleboard based on the ID of the device that is passed
@@ -242,13 +268,12 @@ public class SwerveWheel extends SubsystemBase {
         //Outputing the PID target [0, 2048] expected
         SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
         SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputPercent());
-        SmartDashboard.putNumber(ID + "Voltage Out Motor", angleMotor.getMotorOutputPercent());
         SmartDashboard.putNumber(ID + "targetSpeedMPS:", targetSpeed);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition() / Constants.GEAR_RATIO);
         SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition() + wheelOffset);
-        // within about a degree
-        SmartDashboard.putBoolean(ID + "Is Acceptable Error?", Math.abs((angleMotor.getClosedLoopError() / Constants.GEAR_RATIO) % 2048) < 6);
+        SmartDashboard.putNumber(ID + "angle voltage output", angleMotor.getMotorOutputPercent());
+
     }
 }

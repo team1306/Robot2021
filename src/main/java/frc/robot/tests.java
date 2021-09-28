@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 
 public class tests {
-    static Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    static Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    static Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
-    static Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    static Translation2d frontLeftWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    static Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    static Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+    static Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
     public static void main(String[] args) {
-        System.out.println( chasisSpeedsPrintOut(chasisSpeedsTest(.05,-.05,0)));
+        System.out.println( chasisSpeedsPrintOut(chasisSpeedsTest(1,0,1)));
     }
 
 
@@ -30,7 +30,7 @@ public class tests {
         for(int i = 0; i < 4; i++) {
             moduleStates[i] = SwerveModuleState.optimize(moduleStates[i], Rotation2d.fromDegrees(0));
             returnValue[i] = moduleStates[i].speedMetersPerSecond;
-            returnValue[i + 4] = moduleStates[i].angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS;
+            returnValue[i + 4] = moduleStates[i].angle.getDegrees();
         }
 
         return returnValue;
