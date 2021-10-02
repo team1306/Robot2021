@@ -34,9 +34,9 @@ public final class Constants {
 
     public static final double K_FRONT_RIGHT_OFFSET = 2;
     public static final double K_FRONT_LEFT_OFFSET = -20;
-    public static final double K_BACK_RIGHT_OFFSET = -101.689;
-    public static final double K_BACK_LEFT_OFFSET = -230;
-
+    public static final double K_BACK_RIGHT_OFFSET = -105;
+    public static final double K_BACK_LEFT_OFFSET = -232;
+    // front right 2  front left -20   back right -105   back left -232
     public static final int K_INTAKE = 13;
 
     public static final int NAVX_ID = 14;

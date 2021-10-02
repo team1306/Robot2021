@@ -35,9 +35,8 @@ public class SwerveWheel extends SubsystemBase {
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
     //doesnt look to be a P value problem
-    double angleMotor_P = .04;
+    double angleMotor_P = .02;
     double angleMotor_I = .00005;
-
     double angleMotor_D = 0.0;
 
     // used for controlling wheel speed
@@ -68,7 +67,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param encoderID
      * @param offset       in degrees
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean isRev, double offset) {
+    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean isRev, double offset, boolean isAngleReversed) {
         wheelOffset = offset;
         // initialize and reset the encoder
         angleEnc = new CANCoder(encoderID);
@@ -78,6 +77,7 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
         angleMotor.setNeutralMode(NeutralMode.Coast);
+        angleMotor.setInverted(isAngleReversed);
 
         // Configuring the PID constants for the angle motor
         angleMotor.config_kP(0, angleMotor_P);
@@ -101,9 +101,8 @@ public class SwerveWheel extends SubsystemBase {
         //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
 
         // param in encoder ticks
-        angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * (2048.0 / 360.0));
+        angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
 
-        angleMotor.setInverted(true);
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 

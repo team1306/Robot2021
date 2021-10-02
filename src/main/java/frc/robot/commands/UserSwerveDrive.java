@@ -60,7 +60,7 @@ public class UserSwerveDrive extends CommandBase {
         double driveYTarget = deadzone(driveY.get());
         double turnTarget = deadzone(turn.get());
 
-        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, 
+        m_swerveDrive.driveTrain(-driveXTarget * Constants.FASTEST_SPEED_METERS, 
                                      - driveYTarget * Constants.FASTEST_SPEED_METERS, 
                                       turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5);
 
