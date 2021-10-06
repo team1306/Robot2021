@@ -35,7 +35,7 @@ public class SwerveWheel extends SubsystemBase {
     //works for slow acceleration, but it doesn't work for sudden changes
     //need to test on the ground
     //doesnt look to be a P value problem
-    double angleMotor_P = .02;
+    double angleMotor_P = .015;
     double angleMotor_I = .00005;
     double angleMotor_D = 0.0;
 
@@ -85,6 +85,9 @@ public class SwerveWheel extends SubsystemBase {
         angleMotor.config_kD(0, angleMotor_D);
 
         angleMotor.configFeedbackNotContinuous(false, 0);
+        
+        // param in encoder ticks
+        angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
 
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
@@ -99,9 +102,6 @@ public class SwerveWheel extends SubsystemBase {
 
         speedMotor.setInverted(isRev);
         //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
-
-        // param in encoder ticks
-        angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + wheelOffset) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
 
         // param in encoder ticks
         //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);

@@ -63,3 +63,5 @@ sometimes target drive motor voltage will jump in between 0 and the actual targe
 
 re-deploying code caused wheels to turn to a new set point. the set point increased every time.
 disabling and enabling the code didn't cause the wheels to change set points
+
+OFFSETS DON'T WORK

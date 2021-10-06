@@ -27,6 +27,8 @@ public interface UserAnalog {
         return Math.max(-1, Math.min(1, val));
     }
 
+
+
     /**
      * @return value - a [-1,1] value based on the input from the user or controller
      */

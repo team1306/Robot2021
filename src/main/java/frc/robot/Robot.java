@@ -29,8 +29,9 @@ public class Robot extends TimedRobot {
     //TODO fill with actual values
     UserAnalog driveX = () -> 0;
     UserAnalog driveY = () -> 0;
-    UserAnalog turn = () -> 0;
-    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turn);
+    UserAnalog turnLeft = () -> 0;
+    UserAnalog turnRight = () -> 0;
+    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turnRight, turnLeft);
 
     // public static Intake intake = null;
 

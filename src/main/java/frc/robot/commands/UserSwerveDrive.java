@@ -23,7 +23,9 @@ public class UserSwerveDrive extends CommandBase {
     public final SwerveDrive m_swerveDrive;
     private final UserAnalog driveX;
     private final UserAnalog driveY;
-    private final UserAnalog turn;
+    private UserAnalog turn;
+    private final UserAnalog turnLeft;
+    private final UserAnalog turnRight;
     private final boolean testMode = true;
 
     /**
@@ -35,12 +37,14 @@ public class UserSwerveDrive extends CommandBase {
      * @param driveX        analog input for left/right movement
      * @param turn          analog input for turning
      */
-    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turn) {
+    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turnRight, UserAnalog turnLeft) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
+        this.turnRight = turnRight;
+        this.turnLeft = turnLeft;
+        turn = turnRight;
         this.driveX = driveX;
         this.driveY = driveY;
-        this.turn = turn;
         this.m_swerveDrive.setDefaultCommand(this);
     }
 
@@ -56,11 +60,18 @@ public class UserSwerveDrive extends CommandBase {
      */
     @Override
     public void execute() {
+        this.turn = turnLeft.get() > turnRight.get() ? turnLeft : turnRight;
+        
+        double turnTarget;
+        if(turnLeft.get() > turnRight.get()) {
+            turnTarget = deadzone(-turn.get());
+        } else {
+            turnTarget = deadzone(turn.get());
+        }
         double driveXTarget = deadzone(driveX.get());
         double driveYTarget = deadzone(driveY.get());
-        double turnTarget = deadzone(turn.get());
 
-        m_swerveDrive.driveTrain(-driveXTarget * Constants.FASTEST_SPEED_METERS, 
+        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, 
                                      - driveYTarget * Constants.FASTEST_SPEED_METERS, 
                                       turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5);
 
