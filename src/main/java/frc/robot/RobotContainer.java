@@ -33,6 +33,7 @@ public class RobotContainer {
     private UserAnalog driveY;
     private UserAnalog turnRight;
     private UserAnalog turnLeft;
+    private UserDigital reset;
 
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
@@ -53,7 +54,7 @@ public class RobotContainer {
 
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
-        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turnRight, turnLeft);
+        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turnRight, turnLeft, reset);
 
     }
 
@@ -68,7 +69,7 @@ public class RobotContainer {
         driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
         turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
         turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
-    
+        reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }

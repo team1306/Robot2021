@@ -56,7 +56,7 @@ public final class Constants {
     public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 2048.0;
     public static final double DEGREES_TO_ENCODER_TICKS = 2048.0 / 360.0;
 
-    public static final double FASTEST_SPEED_METERS = 100;
+    public static final double FASTEST_SPEED_METERS = 50;
 
     public static final double FASTEST_ACCELERATION = 1;
 

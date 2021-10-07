@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * The UserSwerveDrive command uses the SwerveDrive command to execute
@@ -27,6 +28,7 @@ public class UserSwerveDrive extends CommandBase {
     private final UserAnalog turnLeft;
     private final UserAnalog turnRight;
     private final boolean testMode = true;
+    private final UserDigital reset;
 
     /**
      * Default constructor for UserSwerveDrive. Passes a SwerveDrive
@@ -37,12 +39,13 @@ public class UserSwerveDrive extends CommandBase {
      * @param driveX        analog input for left/right movement
      * @param turn          analog input for turning
      */
-    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turnRight, UserAnalog turnLeft) {
+    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turnRight, UserAnalog turnLeft, UserDigital reset) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
         this.turnRight = turnRight;
         this.turnLeft = turnLeft;
         turn = turnRight;
+        this.reset = reset;
         this.driveX = driveX;
         this.driveY = driveY;
         this.m_swerveDrive.setDefaultCommand(this);
@@ -62,12 +65,9 @@ public class UserSwerveDrive extends CommandBase {
     public void execute() {
         this.turn = turnLeft.get() > turnRight.get() ? turnLeft : turnRight;
         
-        double turnTarget;
-        if(turnLeft.get() > turnRight.get()) {
-            turnTarget = deadzone(-turn.get());
-        } else {
-            turnTarget = deadzone(turn.get());
-        }
+        double turnTarget = turnRight.get() - turnLeft.get();
+        turnTarget = deadzone(turnTarget);
+        
         double driveXTarget = deadzone(driveX.get());
         double driveYTarget = deadzone(driveY.get());
 
@@ -75,7 +75,9 @@ public class UserSwerveDrive extends CommandBase {
                                      - driveYTarget * Constants.FASTEST_SPEED_METERS, 
                                       turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5);
 
-        
+        if(reset.get()) {
+            m_swerveDrive.resetAllWheels();
+        }
         // getting data to put onto shuffleboard 
         smartdashboard();
     }
