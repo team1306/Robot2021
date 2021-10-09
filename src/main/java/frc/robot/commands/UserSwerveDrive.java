@@ -27,7 +27,6 @@ public class UserSwerveDrive extends CommandBase {
     private UserAnalog turn;
     private final UserAnalog turnLeft;
     private final UserAnalog turnRight;
-    private final boolean testMode = true;
     private final UserDigital reset;
 
     /**

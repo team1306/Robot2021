@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -24,41 +22,34 @@ import frc.robot.Constants;
  * This class will also provide data to UserDrive to be used for SmartDashboard.
  */
 public class SwerveWheel extends SubsystemBase {
-
-    // used for controlling wheel direction
+    // motor that controls the angle position
     TalonFX angleMotor;
 
     // PID constants for the angleMotor
-    // values are based off of 1023 being full output (i.e. kP *
-    // errorThatShouldResultInMaxOutput = 1023)
-    // to calculate
-    //works for slow acceleration, but it doesn't work for sudden changes
-    //need to test on the ground
-    //doesnt look to be a P value problem
-    double angleMotor_P = .015;
-    double angleMotor_I = .00005;
-    double angleMotor_D = 0.0;
+    private static double angleMotor_P = .015;
+    private static double angleMotor_I = .00005;
+    private static double angleMotor_D = 0.0;
 
-    // used for controlling wheel speed
+    // motor that controls wheel speed
     TalonFX speedMotor;
 
-
     // PID constants for the speedMotor
-    // values are based off of 1023 being full output (i.e. kP *
-    // errorThatShouldResultInMaxOutput = 1023)
-    // to calculate
-    // p val of 0.1 behaves as expected (although motor motion is choppy)
-    double speedMotor_P = .015;
-    double speedMotor_I = 0;
-    double speedMotor_D = 0.075;
+    private static double speedMotor_P = .015;
+    private static double speedMotor_I = 0;
+    private static double speedMotor_D = 0.075;
 
-    // used for accuracy on wheel rotation
+    // TODO: be used in offset
     CANCoder angleEnc;
 
-    //used for relaying data to shuffleboard
-    SwerveModuleState swerve = new SwerveModuleState();
-    double wheelOffset;
+    //used for relaying data about the swerve module state to shuffleboard
+    private SwerveModuleState swerve = new SwerveModuleState();
+
+    //offset of the wheel in degrees
+    private static double wheelOffset;
+    
+    //used for relaying data
     double targetSpeed = 0;
+    
     /**
      * Initializes motors
      * 
@@ -97,11 +88,8 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.config_kI(0, speedMotor_I);
         speedMotor.config_kD(0, speedMotor_D);
 
+        //inverting the motors if necessary
         speedMotor.setInverted(!isRev);
-        //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
-
-        // param in encoder ticks
-        //angleMotor.set(ControlMode.Position, offset * Constants.DEGREES_TO_ENCODER_TICKS);
 
     }
 
@@ -113,29 +101,28 @@ public class SwerveWheel extends SubsystemBase {
      * the angleMotor should turn to then sets the motor to those values so the
      * robot works!
      * 
-     * (combining two methods)
-     * 
      * @param state
      */
     public void drive(SwerveModuleState state) {
-        //storing state as a global variable to get its information
+        //storing state as a global variable to get its information for shuffleboard
         swerve = state; 
 
         // gets the current angle from the angle enc and optimizes the module so it
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
         state = optimize(state, currentAngle);
-         
         
-
-
-        // call setSpeed and setRotation with proper values from our SwerveModuleState
+        // call setSpeed and setPIDTarget with proper values from our SwerveModuleState
         setSpeed(state.speedMetersPerSecond);
         setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-
-        
     }
 
+    /**
+     * Alters a swerveModule state so the the state rotates as little as possible
+     * @param desiredState the current state of the robot
+     * @param currentAngle the current angle
+     * @return an state that will take the most direct path to the target angle
+     */
     public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
         double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
         double targetSpeed = desiredState.speedMetersPerSecond;
@@ -147,12 +134,12 @@ public class SwerveWheel extends SubsystemBase {
         return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
       }
     
-      /**
-         * @param scopeReference Current Angle
-         * @param newAngle Target Angle
-         * @return Closest angle within scope
-         */
-        private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
+    /**
+    * @param scopeReference Current Angle
+    * @param newAngle Target Angle
+    * @return Closest angle within scope
+    */
+    private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
           double lowerBound;
           double upperBound;
           double lowerOffset = scopeReference % 360;
@@ -180,36 +167,22 @@ public class SwerveWheel extends SubsystemBase {
 
     /**
      * Sets the speed of the drive motor to be targetSpeedMPS (in meters per second)
-     * @param targetSpeedMPS
+     * @param targetSpeedMPS the target speed of the motor in MPS
      */
     private void setSpeed(double targetSpeedMPS) {
-        targetSpeed = targetSpeedMPS;
         // convert to controller native units = encoder pulses / 100 ms
         // meters per second => meters per 100 ms => encoder pulses per 100ms
         double targetSpeedToMP100ms = (targetSpeedMPS / 10);
         double targetSpeedNativeUnits = (targetSpeedToMP100ms / Constants.K_WHEEL_CIRCUMFERENCE_METERS) * 4096.0;
-        // TODO remeasure the wheels circumference
-    
+        targetSpeed = targetSpeedNativeUnits;
         // set motor equal to ^^
         speedMotor.set(ControlMode.Velocity, targetSpeedNativeUnits);
     }
 
-    // TODO values are coming out of speedMetersPerSecond and angle, need to get ControlMode.Postion working
-    // OBSERVED BEHAVIOR: wheel oscillates BackRightVoltageOutput positive neg ative
-    // potential expected behavior due to the wheel being not on the ground, friction could improve
-    
-
-
-    // setting angle rotation
-    private void setRotation(Rotation2d targetRotation) {
-        // convert to the controller native units = encoder pulses
-        double targetRotationEncoderPulses = targetRotation.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS;
-
-        // set angle pos to ^^
-        angleMotor.set(ControlMode.Position, targetRotationEncoderPulses * Constants.GEAR_RATIO);
-    }
-
-    // setting PID target
+    /**
+     * sets the rotational position of the angle motor
+     * @param encoderPulses target rotational position in encoder pulses
+     */
     private void setPIDTarget(double encoderPulses) {
         angleMotor.set(ControlMode.Position, encoderPulses * Constants.GEAR_RATIO);
     }
@@ -231,19 +204,15 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     /**
-     * turn wheels to 0 position. used for testing
-     */
-    private void setRotationToZero() {
-        angleMotor.set(ControlMode.Position, 0);
-    }
-
-    /**
      * @return the current degree rotation of the angle wheel
      */
-    public double getAngle() {
-        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES / 12.8;
+    private double getAngle() {
+        return angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES / Constants.GEAR_RATIO;
     }
     
+    /**
+     * TODO
+     */
     public void resetAbsoluteZero() {
         double offsetTarget = angleEnc.getAbsolutePosition() + wheelOffset;
         if(offsetTarget < 0) {
