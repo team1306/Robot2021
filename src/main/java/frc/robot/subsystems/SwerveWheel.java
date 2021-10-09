@@ -26,8 +26,8 @@ public class SwerveWheel extends SubsystemBase {
     TalonFX angleMotor;
 
     // PID constants for the angleMotor
-    private static double angleMotor_P = .015;
-    private static double angleMotor_I = .00005;
+    private static double angleMotor_P = .1;
+    private static double angleMotor_I = .0004;
     private static double angleMotor_D = 0.0;
 
     // motor that controls wheel speed
@@ -113,8 +113,11 @@ public class SwerveWheel extends SubsystemBase {
         state = optimize(state, currentAngle);
         
         // call setSpeed and setPIDTarget with proper values from our SwerveModuleState
-        setSpeed(state.speedMetersPerSecond);
+        
         setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        
+        setSpeed(state.speedMetersPerSecond);
+        
     }
 
     /**
