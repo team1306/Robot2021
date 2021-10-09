@@ -36,10 +36,9 @@ public final class Constants {
     public static final double K_FRONT_LEFT_OFFSET = -23;
     public static final double K_BACK_RIGHT_OFFSET = -95;
     public static final double K_BACK_LEFT_OFFSET = -232;
+    
     // front right 2  front left -20   back right -105   back left -232
     public static final int K_INTAKE = 13;
-
-    public static final int NAVX_ID = 14;
 
     public static final boolean DIRECTION_FORWARD = true;
 
@@ -50,28 +49,15 @@ public final class Constants {
     public static final double K_WHEEL_RADIUS_INCHES = 3.75; //pnuematic, so ish
     public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
     public static final double K_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * K_WHEEL_RADIUS_METERS;
-
-    public static final double MAX_VOLTS = 24;
-
+    
+    //modified 
     public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 2048.0;
     public static final double DEGREES_TO_ENCODER_TICKS = 2048.0 / 360.0;
 
-    public static final double FASTEST_SPEED_METERS = 50;
+    //fastest speed percent output
+    public static final double FASTEST_SPEED_METERS = 25;
 
-    public static final double FASTEST_ACCELERATION = 1;
 
-    public static final double X_CONTROLLER_P = 1;
-    public static final double X_CONTROLLER_I = 0;
-    public static final double X_CONTROLLER_D = 0;
-
-    public static final double Y_CONTROLLER_P = 1;
-    public static final double Y_CONTROLLER_I = 0;
-    public static final double Y_CONTROLLER_D = 0;
-
-    public static final double THETA_CONTROLLER_P = 1;
-    public static final double THETA_CONTROLLER_I = 0;
-    public static final double THETA_CONTROLLER_D = 0;
-    
     public static final double GEAR_RATIO = 12.8;
     //wheel base is y
     //track front is width of front of the robot and the x value
@@ -85,7 +71,5 @@ public final class Constants {
      * radians per second!!!
      */
     public static final double FASTEST_ANGULAR_VELOCITY = FASTEST_SPEED_METERS * 2.0 * Math.PI / (WHEEL_DISTANCE_TO_CENTER * 2.0 * Math.PI * 2);
-    /**
-     * degrees
-     */
+    
 }

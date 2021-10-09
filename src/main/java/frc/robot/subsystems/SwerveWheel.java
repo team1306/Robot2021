@@ -97,7 +97,7 @@ public class SwerveWheel extends SubsystemBase {
         speedMotor.config_kI(0, speedMotor_I);
         speedMotor.config_kD(0, speedMotor_D);
 
-        speedMotor.setInverted(isRev);
+        speedMotor.setInverted(!isRev);
         //SmartDashboard.putNumber("Speed Motor P-Error: ", pError.value);
 
         // param in encoder ticks
