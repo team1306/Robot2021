@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.UserSwerveDrive;
 import frc.robot.subsystems.SwerveDrive;
@@ -30,7 +31,9 @@ public class RobotContainer {
     // The robot's inputs that it recieves from the controller are defined here
     private UserAnalog driveX;
     private UserAnalog driveY;
-    private UserAnalog turn;
+    private UserAnalog turnRight;
+    private UserAnalog turnLeft;
+    private UserDigital reset;
 
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
@@ -51,7 +54,7 @@ public class RobotContainer {
 
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
-        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turn);
+        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turnRight, turnLeft, reset);
 
     }
 
@@ -64,7 +67,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
         driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
         driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-        turn = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RX);
+        turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
+        turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+        reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
     }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.UserSwerveDrive;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.utils.UserAnalog;
+import frc.robot.utils.UserDigital;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,8 +30,10 @@ public class Robot extends TimedRobot {
     //TODO fill with actual values
     UserAnalog driveX = () -> 0;
     UserAnalog driveY = () -> 0;
-    UserAnalog turn = () -> 0;
-    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turn);
+    UserAnalog turnLeft = () -> 0;
+    UserAnalog turnRight = () -> 0;
+    UserDigital reset = () -> false;
+    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turnRight, turnLeft, reset);
 
     // public static Intake intake = null;
 
