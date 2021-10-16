@@ -26,17 +26,17 @@ public class SwerveWheel extends SubsystemBase {
     TalonFX angleMotor;
 
     // PID constants for the angleMotor
-    private static double angleMotor_P = .1;
-    private static double angleMotor_I = .0004;
-    private static double angleMotor_D = 0.0;
+    private static final double angleMotor_P = .05;
+    private static final double angleMotor_I = .0000;
+    private static final double angleMotor_D = 0.0075;
 
     // motor that controls wheel speed
     TalonFX speedMotor;
 
     // PID constants for the speedMotor
-    private static double speedMotor_P = .015;
-    private static double speedMotor_I = 0;
-    private static double speedMotor_D = 0.075;
+    private static final double speedMotor_P = .015;
+    private static final double speedMotor_I = 0;
+    private static final double speedMotor_D = 0.075;
 
     // TODO: be used in offset
     CANCoder angleEnc;
@@ -45,7 +45,7 @@ public class SwerveWheel extends SubsystemBase {
     private SwerveModuleState swerve = new SwerveModuleState();
 
     //offset of the wheel in degrees
-    private static double wheelOffset;
+    private double wheelOffset;
     
     //used for relaying data
     double targetSpeed = 0;
@@ -67,7 +67,7 @@ public class SwerveWheel extends SubsystemBase {
         // initialize and reset the angle motor
         angleMotor = new TalonFX(angleMotorID);
         angleMotor.configFactoryDefault();
-        angleMotor.setNeutralMode(NeutralMode.Coast);
+        angleMotor.setNeutralMode(NeutralMode.Brake);
         angleMotor.setInverted(isAngleReversed);
 
         // Configuring the PID constants for the angle motor
@@ -80,7 +80,8 @@ public class SwerveWheel extends SubsystemBase {
         // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
         speedMotor.configFactoryDefault();
-        speedMotor.setNeutralMode(NeutralMode.Coast);
+        speedMotor.setNeutralMode(NeutralMode.Brake);
+        angleMotor.configClosedloopRamp(.100);
 
 
         // Configuring the PID constants for the speed motor
@@ -91,6 +92,7 @@ public class SwerveWheel extends SubsystemBase {
         //inverting the motors if necessary
         speedMotor.setInverted(!isRev);
 
+        setZeroPosition(offset);
     }
 
     /**
@@ -116,9 +118,14 @@ public class SwerveWheel extends SubsystemBase {
         
         setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         
-        setSpeed(state.speedMetersPerSecond);
-        
+        setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
+
     }
+
+    public void setZeroPosition(double offset) {
+        angleEnc.configMagnetOffset(offset);
+        angleMotor.setSelectedSensorPosition(0);
+    };
 
     /**
      * Alters a swerveModule state so the the state rotates as little as possible
@@ -126,7 +133,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param currentAngle the current angle
      * @return an state that will take the most direct path to the target angle
      */
-    public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+    private static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
         double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
         double targetSpeed = desiredState.speedMetersPerSecond;
         double delta = targetAngle - currentAngle.getDegrees();
@@ -202,8 +209,9 @@ public class SwerveWheel extends SubsystemBase {
      * Sets the percent speed of the angle motor to percentOutput
      * @param percentOutput
      */
-    private void setTurnPercent(double percentOutput) {
-        angleMotor.set(ControlMode.PercentOutput, percentOutput);
+    private void setTurnPercent(double encoderTicks) {
+        double percentError = (getAngle() - encoderTicks) / 1048.0; 
+        angleMotor.set(ControlMode.PercentOutput, percentError);
     }
 
     /**
@@ -221,7 +229,7 @@ public class SwerveWheel extends SubsystemBase {
         if(offsetTarget < 0) {
             offsetTarget = 360 + offsetTarget;
         }
-        angleMotor.setSelectedSensorPosition((offsetTarget) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
+        //angleMotor.setSelectedSensorPosition((offsetTarget) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
     }
 
     /**
