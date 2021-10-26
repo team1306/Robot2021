@@ -71,16 +71,20 @@ public class SwerveDrive extends SubsystemBase {
         //Getting and assigning the module states to the wheels
         
         SwerveModuleState frontLeftState = modulesStates2[0];
-        frontLeft.drive(frontLeftState);
+        frontLeft.drive(x,y,turn);
+        // frontLeft.drive(frontLeftState);
 
         SwerveModuleState frontRightState = moduleStates[1];
-        frontRight.drive(frontRightState);
+        frontRight.drive(x,y,turn);
+    //    frontRight.drive(frontRightState);
         
         SwerveModuleState backLeftState = moduleStates[2];
-        backLeft.drive(backLeftState);
+        backLeft.drive(x,y,turn);
+        // backLeft.drive(backLeftState);
 
         SwerveModuleState backRightState = modulesStates2[3];
-        backRight.drive(backRightState);
+        backRight.drive(x,y,turn);
+        // backRight.drive(backRightState);
     }
 
     public void resetAllWheels() {
