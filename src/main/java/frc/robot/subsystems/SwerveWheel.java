@@ -49,7 +49,7 @@ public class SwerveWheel extends SubsystemBase {
     
     //used for relaying data
     double targetSpeed = 0;
-    private double x;
+    private double targetSpeedVal;
     /**
      * Initializes motors
      * 
@@ -98,8 +98,8 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     public void drive(double x, double y, double z){
-        this.x = x;
-        double speed = Math.max(Math.abs(x) , Math.abs(y));
+        double speed = x;
+        targetSpeedVal = speed;
         speedMotor.set(ControlMode.PercentOutput, speed);
     }
     /**
@@ -248,22 +248,22 @@ public class SwerveWheel extends SubsystemBase {
      */
     public void shuffleboard(String ID) {
         //SmartDashboard.putNumber(ID + ":Current Position", angleMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
-        //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
+        // SmartDashboard.putNumber(ID + ":Target Angle Position", swerve.angle.getDegrees());
+        // //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
 
-        //[-1024, 1024] expected
-        SmartDashboard.putNumber(ID + ":Target PID Error", ((angleMotor.getClosedLoopError() / Constants.GEAR_RATIO) % 2048));
+        // //[-1024, 1024] expected
+        // SmartDashboard.putNumber(ID + ":Target PID Error", ((angleMotor.getClosedLoopError() / Constants.GEAR_RATIO) % 2048));
 
-        //Outputing the PID target [0, 2048] expected
-        SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
+        // //Outputing the PID target [0, 2048] expected
+        // SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
         SmartDashboard.putNumber(ID + "Voltage Output",         speedMotor.getMotorOutputVoltage());
        
-        SmartDashboard.putNumber(ID + "targetSpeedMPS (x):", x);
+        SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
-        SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
-        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
-        SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
+        // SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        // SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
+        // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
+        // SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
 
     
     }

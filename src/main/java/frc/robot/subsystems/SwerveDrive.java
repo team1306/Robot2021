@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.UserDigital;
 
 /**
  * The SwerveDrive class uses four SwerveWheel objects which make up the[]\
@@ -51,6 +53,11 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDrive() {      
     }
 
+    private boolean FROn = true;
+    private boolean FLOn = true;
+    private boolean BROn = true;
+    private boolean BLOn = true;
+    
     /**
      * Creates four new SwerveModuleStates and assigns them to their respective
      * wheels
@@ -59,7 +66,10 @@ public class SwerveDrive extends SubsystemBase {
      * @param y    y-coordinate movement in meters per second
      * @param turn  rotation of the wheels in radians per second
      */
-    public void driveTrain(double x, double y, double turn) {
+    public void driveTrain(
+        double x, double y, double turn,
+        boolean toggleFR, boolean toggleFL, boolean toggleBR, boolean toggleBL
+    ) {
         //Converts from the x-coord, y-coord and turns into an array of module states
         chassisSpeeds = new ChassisSpeeds(y, x, turn);
         ChassisSpeeds chassisSpeeds2 = new ChassisSpeeds(y, x, -turn);
@@ -70,21 +80,35 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDriveKinematics.normalizeWheelSpeeds(modulesStates2, Constants.FASTEST_SPEED_METERS);
         //Getting and assigning the module states to the wheels
         
-        SwerveModuleState frontLeftState = modulesStates2[0];
-        frontLeft.drive(x,y,turn);
-        // frontLeft.drive(frontLeftState);
-
-        SwerveModuleState frontRightState = moduleStates[1];
-        frontRight.drive(x,y,turn);
-    //    frontRight.drive(frontRightState);
+        if (toggleFR) FROn = !FROn;
+        if (toggleFL) FLOn = !FLOn;
+        if (toggleBR) BROn = !BROn;
+        if (toggleBL) BLOn = !BLOn;
+        if (FLOn){
+            SwerveModuleState frontLeftState = modulesStates2[0];
+            frontLeft.drive(x,y,turn);
+            // frontLeft.drive(frontLeftState);
+        }
         
-        SwerveModuleState backLeftState = moduleStates[2];
-        backLeft.drive(x,y,turn);
-        // backLeft.drive(backLeftState);
-
-        SwerveModuleState backRightState = modulesStates2[3];
-        backRight.drive(x,y,turn);
-        // backRight.drive(backRightState);
+        if (FROn){
+            SwerveModuleState frontRightState = moduleStates[1];
+            frontRight.drive(x,y,turn);
+        //    frontRight.drive(frontRightState);
+        }
+        
+        if (BLOn){
+            SwerveModuleState backLeftState = moduleStates[2];
+            backLeft.drive(x,y,turn);
+            // backLeft.drive(backLeftState);
+        }
+        
+        if (BROn){
+            SwerveModuleState backRightState = modulesStates2[3];
+            backRight.drive(x,y,turn);
+            // backRight.drive(backRightState);
+        }
+        shuffleboard();
+        
     }
 
     public void resetAllWheels() {
@@ -100,6 +124,15 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] states) {
         moduleStates = states;
+    }
+
+    private void shuffleboard(){
+        SmartDashboard.putBoolean("Back Right On?", BROn);
+        SmartDashboard.putBoolean("Back Left On?", BLOn);
+        SmartDashboard.putBoolean("Front Left On?", FLOn);
+        SmartDashboard.putBoolean("Front Right On?", FROn);
+        SmartDashboard.putBooleanArray("wheel states", new boolean[]{FLOn, FROn, BLOn, BROn});
+
     }
 
 }

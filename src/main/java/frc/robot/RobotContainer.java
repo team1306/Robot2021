@@ -33,7 +33,12 @@ public class RobotContainer {
     private UserAnalog driveY;
     private UserAnalog turnRight;
     private UserAnalog turnLeft;
-    private UserDigital reset;
+    //private UserDigital reset;
+
+    private UserDigital toggleFR;
+    private UserDigital toggleFL;
+    private UserDigital toggleBR;
+    private UserDigital toggleBL;
 
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
@@ -54,8 +59,10 @@ public class RobotContainer {
 
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
-        userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turnRight, turnLeft, reset);
-
+        userSwerveDrive = new UserSwerveDrive(
+            driveTrain, driveX, driveY, turnRight, turnLeft,
+            toggleFR, toggleFL, toggleBR, toggleBL
+        );
     }
 
     /**
@@ -69,9 +76,14 @@ public class RobotContainer {
         driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
         turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
         turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
-        reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+        //reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
+
+        toggleFR = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
+        toggleFL = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
+        toggleBR = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_B);
+        toggleBL = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
     }
 
     /**

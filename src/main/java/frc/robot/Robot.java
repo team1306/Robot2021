@@ -32,8 +32,15 @@ public class Robot extends TimedRobot {
     UserAnalog driveY = () -> 0;
     UserAnalog turnLeft = () -> 0;
     UserAnalog turnRight = () -> 0;
-    UserDigital reset = () -> false;
-    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(swerveDrive, driveX, driveY, turnRight, turnLeft, reset);
+    //UserDigital reset = () -> false;
+    UserDigital toggleFR = () -> false;
+    UserDigital toggleFL = () -> false;
+    UserDigital toggleBR = () -> false;
+    UserDigital toggleBL = () -> false;
+    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(
+        swerveDrive, driveX, driveY, turnRight, turnLeft,
+        toggleFR,toggleFL,toggleBR,toggleBL
+    );
 
     // public static Intake intake = null;
 

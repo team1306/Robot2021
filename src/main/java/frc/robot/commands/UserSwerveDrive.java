@@ -28,8 +28,13 @@ public class UserSwerveDrive extends CommandBase {
     private UserAnalog turn;
     private final UserAnalog turnLeft;
     private final UserAnalog turnRight;
-    private final UserDigital reset;
+    //private final UserDigital reset;
 
+
+    private final UserDigital toggleFR;
+    private final UserDigital toggleFL;
+    private final UserDigital toggleBR;
+    private final UserDigital toggleBL;
     /**
      * Default constructor for UserSwerveDrive. Passes a SwerveDrive
      * object and assigns the UserAnalog controls to each variable.
@@ -39,13 +44,26 @@ public class UserSwerveDrive extends CommandBase {
      * @param driveX        analog input for left/right movement
      * @param turn          analog input for turning
      */
-    public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turnRight, UserAnalog turnLeft, UserDigital reset) {
+    public UserSwerveDrive(
+        SwerveDrive m_swerveDrive,
+        UserAnalog driveX,
+        UserAnalog driveY,
+        UserAnalog turnRight,
+        UserAnalog turnLeft,
+        UserDigital toggleFR$,
+        UserDigital toggleFL$,
+        UserDigital toggleBR$,
+        UserDigital toggleBL$
+    ) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
         this.turnRight = turnRight;
         this.turnLeft = turnLeft;
         turn = turnRight;
-        this.reset = reset;
+        toggleBR = toggleBR$;
+        toggleBL = toggleBL$;
+        toggleFR = toggleFR$;
+        toggleFL = toggleFL$;        
         this.driveX = driveX;
         this.driveY = driveY;
         this.m_swerveDrive.setDefaultCommand(this);
@@ -58,6 +76,11 @@ public class UserSwerveDrive extends CommandBase {
     public void initialize() {
     }
 
+    // private boolean frp = false;
+    // private boolean flp = false;
+    // private boolean brp = false;
+    // private boolean blp = false;
+    
     /**
      * Called every time the scheduler runs while the command is scheduled.
      */
@@ -71,13 +94,25 @@ public class UserSwerveDrive extends CommandBase {
         double driveXTarget = deadzone(driveX.get());
         double driveYTarget = deadzone(driveY.get());
 
-        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, 
-                                     - driveYTarget * Constants.FASTEST_SPEED_METERS, 
-                                      turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5);
+        boolean fr = toggleFR.get();
+        boolean fl = toggleFL.get();
+        boolean br = toggleBR.get();
+        boolean bl = toggleBL.get();
 
-        if(reset.get()) {
-            m_swerveDrive.resetAllWheels();
-        }
+        m_swerveDrive.driveTrain(
+            driveXTarget * Constants.FASTEST_SPEED_METERS, 
+                        - driveYTarget * Constants.FASTEST_SPEED_METERS, 
+                        turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5,
+            fr, fl, br, bl
+        );
+        // frp = fr;
+        // flp = fl;
+        // brp = br;
+        // blp = bl;
+
+        // if(reset.get()) {
+        //     m_swerveDrive.resetAllWheels();
+        // }
         // getting data to put onto shuffleboard 
         smartdashboard();
     }
@@ -100,7 +135,7 @@ public class UserSwerveDrive extends CommandBase {
      */
     @Override
     public void end(boolean interrupted) {
-        m_swerveDrive.driveTrain(0, 0, 0);
+        //m_swerveDrive.driveTrain(0, 0, 0);
     }
 
     /**
