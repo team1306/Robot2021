@@ -80,6 +80,19 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDriveKinematics.normalizeWheelSpeeds(modulesStates2, Constants.FASTEST_SPEED_METERS);
         //Getting and assigning the module states to the wheels
         
+        /*
+
+        NOTES FROM 10/30
+        - code looks for button press and then inverses the current value, so if the wheel
+            is activated, then deactivate it etc. However a prolonged button press (even 
+            for less than a second) will invert the wheel state more than once. This can
+            be demonstrated by holding down the inversion button while the wheels are 
+            moving. To solve this issue, just press the button for a split second and then
+            move on.
+        - all wheels are moving forwards and backwards only, result of switching to arcade
+            drive?
+        */
+
         if (toggleFR) FROn = !FROn;
         if (toggleFL) FLOn = !FLOn;
         if (toggleBR) BROn = !BROn;
@@ -87,25 +100,25 @@ public class SwerveDrive extends SubsystemBase {
         if (FLOn){
             SwerveModuleState frontLeftState = modulesStates2[0];
             frontLeft.drive(x,y,turn);
-            // frontLeft.drive(frontLeftState);
+            frontLeft.drive(frontLeftState);
         }
         
         if (FROn){
             SwerveModuleState frontRightState = moduleStates[1];
             frontRight.drive(x,y,turn);
-        //    frontRight.drive(frontRightState);
+            frontRight.drive(frontRightState);
         }
         
         if (BLOn){
             SwerveModuleState backLeftState = moduleStates[2];
             backLeft.drive(x,y,turn);
-            // backLeft.drive(backLeftState);
+            backLeft.drive(backLeftState);
         }
         
         if (BROn){
             SwerveModuleState backRightState = modulesStates2[3];
             backRight.drive(x,y,turn);
-            // backRight.drive(backRightState);
+            backRight.drive(backRightState);
         }
         shuffleboard();
         

@@ -99,7 +99,13 @@ public class SwerveWheel extends SubsystemBase {
 
     public void drive(double x, double y, double z){
         double speed = x;
-        targetSpeedVal = speed;
+
+        // if(y < 0) {
+        //     speed = -Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        // } else {
+        //     speed = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        // } // the robot only moves backwards if the joystick is in the 4th quadrant
+
         speedMotor.set(ControlMode.PercentOutput, speed);
     }
     /**
@@ -130,8 +136,8 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     public void setZeroPosition(double offset) {
-        // //angleEnc.configMagnetOffset(offset);
-        angleMotor.setSelectedSensorPosition(0);//(angleEnc.getAbsolutePosition() + offset) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
+        angleEnc.configMagnetOffset(offset);
+        angleMotor.setSelectedSensorPosition((angleEnc.getAbsolutePosition() + offset) * Constants.GEAR_RATIO * Constants.DEGREES_TO_ENCODER_TICKS);
         // //angleMotor.set(ControlMode.Position,0);
     }
 
@@ -260,8 +266,8 @@ public class SwerveWheel extends SubsystemBase {
        
         SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
-        // SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        // SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
+         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
         // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
         // SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
 
