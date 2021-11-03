@@ -107,6 +107,7 @@ public class SwerveWheel extends SubsystemBase {
         // } // the robot only moves backwards if the joystick is in the 4th quadrant
 
         speedMotor.set(ControlMode.PercentOutput, speed);
+        angleMotor.set(ControlMode.Position, 0);
     }
     /**
      * Takes in a state. From that state it receives the target speed in meter per
@@ -129,9 +130,9 @@ public class SwerveWheel extends SubsystemBase {
         
         // call setSpeed and setPIDTarget with proper values from our SwerveModuleState
         
-        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        setSpeed(state.speedMetersPerSecond);
-        //setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
+        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //setSpeed(state.speedMetersPerSecond);
+        setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
 
     }
 
@@ -262,15 +263,15 @@ public class SwerveWheel extends SubsystemBase {
 
         // //Outputing the PID target [0, 2048] expected
         // SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
-        SmartDashboard.putNumber(ID + "Voltage Output",         speedMotor.getMotorOutputVoltage());
+        SmartDashboard.putNumber(ID + "Voltage Output", speedMotor.getMotorOutputVoltage());
        
         SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
-         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
+         //SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+         //SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
         // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
-        // SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
-
+        //SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
+        //SmartDashboard.putNumber(ID + "voltage output", speedMotor.getMotorOutputVoltage());
     
     }
 }

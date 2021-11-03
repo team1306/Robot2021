@@ -65,3 +65,7 @@ re-deploying code caused wheels to turn to a new set point. the set point increa
 disabling and enabling the code didn't cause the wheels to change set points
 
 OFFSETS DON'T WORK
+
+Possible Problems: 
+    CAN bus wires might be different lengths
+    Probably not a problem
