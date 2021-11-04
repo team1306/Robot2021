@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
@@ -26,9 +27,9 @@ public class SwerveWheel extends SubsystemBase {
     TalonFX angleMotor;
 
     // PID constants for the angleMotor
-    private static final double angleMotor_P = .025;
-    private static final double angleMotor_I = .00004;
-    private static final double angleMotor_D = 0.0075;
+    private static final double angleMotor_P = .0025;
+    private static final double angleMotor_I = .00000;
+    private static final double angleMotor_D = 0.0000;
 
     // motor that controls wheel speed
     TalonFX speedMotor;
@@ -93,7 +94,9 @@ public class SwerveWheel extends SubsystemBase {
         //inverting the motors if necessary
         speedMotor.setInverted(!isRev);
 
-        setZeroPosition(offset);
+        //setZeroPosition(offset);
+        angleMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        angleMotor.configIntegratedSensorOffset(offset);
 
     }
 
@@ -106,7 +109,22 @@ public class SwerveWheel extends SubsystemBase {
         //     speed = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
         // } // the robot only moves backwards if the joystick is in the 4th quadrant
 
-        speedMotor.set(ControlMode.PercentOutput, speed);
+        speedMotor.set(ControlMode.PercentOutput, -.2);
+    }
+
+    public void drive(boolean one, boolean two, boolean three, boolean four) {
+        if(one) {
+            speedMotor.set(ControlMode.PercentOutput, .1); 
+        } else if(two) {
+            speedMotor.set(ControlMode.PercentOutput, .2); 
+        } else if(three) {
+            speedMotor.set(ControlMode.PercentOutput, .4); 
+        } else if(four) {
+            speedMotor.set(ControlMode.PercentOutput, .8); 
+        } else {
+            speedMotor.set(ControlMode.PercentOutput, 0);
+
+        }
     }
     /**
      * Takes in a state. From that state it receives the target speed in meter per
@@ -126,12 +144,13 @@ public class SwerveWheel extends SubsystemBase {
         // doesn't do extra rotations
         Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
         state = optimize(state, currentAngle);
+        setPIDTarget(10);
         
         // call setSpeed and setPIDTarget with proper values from our SwerveModuleState
         
-        setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        setSpeed(state.speedMetersPerSecond);
-        //setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
+        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //setSpeed(state.speedMetersPerSecond);
+        setPercent((state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS));
 
     }
 
@@ -208,7 +227,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param encoderPulses target rotational position in encoder pulses
      */
     private void setPIDTarget(double encoderPulses) {
-        angleMotor.set(ControlMode.Position, encoderPulses * Constants.GEAR_RATIO);
+        angleMotor.set(ControlMode.Position, encoderPulses);
     }
 
     /**
@@ -262,12 +281,12 @@ public class SwerveWheel extends SubsystemBase {
 
         // //Outputing the PID target [0, 2048] expected
         // SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
-        SmartDashboard.putNumber(ID + "Voltage Output",         speedMotor.getMotorOutputVoltage());
+        // SmartDashboard.putNumber(ID + "Voltage Output",         speedMotor.getMotorOutputVoltage());
        
-        SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
+        //SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
-         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
+        SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
         // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
         // SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
 

@@ -124,7 +124,7 @@ public class UserSwerveDrive extends CommandBase {
      *          otherwise 0
      */
     public double deadzone(double input) {
-        if(Math.abs(input) > .1)
+        if(Math.abs(input) > .2)
             return input;
 
         return 0;

@@ -1,0 +1,29 @@
+Behavior of swerve wheels drive motors: 
+    all wheels move correctly with phoenix tuner being used as an input
+    checked behavior with constant speed of .2 and -.2 for each motor
+    this should mean that it isn't a mechanical problem
+
+    all wheels move correctly when inputing a constant percent output in a testing method
+    checked behavior with constant speed of .2 and -.2 for each motor
+
+    just front right is exibiting stopping and starting 
+    checked behavior with human joystick inputs
+
+    wheels not moving correctly with inputs based on buttons
+    checked behavior by toggling between 5 different speeds, .2, .4, .6, .8, 0
+    problems would occur when holding the buttons which would causing rapid switches between the target speed and 0
+    this would jamming that appears to resemble the behavior of the robot when using joystick inputs
+
+    wheels moving correctly with inputs based on pressing buttons
+    checked behavior by toggling between 5 different speeds, .2, .4, .6, .8, 0
+    no problems occur because there was no scenarios when rapid switches could occur
+
+    wheels not moving correctly with inputs (.6 to .7) from controller
+    wheels are switching between from target to 0 consistently 
+    does not occur at any other values
+    this error occured because the deadzone was to small to catch small values
+    this error was fixed when the deadzone was created large enough to catch the small values
+
+    wheels are moving correctly and not correctly with the previously described conditions
+    the wheels work and not work at seemingly random occasions
+    one the wheels start working or stop working they stay in the state of functionality for some time
