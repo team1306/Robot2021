@@ -150,7 +150,7 @@ public class SwerveWheel extends SubsystemBase {
         
         //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         //setSpeed(state.speedMetersPerSecond);
-        setPercent((state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS));
+        setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
 
     }
 
@@ -288,8 +288,8 @@ public class SwerveWheel extends SubsystemBase {
         SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
         // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
-        // SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
-
+        //SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
+        //SmartDashboard.putNumber(ID + "voltage output", speedMotor.getMotorOutputVoltage());
     
     }
 }
