@@ -35,41 +35,31 @@ public class RobotContainer {
     private UserAnalog turnLeft;
     //private UserDigital reset;
 
-    private UserDigital toggleFR;
-    private UserDigital toggleFL;
-    private UserDigital toggleBR;
-    private UserDigital toggleBL;
-
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
-
-    private UserSwerveDrive userSwerveDrive;
+    //lazy
+    public UserSwerveDrive userSwerveDrive;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        System.out.println("robotContainer is running");
         Controller.init();
-
-        // configure the button bindings
         configureButtonBindings();
 
+        //we have no autocommand currently
         autoCommand = null;
 
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
         userSwerveDrive = new UserSwerveDrive(
-            driveTrain, driveX, driveY, turnRight, turnLeft,
-            toggleFR, toggleFL, toggleBR, toggleBL
-        );
+            driveTrain, driveX, driveY, turnRight, turnLeft);
     }
 
     /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by instantiating a {@link GenericHID} or one of its subclasses
-     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
-     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     * Use this method to define your button->command mappings. Buttons 
+     * are assigned through the Controller class. Use simpleAxis if the 
+     * inputs are analog. Use simpleButton if the inputs are digital. 
      */
     private void configureButtonBindings() {
         driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
@@ -80,10 +70,7 @@ public class RobotContainer {
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
 
-        toggleFR = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
-        toggleFL = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
-        toggleBR = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_B);
-        toggleBL = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+        
     }
 
     /**

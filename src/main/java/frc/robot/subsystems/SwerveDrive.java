@@ -53,10 +53,6 @@ public class SwerveDrive extends SubsystemBase {
     public SwerveDrive() {      
     }
 
-    private boolean FROn = true;
-    private boolean FLOn = true;
-    private boolean BROn = true;
-    private boolean BLOn = true;
     
     /**
      * Creates four new SwerveModuleStates and assigns them to their respective
@@ -67,8 +63,7 @@ public class SwerveDrive extends SubsystemBase {
      * @param turn  rotation of the wheels in radians per second
      */
     public void driveTrain(
-        double x, double y, double turn,
-        boolean toggleFR, boolean toggleFL, boolean toggleBR, boolean toggleBL
+        double x, double y, double turn
     ) {
         //Converts from the x-coord, y-coord and turns into an array of module states
         chassisSpeeds = new ChassisSpeeds(y, x, turn);
@@ -94,29 +89,29 @@ public class SwerveDrive extends SubsystemBase {
         */
 
         
-        if (FLOn){
+       
             SwerveModuleState frontLeftState = modulesStates2[0];
             //frontLeft.drive(x,y,turn);
             frontLeft.drive(frontLeftState);
-        }
         
-        if (FROn){
+        
+        
             SwerveModuleState frontRightState = moduleStates[1];
             //frontRight.drive(x,y,turn);
             frontRight.drive(frontRightState);
-        }
         
-        if (BLOn){
+        
+        
             SwerveModuleState backLeftState = moduleStates[2];
             //backLeft.drive(x,y,turn);
             backLeft.drive(backLeftState);
-        }
         
-        if (BROn){
+        
+        
             SwerveModuleState backRightState = modulesStates2[3];
             //backRight.drive(x,y,turn);
             backRight.drive(backRightState);
-        }
+        
         //frontLeft.drive(FROn, FLOn, BROn, BLOn);
         //frontRight.drive(FROn, FLOn, BROn, BLOn);
         //backRight.drive(FROn, FLOn, BROn, BLOn);
@@ -142,11 +137,6 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     private void shuffleboard(){
-        SmartDashboard.putBoolean("Back Right On?", BROn);
-        SmartDashboard.putBoolean("Back Left On?", BLOn);
-        SmartDashboard.putBoolean("Front Left On?", FLOn);
-        SmartDashboard.putBoolean("Front Right On?", FROn);
-        SmartDashboard.putBooleanArray("wheel states", new boolean[]{FLOn, FROn, BLOn, BROn});
 
     }
 

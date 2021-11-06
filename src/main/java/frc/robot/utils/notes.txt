@@ -27,3 +27,39 @@ Behavior of swerve wheels drive motors:
     wheels are moving correctly and not correctly with the previously described conditions
     the wheels work and not work at seemingly random occasions
     one the wheels start working or stop working they stay in the state of functionality for some time
+
+    u-tails
+
+    the robot doesn't recognize where 0 is, it knows it's not at 0 but won't move to zero
+    - we think it's because the P value is too low, so the wheels won't continue to rotate
+    - but the difference between the current-angle and the expected-angle is like five rotations, so it shouldn't be slowing down with 5 rotations left to travel
+    
+    11/6
+    Testing PID controls for wheels, attempting to zero wheels
+
+    current behavior is that we have a target zero and do not move towards it
+
+    P: .001
+    I: 0
+    D: 0 
+
+    Moved slightly then stopped
+
+    P: .001
+    I: .0001
+    D: 0
+
+    Oscillated around a point and then stopped eventually the point may or not be zero
+    increasingly intense oscillations around a point: lower the I value
+
+    P: .001
+    I: .00001
+    D: 0
+
+    Oscillating around a point but really slow, getting rid of I and increasing P
+
+    P: .002
+    I: .00001
+    D: 0
+
+    Experienced no movement

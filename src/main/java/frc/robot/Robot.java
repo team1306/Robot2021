@@ -27,21 +27,7 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
 
     public static SwerveDrive swerveDrive = new SwerveDrive();
-    //TODO fill with actual values
-    UserAnalog driveX = () -> 0;
-    UserAnalog driveY = () -> 0;
-    UserAnalog turnLeft = () -> 0;
-    UserAnalog turnRight = () -> 0;
-    //UserDigital reset = () -> false;
-    UserDigital toggleFR = () -> false;
-    UserDigital toggleFL = () -> false;
-    UserDigital toggleBR = () -> false;
-    UserDigital toggleBL = () -> false;
-    UserSwerveDrive userSwerveDrive = new UserSwerveDrive(
-        swerveDrive, driveX, driveY, turnRight, turnLeft,
-        toggleFR,toggleFL,toggleBR,toggleBL
-    );
-
+    private UserSwerveDrive userSwerveDrive;
     // public static Intake intake = null;
 
     /**
@@ -54,6 +40,8 @@ public class Robot extends TimedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        userSwerveDrive = m_robotContainer.userSwerveDrive;
+        
     }
 
     /**
@@ -76,6 +64,7 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
         //swerveDrive.updatePose();
+        shuffleboard();
     }
 
     /**
@@ -85,15 +74,14 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
     }
 
-    @Override
-    public void disabledPeriodic() {
+    public void shuffleboard() {
         userSwerveDrive.m_swerveDrive.frontLeft.shuffleboard("Front Left");
         userSwerveDrive.m_swerveDrive.backLeft.shuffleboard("Back Left");
         userSwerveDrive.m_swerveDrive.frontRight.shuffleboard("Front Right");
         userSwerveDrive.m_swerveDrive.backRight.shuffleboard("Back Right");
         userSwerveDrive.smartdashboard();
     }
-
+    
     /**
      * This autonomous runs the autonomous command selected by your
      * {@link RobotContainer} class.
@@ -129,6 +117,7 @@ public class Robot extends TimedRobot {
     /**
      * This function is called periodically during operator control.
      */
+
     @Override
     public void teleopPeriodic() {
     }

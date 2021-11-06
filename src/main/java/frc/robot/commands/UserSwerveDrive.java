@@ -31,10 +31,7 @@ public class UserSwerveDrive extends CommandBase {
     //private final UserDigital reset;
 
 
-    private final UserDigital toggleFR;
-    private final UserDigital toggleFL;
-    private final UserDigital toggleBR;
-    private final UserDigital toggleBL;
+  
     /**
      * Default constructor for UserSwerveDrive. Passes a SwerveDrive
      * object and assigns the UserAnalog controls to each variable.
@@ -49,21 +46,14 @@ public class UserSwerveDrive extends CommandBase {
         UserAnalog driveX,
         UserAnalog driveY,
         UserAnalog turnRight,
-        UserAnalog turnLeft,
-        UserDigital toggleFR$,
-        UserDigital toggleFL$,
-        UserDigital toggleBR$,
-        UserDigital toggleBL$
+        UserAnalog turnLeft
     ) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
         this.turnRight = turnRight;
         this.turnLeft = turnLeft;
         turn = turnRight;
-        toggleBR = toggleBR$;
-        toggleBL = toggleBL$;
-        toggleFR = toggleFR$;
-        toggleFL = toggleFL$;        
+          
         this.driveX = driveX;
         this.driveY = driveY;
         this.m_swerveDrive.setDefaultCommand(this);
@@ -94,16 +84,10 @@ public class UserSwerveDrive extends CommandBase {
         double driveXTarget = deadzone(driveX.get());
         double driveYTarget = deadzone(driveY.get());
 
-        boolean fr = toggleFR.get();
-        boolean fl = toggleFL.get();
-        boolean br = toggleBR.get();
-        boolean bl = toggleBL.get();
-
         m_swerveDrive.driveTrain(
             driveXTarget * Constants.FASTEST_SPEED_METERS, 
                         - driveYTarget * Constants.FASTEST_SPEED_METERS, 
-                        turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5,
-            fr, fl, br, bl
+                        turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5
         );
         // frp = fr;
         // flp = fl;
