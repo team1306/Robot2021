@@ -30,7 +30,7 @@ public class SwerveWheel extends SubsystemBase {
     TalonFX angleMotor;
 
     // PID constants for the angleMotor
-    private static final double angleMotor_P = .25;
+    private static final double angleMotor_P = .025;
     private static final double angleMotor_I = .0001;
     private static final double angleMotor_D = 0.0000;
 
@@ -38,7 +38,7 @@ public class SwerveWheel extends SubsystemBase {
     TalonFX speedMotor;
 
     // PID constants for the speedMotor
-    private static final double speedMotor_P = .015;
+    private static final double speedMotor_P = .05;
     private static final double speedMotor_I = 0;
     private static final double speedMotor_D = 0.075;
 
@@ -55,70 +55,24 @@ public class SwerveWheel extends SubsystemBase {
     double targetSpeed = 0;
     private double targetSpeedVal;
     /**
-     * Initializes motors
-     * 
-     * @param angleMotorID
-     * @param speedMotorID
-     * @param encoderID
-     * @param offset       in degrees
+     * Creates a new SwerveWheel with the given speedMotor and angleMotor
+     * @param speedMotorID the ID of the motor assigned in phoenix tuner
+     * @param angleMotorID the ID of the motor assigned in phoenix tuner
+     * @param encoderID the ID of the encoder assigned in phoenix tuner
+     * @param isRev reverses the speedMotor
+     * @param offset the difference between natural 0 and target 0 for the angleMotor
+     * @param isAngleReversed reverses the angleMotor
      */
-    public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID, boolean isRev, double offset, boolean isAngleReversed) {
-        wheelOffset = offset;
-        // initialize and reset the encoder
-        angleEnc = new CANCoder(encoderID);
-        angleEnc.configFactoryDefault();
-        angleEnc.configSensorDirection(true);
-
-        // initialize and reset the angle motor
+    public SwerveWheel(
+        int speedMotorID,
+        int angleMotorID,
+        int encoderID
+    ) {
         angleMotor = new TalonFX(angleMotorID);
-        angleMotor.configFactoryDefault();
-        angleMotor.setNeutralMode(NeutralMode.Brake);
-        angleMotor.setInverted(isAngleReversed);
-
-        // Configuring the PID constants for the angle motor
-        angleMotor.config_kP(0, angleMotor_P);
-        angleMotor.config_kI(0, angleMotor_I);
-        angleMotor.config_kD(0, angleMotor_D);
-
-        angleMotor.configFeedbackNotContinuous(false, 0);
-        
-        // initialize and reset the speed motor
         speedMotor = new TalonFX(speedMotorID);
-        speedMotor.configFactoryDefault();
-        speedMotor.setNeutralMode(NeutralMode.Brake);
-        angleMotor.configClosedloopRamp(.100);
+        angleEnc = new CANCoder(encoderID);
 
-
-        // Configuring the PID constants for the speed motor
-        speedMotor.config_kP(0, speedMotor_P);
-        speedMotor.config_kI(0, speedMotor_I);
-        speedMotor.config_kD(0, speedMotor_D);
-
-        //inverting the motors if necessary
-        speedMotor.setInverted(!isRev);
-
-        // //setZeroPosition(offset);
-        // angleMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-        // angleMotor.configIntegratedSensorOffset(offset+910);
-
-        var config = new TalonFXConfiguration();
-        config.integratedSensorOffsetDegrees = offset;
-        config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-
-        var fconfig = new FilterConfiguration();
-        fconfig.remoteSensorSource = RemoteSensorSource.CANCoder;
-        fconfig.remoteSensorDeviceID = angleEnc.getDeviceID();
-
-        var s0 = config.slot0;
-        s0.kP = angleMotor_P;
-        s0.kI = angleMotor_I;
-        s0.kD = angleMotor_D;
-        s0.closedLoopPeriod = 10;
-        config.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-
-        config.remoteFilter0 = fconfig;
-
-        angleMotor.configAllSettings(config);
+        
     }
 
     /**
@@ -132,21 +86,12 @@ public class SwerveWheel extends SubsystemBase {
      * @param state
      */
     public void drive(SwerveModuleState state) {
-        //storing state as a global variable to get its information for shuffleboard
-        swerve = state; 
-
-        // gets the current angle from the angle enc and optimizes the module so it
-        // doesn't do extra rotations
-        Rotation2d currentAngle = Rotation2d.fromDegrees(getAngle());
-        state = optimize(state, currentAngle);
-        setPIDTarget(0);
-        
-        // call setSpeed and setPIDTarget with proper values from our SwerveModuleState
-        
-        //setPIDTarget(state.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
-        //setSpeed(state.speedMetersPerSecond);
-        setPercent(state.speedMetersPerSecond / Constants.FASTEST_SPEED_METERS);
-
+        speedMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
+        angleMotor.set(
+            ControlMode.PercentOutput,
+            (angleMotor.getSelectedSensorPosition()*Constants.SENSOR_UNIT_TO_DEG - state.angle.getDegrees()) 
+            * angleMotor_P
+        );
     }
 
     public void setZeroPosition(double offset) {
@@ -272,7 +217,7 @@ public class SwerveWheel extends SubsystemBase {
         // //SmartDashboard.putNumber(ID + ":Target Motor Speed", swerve.speedMetersPerSecond);
 
         // //[-1024, 1024] expected
-        SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
+        //SmartDashboard.putNumber(ID + ":Target PID Error", angleMotor.getClosedLoopError());
 
         // //Outputing the PID target [0, 2048] expected
         // SmartDashboard.putNumber(ID + ":Target PID Target", ((angleMotor.getClosedLoopTarget() / Constants.GEAR_RATIO) % 2048));
@@ -280,10 +225,10 @@ public class SwerveWheel extends SubsystemBase {
        
         //SmartDashboard.putNumber(ID + "targetSpeedValue:", targetSpeedVal);
         //SmartDashboard.putBoolean(ID + "getting optimized?", isChanged);
-        SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
+        //SmartDashboard.putNumber(ID + "targetPosition", swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS);
         SmartDashboard.putNumber(ID + "currentPosition", angleMotor.getSelectedSensorPosition()); // / Constants.GEAR_RATIO * Constants.ENCODER_TICKS_TO_DEGREES
-        SmartDashboard.putBoolean(ID + "current Position + Target PID Error = target Position ", Math.abs(angleMotor.getSelectedSensorPosition() + angleMotor.getClosedLoopError()) < Math.abs(swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS + 100));
-        // SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
+        //SmartDashboard.putBoolean(ID + "current Position + Target PID Error = target Position ", Math.abs(angleMotor.getSelectedSensorPosition() + angleMotor.getClosedLoopError()) < Math.abs(swerve.angle.getDegrees() * Constants.DEGREES_TO_ENCODER_TICKS + 100));
+        SmartDashboard.putNumber(ID + "absolutePosition", angleEnc.getAbsolutePosition());
         //SmartDashboard.putNumber(ID + "angle voltage output",         angleMotor.getMotorOutputVoltage());
         //SmartDashboard.putNumber(ID + "voltage output", speedMotor.getMotorOutputVoltage());
     

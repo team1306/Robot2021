@@ -30,6 +30,7 @@ public class UserSwerveDrive extends CommandBase {
     private final UserAnalog turnRight;
     //private final UserDigital reset;
 
+    private final UserDigital X,Y,A,B;
 
   
     /**
@@ -46,13 +47,22 @@ public class UserSwerveDrive extends CommandBase {
         UserAnalog driveX,
         UserAnalog driveY,
         UserAnalog turnRight,
-        UserAnalog turnLeft
+        UserAnalog turnLeft,
+        UserDigital x,
+        UserDigital y,
+        UserDigital a,
+        UserDigital b
     ) {
         this.m_swerveDrive = m_swerveDrive;
         this.addRequirements(m_swerveDrive);
         this.turnRight = turnRight;
         this.turnLeft = turnLeft;
         turn = turnRight;
+
+        X=x;
+        Y=y;
+        A=a;
+        B=b;
           
         this.driveX = driveX;
         this.driveY = driveY;
@@ -84,11 +94,12 @@ public class UserSwerveDrive extends CommandBase {
         double driveXTarget = deadzone(driveX.get());
         double driveYTarget = deadzone(driveY.get());
 
-        m_swerveDrive.driveTrain(
-            driveXTarget * Constants.FASTEST_SPEED_METERS, 
-                        - driveYTarget * Constants.FASTEST_SPEED_METERS, 
-                        turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5
-        );
+        // m_swerveDrive.driveTrain(
+        //     driveXTarget * Constants.FASTEST_SPEED_METERS, 
+        //                 - driveYTarget * Constants.FASTEST_SPEED_METERS, 
+        //                 turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5
+        // );
+        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, X.get(), Y.get(), A.get(), B.get());
         // frp = fr;
         // flp = fl;
         // brp = br;

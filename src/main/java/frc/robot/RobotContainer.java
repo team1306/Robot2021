@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import java.util.ResourceBundle.Control;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +42,8 @@ public class RobotContainer {
     private UserDigital forwardIntake;
     private UserDigital backwardIntake;
     //lazy
+
+    private UserDigital x,y,a,b;
     public UserSwerveDrive userSwerveDrive;
 
     /**
@@ -53,7 +59,8 @@ public class RobotContainer {
         SwerveDrive driveTrain = new SwerveDrive();
         Robot.swerveDrive = driveTrain;
         userSwerveDrive = new UserSwerveDrive(
-            driveTrain, driveX, driveY, turnRight, turnLeft);
+            driveTrain, driveX, driveY, turnRight, turnLeft,
+            x,y,a,b);
     }
 
     /**
@@ -70,7 +77,11 @@ public class RobotContainer {
         forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
         backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
 
-        
+
+        x = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
+        y = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
+        a = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+        b = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_B);
     }
 
     /**

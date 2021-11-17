@@ -28,10 +28,10 @@ import frc.robot.utils.UserDigital;
  */
 public class SwerveDrive extends SubsystemBase {
     // (speed motor ID, angle motor ID)
-    public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID, Constants.K_ENCODER_FRONT_RIGHT_ID,false, Constants.K_FRONT_RIGHT_OFFSET,true);
-    public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID, Constants.K_ENCODER_FRONT_LEFT_ID, true, Constants.K_FRONT_LEFT_OFFSET,true);
-    public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID, false, Constants.K_BACK_RIGHT_OFFSET,true);
-    public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID, Constants.K_ENCODER_BACK_LEFT_ID, true, Constants.K_BACK_LEFT_OFFSET,true);
+    public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID, Constants.K_ENCODER_FRONT_RIGHT_ID);
+    public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID, Constants.K_ENCODER_FRONT_LEFT_ID);
+    public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID, Constants.K_ENCODER_BACK_RIGHT_ID);
+    public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID, Constants.K_ENCODER_BACK_LEFT_ID);
 
 
     Translation2d frontLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
@@ -121,6 +121,19 @@ public class SwerveDrive extends SubsystemBase {
         
     }
 
+    public void driveTrain(double speed, boolean x, boolean y, boolean a, boolean b){
+        int turn = 0;
+        if (x){
+            turn = 270;
+        } else if (y) {
+            turn = 0;
+        } else if (a) {
+            turn = 180;
+        } else if (b) {
+            turn = 90;
+        }
+        driveTrain(0,speed,turn);
+    }
     public void resetAllWheels() {
         frontLeft.resetAbsoluteZero();
         frontRight.resetAbsoluteZero();

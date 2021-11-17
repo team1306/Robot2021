@@ -34,6 +34,7 @@ public final class Constants {
     //fastest speed percent output
     public static final double FASTEST_SPEED_METERS = 1;
 
+    public static final double SENSOR_UNIT_TO_DEG = 360/(12.8*2048);
 
     public static final double GEAR_RATIO = 12.8;
     //wheel base is y
