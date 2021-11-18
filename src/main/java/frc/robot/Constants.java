@@ -28,7 +28,7 @@ public final class Constants {
     public static final double K_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * K_WHEEL_RADIUS_METERS;
     
     //modified 
-    public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 2048.0;
+    public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 4096.0;
     public static final double DEGREES_TO_ENCODER_TICKS = 2048.0 / 360.0;
 
     //fastest speed percent output

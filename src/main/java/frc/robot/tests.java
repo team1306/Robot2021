@@ -12,7 +12,7 @@ public class tests {
     static Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
     static Translation2d backRightWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2, -Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
     public static void main(String[] args) {
-        System.out.println( chasisSpeedsPrintOut(chasisSpeedsTest(0,0,1)));
+        System.out.println(-210%360);
     }
 
 

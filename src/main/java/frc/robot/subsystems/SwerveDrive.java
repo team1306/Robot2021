@@ -120,9 +120,8 @@ public class SwerveDrive extends SubsystemBase {
         shuffleboard();
         
     }
-
+    private int turn = 0;
     public void driveTrain(double speed, boolean x, boolean y, boolean a, boolean b){
-        int turn = 0;
         if (x){
             turn = 270;
         } else if (y) {
@@ -132,14 +131,14 @@ public class SwerveDrive extends SubsystemBase {
         } else if (b) {
             turn = 90;
         }
-        driveTrain(0,speed,turn);
+        var state = new SwerveModuleState(speed, Rotation2d.fromDegrees(turn));
+
+        frontLeft.drive(state);
+        frontRight.drive(state);
+        backLeft.drive(state);
+        backRight.drive(state);
     }
-    public void resetAllWheels() {
-        frontLeft.resetAbsoluteZero();
-        frontRight.resetAbsoluteZero();
-        backLeft.resetAbsoluteZero();
-        backRight.resetAbsoluteZero();
-    }
+    
 
     public double getAngle() {
         return navx.getAngle();
@@ -150,7 +149,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     private void shuffleboard(){
-
+        
     }
 
 }
