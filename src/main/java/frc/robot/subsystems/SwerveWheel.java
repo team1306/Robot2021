@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.FilterConfiguration;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -10,10 +13,6 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 /**
  * This class takes in a SwerveModuleState and finds the target values: angle
@@ -28,7 +27,9 @@ import frc.robot.Constants;
 public class SwerveWheel extends SubsystemBase {
     // motor that controls the angle position
     TalonFX angleMotor;
-    private double ANGLE_MOTOR_P = .25;
+    private double ANGLE_MOTOR_P = .8;
+    private double ANGLE_MOTOR_I = 0.001;
+    private double integral = 0.0;
 
     // motor that controls wheel speed
     TalonFX speedMotor;
@@ -73,7 +74,7 @@ public class SwerveWheel extends SubsystemBase {
      * @param state
      */
     public void drive(SwerveModuleState state) {
-         //speedMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
+         speedMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
          angleMotor.set(ControlMode.PercentOutput, turnPercentHelper(state));//);
         
     }
@@ -81,7 +82,7 @@ public class SwerveWheel extends SubsystemBase {
     /**
      * 
      * @param state containing target turn position
-     * @return percent output that wheel should move to each position
+     * @return double [-1,1] percent output that wheel should move to each position
      */
     public double turnPercentHelper(SwerveModuleState state) {
         var id = angleMotor.getDeviceID();
@@ -98,12 +99,23 @@ public class SwerveWheel extends SubsystemBase {
         if(delta < -180) delta = delta + 360;
         SmartDashboard.putNumber(id + ": error", delta);
 
-        //changing delta into a percent output between [-ANGLE_MOTOR_P,ANGLE_MOTOR_P] with ANGLE_MOTOR_P as a max speed
+        //changing delta into a percent output between [-1,1] with ANGLE_MOTOR_P as a max speed
         delta = (delta / 180) * ANGLE_MOTOR_P;
+        //delta = (-40 / 180) * .25 = .0555 cause no movement
         SmartDashboard.putNumber(id + ": %out", delta);
         SmartDashboard.putNumber(id + ": current pos", currentPosition);
-        return delta;
+    
+        //*1 explains the time loop (Riemann sum integral)
+        integral += (ANGLE_MOTOR_I)*delta*1.0;
+        if (integral < -0.1) integral = -0.1;
+        if (integral > 0.1) integral = 0.1;
+        //observed max error of 10 for only P --> (10/180 * 0.8) = 0.04 - as of v11.20.21, is not necessary, but 
+        //is there to make the wheels not oscillate
+        if (delta < -0.04 || delta > 0.04) integral = 0;
+        SmartDashboard.putNumber(id + ": integral accumulator", integral);
+        return integral + delta;
     }
+
 
 
     /**

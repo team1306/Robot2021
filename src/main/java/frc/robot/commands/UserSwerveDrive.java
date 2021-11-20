@@ -99,12 +99,12 @@ public class UserSwerveDrive extends CommandBase {
         //                 - driveYTarget * Constants.FASTEST_SPEED_METERS, 
         //                 turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5
         // );
-        m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, X.get(), Y.get(), A.get(), B.get());
+        //m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, X.get(), Y.get(), A.get(), B.get());
         // frp = fr;
         // flp = fl;
         // brp = br;
         // blp = bl;
-
+        m_swerveDrive.driveTrain(driveX.get(), -driveY.get(), turn.get());
         // if(reset.get()) {
         //     m_swerveDrive.resetAllWheels();
         // }
