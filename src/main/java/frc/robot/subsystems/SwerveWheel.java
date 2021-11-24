@@ -27,8 +27,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 public class SwerveWheel extends SubsystemBase {
     // motor that controls the angle position
     TalonFX angleMotor;
-    private double ANGLE_MOTOR_P = .8;
-    private double ANGLE_MOTOR_I = 0.001;
+    private final double ANGLE_MOTOR_P = .8;
+    private final double ANGLE_MOTOR_I = 0.151;
     private double integral = 0.0;
 
     // motor that controls wheel speed
@@ -61,6 +61,7 @@ public class SwerveWheel extends SubsystemBase {
         angleEnc = new CANCoder(encoderID);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
+        speedMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     /**
@@ -74,17 +75,20 @@ public class SwerveWheel extends SubsystemBase {
      * @param state
      */
     public void drive(SwerveModuleState state) {
-         speedMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
-         angleMotor.set(ControlMode.PercentOutput, turnPercentHelper(state));//);
+        if(turnPercentHelper(state)) {
+            speedMotor.set(ControlMode.PercentOutput, - state.speedMetersPerSecond * .5);
+        } else {
+            speedMotor.set(ControlMode.PercentOutput,state.speedMetersPerSecond * .5);
+        }
         
     }
     
     /**
      * 
      * @param state containing target turn position
-     * @return double [-1,1] percent output that wheel should move to each position
+     * @return whether to reverse
      */
-    public double turnPercentHelper(SwerveModuleState state) {
+    public boolean turnPercentHelper(SwerveModuleState state) {
         var id = angleMotor.getDeviceID();
         double target = state.angle.getDegrees();
         double currentPosition = angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES;
@@ -95,9 +99,13 @@ public class SwerveWheel extends SubsystemBase {
         //finds the amount of degrees that the angleMotor needs to rotate to reach the position
         //after this delta should be bounded between [-180, 180]
         double delta = (currentPosition - target); 
-        if(delta > 180) delta = delta - 360;
-        if(delta < -180) delta = delta + 360;
+        if(delta > 180) delta -= 360;
+        if(delta < -180) delta += 360;
         SmartDashboard.putNumber(id + ": error", delta);
+        //Determines whether the wheel rotation can be optimized by reversing the motor direction
+        boolean toReverse = Math.abs(delta) >= 90;
+        if(delta >= 90) delta -= 180;
+        if(delta <= -90) delta += 180;
 
         //changing delta into a percent output between [-1,1] with ANGLE_MOTOR_P as a max speed
         delta = (delta / 180) * ANGLE_MOTOR_P;
@@ -111,9 +119,11 @@ public class SwerveWheel extends SubsystemBase {
         if (integral > 0.1) integral = 0.1;
         //observed max error of 10 for only P --> (10/180 * 0.8) = 0.04 - as of v11.20.21, is not necessary, but 
         //is there to make the wheels not oscillate
-        if (delta < -0.04 || delta > 0.04) integral = 0;
+        var n = 0.5;
+        if (delta > -n/180 && delta < n/180) integral = 0;
         SmartDashboard.putNumber(id + ": integral accumulator", integral);
-        return integral + delta;
+        angleMotor.set(ControlMode.PercentOutput, integral + delta);
+        return toReverse;
     }
 
 

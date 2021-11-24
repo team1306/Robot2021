@@ -75,18 +75,6 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDriveKinematics.normalizeWheelSpeeds(modulesStates2, Constants.FASTEST_SPEED_METERS);
         //Getting and assigning the module states to the wheels
         
-        /*
-
-        NOTES FROM 10/30
-        - code looks for button press and then inverses the current value, so if the wheel
-            is activated, then deactivate it etc. However a prolonged button press (even 
-            for less than a second) will invert the wheel state more than once. This can
-            be demonstrated by holding down the inversion button while the wheels are 
-            moving. To solve this issue, just press the button for a split second and then
-            move on.
-        - all wheels are moving forwards and backwards only, result of switching to arcade
-            drive?
-        */
 
         
        
@@ -127,7 +115,7 @@ public class SwerveDrive extends SubsystemBase {
         } else if (y) {
             turn = 0;
         } else if (a) {
-            turn = 180;
+            turn = 180; 
         } else if (b) {
             turn = 90;
         }

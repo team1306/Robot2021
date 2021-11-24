@@ -104,7 +104,7 @@ public class UserSwerveDrive extends CommandBase {
         // flp = fl;
         // brp = br;
         // blp = bl;
-        m_swerveDrive.driveTrain(driveX.get(), -driveY.get(), turn.get());
+        m_swerveDrive.driveTrain(-driveXTarget, driveYTarget, -turnTarget);
         // if(reset.get()) {
         //     m_swerveDrive.resetAllWheels();
         // }
@@ -120,7 +120,7 @@ public class UserSwerveDrive extends CommandBase {
      */
     public double deadzone(double input) {
         if(Math.abs(input) > .2)
-            return input;
+            return input * Math.abs(input);
 
         return 0;
     }
