@@ -22,22 +22,26 @@ public class UserSwerveDrive extends CommandBase {
 	public final SwerveDrive m_swerveDrive;
 	private final UserAnalog driveX;
 	private final UserAnalog driveY;
-	private UserAnalog turn;
+	// private UserAnalog turn;
 	private final UserAnalog turnLeft;
 	private final UserAnalog turnRight;
 	// private final UserDigital reset;
 
 	private final UserDigital X, Y, A, B;
 
-
 	/**
 	 * Default constructor for UserSwerveDrive. Passes a SwerveDrive object and assigns the UserAnalog
 	 * controls to each variable.
 	 * 
 	 * @param m_swerveDrive
-	 * @param driveY        analog input for up/down movement
 	 * @param driveX        analog input for left/right movement
-	 * @param turn          analog input for turning
+	 * @param driveY        analog input for up/down movement
+	 * @param turnRight     analog input for turning right
+	 * @param turnLeft      analog input for turning left
+	 * @param x             digital input for X button
+	 * @param y             digital input for Y button
+	 * @param a             digital input for A button
+	 * @param b             digital input for B button
 	 */
 	public UserSwerveDrive(
 		SwerveDrive m_swerveDrive,
@@ -54,8 +58,8 @@ public class UserSwerveDrive extends CommandBase {
 		this.addRequirements(m_swerveDrive);
 		this.turnRight = turnRight;
 		this.turnLeft = turnLeft;
-		turn = turnRight;
-
+		// turn = turnRight;
+		// turn = () -> turnLeft.get()-turnRight.get();s
 		X = x;
 		Y = y;
 		A = a;
@@ -80,29 +84,16 @@ public class UserSwerveDrive extends CommandBase {
 	 */
 	@Override
 	public void execute() {
-		this.turn = turnLeft.get() > turnRight.get() ? turnLeft : turnRight;
+		// this.turn = turnLeft.get() > turnRight.get() ? turnLeft : turnRight;
 
-		double turnTarget = turnRight.get() - turnLeft.get();
-		turnTarget = deadzone(turnTarget);
+		double turnTarget = deadzone(turnLeft.get() - turnRight.get());
+		// turnTarget = deadzone(turnTarget);
 
 		double driveXTarget = deadzone(driveX.get());
 		double driveYTarget = deadzone(driveY.get());
 
-		// m_swerveDrive.driveTrain(
-		//     driveXTarget * Constants.FASTEST_SPEED_METERS, 
-		//                 - driveYTarget * Constants.FASTEST_SPEED_METERS, 
-		//                 turnTarget * Constants.FASTEST_ANGULAR_VELOCITY * 5
-		// );
-		//m_swerveDrive.driveTrain(driveXTarget * Constants.FASTEST_SPEED_METERS, X.get(), Y.get(), A.get(), B.get());
-		// frp = fr;
-		// flp = fl;
-		// brp = br;
-		// blp = bl;
-		m_swerveDrive.driveTrain(-driveXTarget, driveYTarget, -turnTarget);
-		// if(reset.get()) {
-		//     m_swerveDrive.resetAllWheels();
-		// }
-		// getting data to put onto shuffleboard 
+		//m_swerveDrive.driveTrain(-driveXTarget, driveYTarget, turnTarget);
+
 		smartdashboard();
 	}
 
@@ -145,6 +136,9 @@ public class UserSwerveDrive extends CommandBase {
 		m_swerveDrive.backRight.shuffleboard("Back Right");
 		SmartDashboard.putNumber("X Joystick Value", driveX.get());
 		SmartDashboard.putNumber("Y Joystick Value", driveY.get());
-		SmartDashboard.putNumber("Turn Value", turn.get());
+		SmartDashboard.putNumber(
+			"Turn Value",
+			turnLeft.get() - turnRight.get()
+		);
 	}
 }

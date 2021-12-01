@@ -82,20 +82,29 @@ public class SwerveWheel extends SubsystemBase {
 				state.speedMetersPerSecond * .5
 			);
 		}
-    }
-    
-    /**
-     * Takes in a target amount of rotations, moves the robot forward that many rotations
-     * @param rotations number of times the wheel should rotate
-     */
-    public void drive(double rotations) {
-        //give us the current position of the wheel
-        if(angleMotor.getSelectedSensorPosition() < rotations * 2048) {
-            angleMotor.set(ControlMode.PercentOutput, .2);
-        } else {
-            angleMotor.set(ControlMode.PercentOutput, 0);
-        }
-    }
+	}
+
+	/**
+	 * Takes in a target amount of rotations, moves the robot forward that many rotations
+	 * 
+	 * @param rotations number of times the wheel should rotate
+	 */
+	public void drive(double rotations, double angle) {
+		//give us the current position of the wheel
+		if (speedMotor.getSelectedSensorPosition() < rotations
+			* 2048
+			* Constants.GEAR_RATIO) {
+			speedMotor.set(ControlMode.PercentOutput, .2);
+		} else {
+			speedMotor.set(ControlMode.PercentOutput, 0);
+		}
+		if (angleMotor.getSelectedSensorPosition() < angle
+			* Constants.DEGREES_TO_ENCODER_TICKS) {
+			angleMotor.set(ControlMode.PercentOutput, .2);
+		} else {
+			angleMotor.set(ControlMode.PercentOutput, 0);
+		}
+	}
 
 	/**
 	 * 
@@ -158,6 +167,12 @@ public class SwerveWheel extends SubsystemBase {
 	 * 
 	 * @param ID ID of the device to collect data from
 	 */
-	public void shuffleboard(String ID) {}
+	public void shuffleboard(String ID) {
+		SmartDashboard.putNumber(ID, speedMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber(
+			ID + "A",
+			angleMotor.getSelectedSensorPosition()
+		);
+	}
 
 }

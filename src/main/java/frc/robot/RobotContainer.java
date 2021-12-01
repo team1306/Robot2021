@@ -29,68 +29,80 @@ import frc.robot.utils.UserDigital;
  */
 public class RobotContainer {
 
-    // The robot's subsystems and commands are defined here...
+	// The robot's subsystems and commands are defined here...
 
-    // The robot's inputs that it recieves from the controller are defined here
-    private UserAnalog driveX;
-    private UserAnalog driveY;
-    private UserAnalog turnRight;
-    private UserAnalog turnLeft;
-    //private UserDigital reset;
+	// The robot's inputs that it recieves from the controller are defined here
+	private UserAnalog driveX;
+	private UserAnalog driveY;
+	private UserAnalog turnRight;
+	private UserAnalog turnLeft;
+	//private UserDigital reset;
 
-    private UserDigital forwardIntake;
-    private UserDigital backwardIntake;
-    //lazy
+	private UserDigital forwardIntake;
+	private UserDigital backwardIntake;
+	//lazy
 
-    private UserDigital x,y,a,b;
-    public UserSwerveDrive userSwerveDrive;
+	private UserDigital x, y, a, b;
+	public UserSwerveDrive userSwerveDrive;
 
-    private final SimpleAutoCommand autoCommand; 
+	private final SimpleAutoCommand autoCommand;
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-        Controller.init();
-        configureButtonBindings();
-
-
-        SwerveDrive driveTrain = new SwerveDrive();
-        Robot.swerveDrive = driveTrain;
-        userSwerveDrive = new UserSwerveDrive(
-            driveTrain, driveX, driveY, turnRight, turnLeft,
-            x,y,a,b);
-        autoCommand = new SimpleAutoCommand(driveTrain);
-    }
-
-    /**
-     * Use this method to define your button->command mappings. Buttons 
-     * are assigned through the Controller class. Use simpleAxis if the 
-     * inputs are analog. Use simpleButton if the inputs are digital. 
-     */
-    private void configureButtonBindings() {
-        driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
-        driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-        turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
-        turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
-        //reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
-        forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
-        backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
+	/**
+	 * The container for the robot. Contains subsystems, OI devices, and commands.
+	 */
+	public RobotContainer() {
+		Controller.init();
+		configureButtonBindings();
 
 
-        x = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
-        y = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
-        a = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
-        b = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_B);
-    }
+		SwerveDrive driveTrain = new SwerveDrive();
+		Robot.swerveDrive = driveTrain;
+		userSwerveDrive = new UserSwerveDrive(
+			driveTrain, driveX, driveY, turnRight, turnLeft, x, y, a, b
+		);
+		autoCommand = new SimpleAutoCommand(driveTrain);
+	}
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoCommand;
-    }
+	/**
+	 * Use this method to define your button->command mappings. Buttons are assigned through the
+	 * Controller class. Use simpleAxis if the inputs are analog. Use simpleButton if the inputs are
+	 * digital.
+	 */
+	private void configureButtonBindings() {
+		driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
+		driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
+		turnRight = Controller.simpleAxis(
+			Controller.PRIMARY,
+			Controller.AXIS_RTRIGGER
+		);
+		turnLeft = Controller.simpleAxis(
+			Controller.PRIMARY,
+			Controller.AXIS_LTRIGGER
+		);
+		//reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+		forwardIntake = Controller.simpleButton(
+			Controller.PRIMARY,
+			Controller.BUTTON_RBUMPER
+		);
+		backwardIntake = Controller.simpleButton(
+			Controller.PRIMARY,
+			Controller.BUTTON_LBUMPER
+		);
+
+
+		x = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
+		y = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
+		a = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+		b = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_B);
+	}
+
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+		return autoCommand;
+	}
 
 }

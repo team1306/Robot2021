@@ -155,14 +155,15 @@ public class SwerveDrive extends SubsystemBase {
 
 	public double getAngle() {
 		return navx.getAngle();
-    }
-    
-    public void driveTrain(double rotations) {
-        frontLeft.drive(rotations);
-        frontRight.drive(rotations);
-        backLeft.drive(rotations);
-        backRight.drive(rotations);
-    }
+	}
+
+	public void driveTrain(double rotations, double angle) {
+		frontLeft.drive(rotations, angle);
+		frontRight.drive(rotations, angle);
+		backLeft.drive(rotations, angle);
+		backRight.drive(rotations, angle);
+	}
+
 
 	public void setModuleStates(SwerveModuleState[] states) {
 		moduleStates = states;
