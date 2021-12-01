@@ -138,6 +138,13 @@ public class SwerveDrive extends SubsystemBase {
         backLeft.drive(state);
         backRight.drive(state);
     }
+
+    public void driveTrain(double rotations) {
+        frontLeft.drive(rotations);
+        frontRight.drive(rotations);
+        backLeft.drive(rotations);
+        backRight.drive(rotations);
+    }
     
 
     public double getAngle() {

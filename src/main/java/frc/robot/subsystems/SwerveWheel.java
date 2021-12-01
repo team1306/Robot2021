@@ -64,6 +64,19 @@ public class SwerveWheel extends SubsystemBase {
     }
 
     /**
+     * Takes in a target amount of rotations, moves the robot forward that many rotations
+     * @param rotations number of times the wheel should rotate
+     */
+    public void drive(double rotations) {
+        //give us the current position of the wheel
+        if(angleMotor.getSelectedSensorPosition() < rotations * 2048) {
+            angleMotor.set(ControlMode.PercentOutput, .2);
+        } else {
+            angleMotor.set(ControlMode.PercentOutput, 0);
+        }
+    }
+
+    /**
      * Takes in a state. From that state it receives the target speed in meter per
      * second and the target angle in rotation 2D.
      * 
