@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import com.kauailabs.navx.frc.*;
 
 /**
  * This class takes in a SwerveModuleState and finds the target values: angle and speed and then
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
  * This class will also provide data to UserDrive to be used for SmartDashboard.
  */
 public class SwerveWheel extends SubsystemBase {
+
 
 	// motor that controls the angle position
 	TalonFX angleMotor;
@@ -100,7 +102,7 @@ public class SwerveWheel extends SubsystemBase {
 		}
 		if (angleMotor.getSelectedSensorPosition() < angle
 			* Constants.DEGREES_TO_ENCODER_TICKS) {
-			angleMotor.set(ControlMode.PercentOutput, .2);
+			angleMotor.set(ControlMode.PercentOutput, -.1);
 		} else {
 			angleMotor.set(ControlMode.PercentOutput, 0);
 		}
@@ -114,6 +116,7 @@ public class SwerveWheel extends SubsystemBase {
 	public boolean turnPercentHelper(SwerveModuleState state) {
 		int id = angleMotor.getDeviceID();
 		double target = state.angle.getDegrees();
+		target = target - SwerveDrive.getYaw();
 		double currentPosition = angleMotor.getSelectedSensorPosition()
 			* Constants.ENCODER_TICKS_TO_DEGREES;
 
@@ -174,5 +177,4 @@ public class SwerveWheel extends SubsystemBase {
 			angleMotor.getSelectedSensorPosition()
 		);
 	}
-
 }

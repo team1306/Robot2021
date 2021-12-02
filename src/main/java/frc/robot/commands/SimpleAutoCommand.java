@@ -22,6 +22,6 @@ public class SimpleAutoCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        m_swerveDrive.driveTrain(5, 90);
+        m_swerveDrive.driveTrain(5, 0);
     }
 }

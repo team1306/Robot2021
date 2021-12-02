@@ -63,8 +63,12 @@ public class SwerveDrive extends SubsystemBase {
 
 
 	public SwerveDriveOdometry odometry;
-	private AHRS navx; // Gyro we use, navX Sensor
-
+	/**
+	 * TODO Gyro we use, navX Sensor; !!!remember to reset for optimal temperature by holding cal
+	 * button for at least 10 secs, and then click reset button afterwards; if done properly,
+	 * calibrate light blinks once
+	 */
+	public static AHRS gyro = new AHRS();
 	public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 		frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel
 	);
@@ -75,7 +79,18 @@ public class SwerveDrive extends SubsystemBase {
 	/**
 	 * Nothing needs to be done in the default constructor
 	 */
-	public SwerveDrive() {}
+	public SwerveDrive() {
+
+	}
+
+	/**
+	 * returns yaw (rotation along the y-axis)
+	 * 
+	 * @return a double between (-180,180) that represents yaw
+	 */
+	public static double getYaw() {
+		return gyro.getYaw();
+	}
 
 	/**
 	 * Creates four new SwerveModuleStates and assigns them to their respective wheels
@@ -119,10 +134,10 @@ public class SwerveDrive extends SubsystemBase {
 		// backRight.drive(x,y,turn);
 		backRight.drive(backRightState);
 
-		/* frontLeft.drive(FROn, FLOn, BROn, BLOn);
-		frontRight.drive(FROn, FLOn, BROn, BLOn);
-		backRight.drive(FROn, FLOn, BROn, BLOn);
-		backLeft.drive(FROn, FLOn, BROn, BLOn); */
+		/*
+		 * frontLeft.drive(FROn, FLOn, BROn, BLOn); frontRight.drive(FROn, FLOn, BROn, BLOn);
+		 * backRight.drive(FROn, FLOn, BROn, BLOn); backLeft.drive(FROn, FLOn, BROn, BLOn);
+		 */
 
 		shuffleboard();
 	}
@@ -154,7 +169,7 @@ public class SwerveDrive extends SubsystemBase {
 	}
 
 	public double getAngle() {
-		return navx.getAngle();
+		return 0;
 	}
 
 	public void driveTrain(double rotations, double angle) {
@@ -170,7 +185,7 @@ public class SwerveDrive extends SubsystemBase {
 	}
 
 	private void shuffleboard() {
-
+		SmartDashboard.putNumber("Gryo Yaw", gyro.getYaw());
 	}
 
 }

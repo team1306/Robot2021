@@ -30,8 +30,8 @@ public class UserSwerveDrive extends CommandBase {
 	private final UserDigital X, Y, A, B;
 
 	/**
-	 * Default constructor for UserSwerveDrive. Passes a SwerveDrive object and assigns the UserAnalog
-	 * controls to each variable.
+	 * Default constructor for UserSwerveDrive. Passes a SwerveDrive object and assigns the
+	 * UserAnalog controls to each variable.
 	 * 
 	 * @param m_swerveDrive
 	 * @param driveX        analog input for left/right movement
@@ -76,7 +76,6 @@ public class UserSwerveDrive extends CommandBase {
 	@Override
 	public void initialize() {}
 
-
 	// private boolean frp = false, flp = false, brp = false, blp = false;
 
 	/**
@@ -92,7 +91,9 @@ public class UserSwerveDrive extends CommandBase {
 		double driveXTarget = deadzone(driveX.get());
 		double driveYTarget = deadzone(driveY.get());
 
-		//m_swerveDrive.driveTrain(-driveXTarget, driveYTarget, turnTarget);
+		// create vector reprersents (drivex, drivey) in polar coors; rotate theta by yaw degrees,
+		// then convert back to cartesian coords
+		m_swerveDrive.driveTrain(-driveXTarget, driveYTarget, turnTarget);
 
 		smartdashboard();
 	}
@@ -103,7 +104,7 @@ public class UserSwerveDrive extends CommandBase {
 	 * @return input if the absoluteValue of input is greater than .1 otherwise 0
 	 */
 	public double deadzone(double input) {
-		if (Math.abs(input) > .2)
+		if (Math.abs(input) > .05)
 			return input * Math.abs(input);
 
 		return 0;

@@ -36,11 +36,11 @@ public class RobotContainer {
 	private UserAnalog driveY;
 	private UserAnalog turnRight;
 	private UserAnalog turnLeft;
-	//private UserDigital reset;
+	// private UserDigital reset;
 
 	private UserDigital forwardIntake;
 	private UserDigital backwardIntake;
-	//lazy
+	// lazy
 
 	private UserDigital x, y, a, b;
 	public UserSwerveDrive userSwerveDrive;
@@ -54,13 +54,12 @@ public class RobotContainer {
 		Controller.init();
 		configureButtonBindings();
 
-
 		SwerveDrive driveTrain = new SwerveDrive();
 		Robot.swerveDrive = driveTrain;
 		userSwerveDrive = new UserSwerveDrive(
 			driveTrain, driveX, driveY, turnRight, turnLeft, x, y, a, b
 		);
-		autoCommand = new SimpleAutoCommand(driveTrain);
+		autoCommand = null; // new SimpleAutoCommand(driveTrain);
 	}
 
 	/**
@@ -79,7 +78,7 @@ public class RobotContainer {
 			Controller.PRIMARY,
 			Controller.AXIS_LTRIGGER
 		);
-		//reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
+		// reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
 		forwardIntake = Controller.simpleButton(
 			Controller.PRIMARY,
 			Controller.BUTTON_RBUMPER
@@ -88,7 +87,6 @@ public class RobotContainer {
 			Controller.PRIMARY,
 			Controller.BUTTON_LBUMPER
 		);
-
 
 		x = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
 		y = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);
