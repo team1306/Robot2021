@@ -83,11 +83,21 @@ public class UserSwerveDrive extends CommandBase {
 
 		double driveXTarget = deadzone(driveX.get());
 		double driveYTarget = deadzone(driveY.get());
+		double r = Math.sqrt(driveXTarget * driveXTarget + driveYTarget * driveYTarget);
+		double theta = Math.atan2(driveYTarget, driveXTarget);
+
+		theta -= SwerveDrive.getYaw() * Math.PI / 180;
+		SmartDashboard.putNumberArray("old <X,Y> : ", new double[] { driveXTarget, driveYTarget });
+		driveXTarget = r * Math.cos(theta);
+		driveYTarget = r * Math.sin(theta);
+		SmartDashboard.putNumber("θ : ", theta);
+		SmartDashboard.putNumberArray("new <X,Y> : ", new double[] { driveXTarget, driveYTarget });
 
 		// create vector reprersents (drivex, drivey) in polar coors; rotate theta by
 		// yaw degrees,
 		// then convert back to cartesian coords
 		m_swerveDrive.driveTrain(driveXTarget, -driveYTarget, -turnTarget);
+		m_swerveDrive.resetGyro(A.get());
 
 		smartdashboard();
 	}

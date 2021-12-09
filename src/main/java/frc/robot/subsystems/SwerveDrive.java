@@ -21,57 +21,40 @@ import frc.robot.Constants;
 import frc.robot.utils.UserDigital;
 
 /**
- * The SwerveDrive class uses four SwerveWheel objects which make up the drivetrain. This class is
- * responsible for the math that keeps track of how the swerve drive moves
+ * The SwerveDrive class uses four SwerveWheel objects which make up the
+ * drivetrain. This class is responsible for the math that keeps track of how
+ * the swerve drive moves
  */
 public class SwerveDrive extends SubsystemBase {
 
 	// (speed motor ID, angle motor ID)
-	public SwerveWheel frontRight = new SwerveWheel(
-		Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID,
-		Constants.K_ENCODER_FRONT_RIGHT_ID
-	);
-	public SwerveWheel frontLeft = new SwerveWheel(
-		Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID,
-		Constants.K_ENCODER_FRONT_LEFT_ID
-	);
-	public SwerveWheel backRight = new SwerveWheel(
-		Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID,
-		Constants.K_ENCODER_BACK_RIGHT_ID
-	);
-	public SwerveWheel backLeft = new SwerveWheel(
-		Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID,
-		Constants.K_ENCODER_BACK_LEFT_ID
-	);
+	public SwerveWheel frontRight = new SwerveWheel(Constants.K_DRIVE_FRONT_RIGHT_ID, Constants.K_TURN_FRONT_RIGHT_ID,
+			Constants.K_ENCODER_FRONT_RIGHT_ID);
+	public SwerveWheel frontLeft = new SwerveWheel(Constants.K_DRIVE_FRONT_LEFT_ID, Constants.K_TURN_FRONT_LEFT_ID,
+			Constants.K_ENCODER_FRONT_LEFT_ID);
+	public SwerveWheel backRight = new SwerveWheel(Constants.K_DRIVE_BACK_RIGHT_ID, Constants.K_TURN_BACK_RIGHT_ID,
+			Constants.K_ENCODER_BACK_RIGHT_ID);
+	public SwerveWheel backLeft = new SwerveWheel(Constants.K_DRIVE_BACK_LEFT_ID, Constants.K_TURN_BACK_LEFT_ID,
+			Constants.K_ENCODER_BACK_LEFT_ID);
 
-	Translation2d frontLeftWheel = new Translation2d(
-		-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
-		Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2
-	);
-	Translation2d frontRightWheel = new Translation2d(
-		Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
-		Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2
-	);
-	Translation2d backLeftWheel = new Translation2d(
-		-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
-		-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2
-	);
-	Translation2d backRightWheel = new Translation2d(
-		Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
-		-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2
-	);
-
+	Translation2d frontLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
+			Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+	Translation2d frontRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
+			Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+	Translation2d backLeftWheel = new Translation2d(-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
+			-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
+	Translation2d backRightWheel = new Translation2d(Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
+			-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2);
 
 	public SwerveDriveOdometry odometry;
 	/**
-	 * TODO Gyro we use, navX Sensor; !!!remember to reset for optimal temperature by holding cal
-	 * button for at least 10 secs, and then click reset button afterwards; if done properly,
-	 * calibrate light blinks once
+	 * TODO Gyro we use, navX Sensor; !!!remember to reset for optimal temperature
+	 * by holding cal button for at least 10 secs, and then click reset button
+	 * afterwards; if done properly, calibrate light blinks once
 	 */
 	public static AHRS gyro = new AHRS();
-	public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-		frontLeftWheel, frontRightWheel, backLeftWheel, backRightWheel
-	);
+	public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontLeftWheel, frontRightWheel, backLeftWheel,
+			backRightWheel);
 	private ChassisSpeeds chassisSpeeds;
 
 	private SwerveModuleState[] moduleStates;
@@ -93,7 +76,8 @@ public class SwerveDrive extends SubsystemBase {
 	}
 
 	/**
-	 * Creates four new SwerveModuleStates and assigns them to their respective wheels
+	 * Creates four new SwerveModuleStates and assigns them to their respective
+	 * wheels
 	 * 
 	 * @param x    x-coordinate movement in meters per second
 	 * @param y    y-coordinate movement in meters per second
@@ -104,18 +88,10 @@ public class SwerveDrive extends SubsystemBase {
 		chassisSpeeds = new ChassisSpeeds(y, x, turn);
 		ChassisSpeeds chassisSpeeds2 = new ChassisSpeeds(y, x, -turn);
 		moduleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
-		SwerveModuleState[] modulesStates2 = kinematics.toSwerveModuleStates(
-			chassisSpeeds2
-		);
+		SwerveModuleState[] modulesStates2 = kinematics.toSwerveModuleStates(chassisSpeeds2);
 		// making sure module states have possible values
-		SwerveDriveKinematics.normalizeWheelSpeeds(
-			moduleStates,
-			Constants.FASTEST_SPEED_METERS
-		);
-		SwerveDriveKinematics.normalizeWheelSpeeds(
-			modulesStates2,
-			Constants.FASTEST_SPEED_METERS
-		);
+		SwerveDriveKinematics.normalizeWheelSpeeds(moduleStates, Constants.FASTEST_SPEED_METERS);
+		SwerveDriveKinematics.normalizeWheelSpeeds(modulesStates2, Constants.FASTEST_SPEED_METERS);
 		// Getting and assigning the module states to the wheels
 
 		SwerveModuleState frontLeftState = modulesStates2[0];
@@ -135,8 +111,9 @@ public class SwerveDrive extends SubsystemBase {
 		backRight.drive(backRightState);
 
 		/*
-		 * frontLeft.drive(FROn, FLOn, BROn, BLOn); frontRight.drive(FROn, FLOn, BROn, BLOn);
-		 * backRight.drive(FROn, FLOn, BROn, BLOn); backLeft.drive(FROn, FLOn, BROn, BLOn);
+		 * frontLeft.drive(FROn, FLOn, BROn, BLOn); frontRight.drive(FROn, FLOn, BROn,
+		 * BLOn); backRight.drive(FROn, FLOn, BROn, BLOn); backLeft.drive(FROn, FLOn,
+		 * BROn, BLOn);
 		 */
 
 		shuffleboard();
@@ -144,13 +121,7 @@ public class SwerveDrive extends SubsystemBase {
 
 	private int turn = 0;
 
-	public void driveTrain(
-		double speed,
-		boolean x,
-		boolean y,
-		boolean a,
-		boolean b
-	) {
+	public void driveTrain(double speed, boolean x, boolean y, boolean a, boolean b) {
 		if (x)
 			turn = 270;
 		else if (y)
@@ -179,13 +150,18 @@ public class SwerveDrive extends SubsystemBase {
 		backRight.drive(rotations, angle);
 	}
 
-
 	public void setModuleStates(SwerveModuleState[] states) {
 		moduleStates = states;
 	}
 
 	private void shuffleboard() {
 		SmartDashboard.putNumber("Gryo Yaw", gyro.getYaw());
+	}
+
+	public void resetGyro(boolean A) {
+		if (A) {
+			gyro.reset();
+		}
 	}
 
 }
