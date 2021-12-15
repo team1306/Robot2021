@@ -15,13 +15,7 @@ public interface UserAnalog {
 		double trueVal,
 		double falseVal
 	) {
-		return () -> {
-			if (digital.get()) {
-				return trueVal;
-			} else {
-				return falseVal;
-			}
-		};
+		return () -> digital.get() ? trueVal : falseVal;
 	}
 
 	/**
@@ -30,8 +24,6 @@ public interface UserAnalog {
 	public static double clamp(double val) {
 		return Math.max(-1, Math.min(1, val));
 	}
-
-
 
 	/**
 	 * @return value - a [-1,1] value based on the input from the user or controller

@@ -3,12 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.util.Units;
 
 /**
- * A class for holding constant values in a single editable spot. What goes in
- * this file: -Robot Motorcontroller ports and IDS -Robot phsyical attributes
- * -Field attributes
+ * A class for holding constant values in a single editable spot. What goes in this file: -Robot
+ * Motorcontroller ports and IDS -Robot phsyical attributes -Field attributes
  * 
- * Things that don't go in this file: -Subsystem-specific PID values
- * -Subsystem-specific sensor thresholds
+ * Things that don't go in this file: -Subsystem-specific PID values -Subsystem-specific sensor
+ * thresholds
  */
 public final class Constants {
 
@@ -21,8 +20,12 @@ public final class Constants {
 	// robot information
 	public static final double K_TRACK_WIDTH_METERS = 0.7175;
 	public static final double K_WHEEL_RADIUS_INCHES = 3.75; // pnuematic, so ish
-	public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(K_WHEEL_RADIUS_INCHES);
-	public static final double K_WHEEL_CIRCUMFERENCE_METERS = 2 * Math.PI * K_WHEEL_RADIUS_METERS;
+	public static final double K_WHEEL_RADIUS_METERS = Units.inchesToMeters(
+		K_WHEEL_RADIUS_INCHES
+	);
+	public static final double K_WHEEL_CIRCUMFERENCE_METERS = 2
+		* Math.PI
+		* K_WHEEL_RADIUS_METERS;
 
 	// modified
 	public static final double ENCODER_TICKS_TO_DEGREES = 360.0 / 4096.0;
@@ -42,13 +45,16 @@ public final class Constants {
 	/**
 	 * meters
 	 */
-	public static final double WHEEL_DISTANCE_TO_CENTER = Math
-			.sqrt(ROBOT_DISTANCE_BETWEEN_WHEELS * ROBOT_DISTANCE_BETWEEN_WHEELS * 2);
+	public static final double WHEEL_DISTANCE_TO_CENTER = Math.sqrt(
+		ROBOT_DISTANCE_BETWEEN_WHEELS * ROBOT_DISTANCE_BETWEEN_WHEELS * 2
+	);
 	/**
 	 * radians per second!!!
 	 */
-	public static final double FASTEST_ANGULAR_VELOCITY = FASTEST_SPEED_METERS * 2.0 * Math.PI
-			/ (WHEEL_DISTANCE_TO_CENTER * 2.0 * Math.PI * 2);
+	public static final double FASTEST_ANGULAR_VELOCITY = FASTEST_SPEED_METERS
+		* 2.0
+		* Math.PI
+		/ (WHEEL_DISTANCE_TO_CENTER * 2.0 * Math.PI * 2);
 
 	// motors and encoders on the robot
 	// if drive start at 1, if turn start at 5, if encoder start at 9

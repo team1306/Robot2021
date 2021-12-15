@@ -23,11 +23,10 @@ import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
 
@@ -58,23 +57,38 @@ public class RobotContainer {
 
 		SwerveDrive driveTrain = new SwerveDrive();
 		Robot.swerveDrive = driveTrain;
-		userSwerveDrive = new UserSwerveDrive(driveTrain, driveX, driveY, turnRight, turnLeft, x, y, a, b);
-		autoCommand = new AutonomousCommand().new MoveOffLine(); // new SimpleAutoCommand(driveTrain);
+		userSwerveDrive = new UserSwerveDrive(
+			driveTrain, driveX, driveY, turnRight, turnLeft, x, y, a, b
+		);
+		autoCommand = new AutonomousCommand().new MoveOffLine(); // new
+																	// SimpleAutoCommand(driveTrain);
 	}
 
 	/**
-	 * Use this method to define your button->command mappings. Buttons are assigned
-	 * through the Controller class. Use simpleAxis if the inputs are analog. Use
-	 * simpleButton if the inputs are digital.
+	 * Use this method to define your button->command mappings. Buttons are assigned through the
+	 * Controller class. Use simpleAxis if the inputs are analog. Use simpleButton if the inputs are
+	 * digital.
 	 */
 	private void configureButtonBindings() {
 		driveX = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LX);
 		driveY = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LY);
-		turnRight = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_RTRIGGER);
-		turnLeft = Controller.simpleAxis(Controller.PRIMARY, Controller.AXIS_LTRIGGER);
+		turnRight = Controller.simpleAxis(
+			Controller.PRIMARY,
+			Controller.AXIS_RTRIGGER
+		);
+		turnLeft = Controller.simpleAxis(
+			Controller.PRIMARY,
+			Controller.AXIS_LTRIGGER
+		);
 		// reset = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_A);
-		forwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_RBUMPER);
-		backwardIntake = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_LBUMPER);
+		forwardIntake = Controller.simpleButton(
+			Controller.PRIMARY,
+			Controller.BUTTON_RBUMPER
+		);
+		backwardIntake = Controller.simpleButton(
+			Controller.PRIMARY,
+			Controller.BUTTON_LBUMPER
+		);
 
 		x = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_X);
 		y = Controller.simpleButton(Controller.PRIMARY, Controller.BUTTON_Y);

@@ -50,10 +50,10 @@ public class Controller {
 			joystick = secondaryJoystick;
 		} else {
 			System.err.println("ERROR: Invalid Player Controller requested");
-			return () -> { return 0; };
+			return () -> 0;
 		}
 		return () -> {
-			//deadbanding
+			// deadbanding
 			double raw = joystick.getRawAxis(axis);
 			double sign = Math.signum(raw);
 			final double deadband = 0.1;
@@ -79,7 +79,7 @@ public class Controller {
 			joystick = secondaryJoystick;
 		} else {
 			System.err.println("ERROR: Invalid Player Controller requested");
-			return () -> { return false; };
+			return () -> false;
 		}
 		return () -> { return joystick.getRawButton(button); };
 	}
@@ -89,8 +89,8 @@ public class Controller {
 	 * @param player
 	 * @param button
 	 * @param callback
-	 * @return the bound button in case other operations need to be done and to protect against trash
-	 *         collection
+	 * @return the bound button in case other operations need to be done and to protect against
+	 *         trash collection
 	 */
 	public static JoystickButton bindCallback(
 		int player,

@@ -10,7 +10,6 @@ public class SimpleAutoCommand extends CommandBase {
         m_swerveDrive = swerveDrive;
     }
 
-
     /**
      * Called when the command is initially scheduled.
      */

@@ -16,12 +16,11 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import com.kauailabs.navx.frc.*;
 
 /**
- * This class takes in a SwerveModuleState and finds the target values: angle
- * and speed and then applies them to the wheel.
+ * This class takes in a SwerveModuleState and finds the target values: angle and speed and then
+ * applies them to the wheel.
  * 
- * We have two motors that are used to control the swerve module. One controls
- * speed and the other controls angle. On the angle motor we use an encoder to
- * help for accuracy on wheel rotation.
+ * We have two motors that are used to control the swerve module. One controls speed and the other
+ * controls angle. On the angle motor we use an encoder to help for accuracy on wheel rotation.
  * 
  * This class will also provide data to UserDrive to be used for SmartDashboard.
  */
@@ -51,8 +50,7 @@ public class SwerveWheel extends SubsystemBase {
 	 * @param angleMotorID    the ID of the motor assigned in phoenix tuner
 	 * @param encoderID       the ID of the encoder assigned in phoenix tuner
 	 * @param isRev           reverses the speedMotor
-	 * @param offset          the difference between natural 0 and target 0 for the
-	 *                        angleMotor
+	 * @param offset          the difference between natural 0 and target 0 for the angleMotor
 	 * @param isAngleReversed reverses the angleMotor
 	 */
 	public SwerveWheel(int speedMotorID, int angleMotorID, int encoderID) {
@@ -65,37 +63,44 @@ public class SwerveWheel extends SubsystemBase {
 	}
 
 	/**
-	 * Takes in a state. From that state it receives the target speed in meter per
-	 * second and the target angle in rotation 2D.
+	 * Takes in a state. From that state it receives the target speed in meter per second and the
+	 * target angle in rotation 2D.
 	 * 
-	 * It uses the state to find the speed the speedMotor should go and the angle
-	 * the angleMotor should turn to then sets the motor to those values so the
-	 * robot works!
+	 * It uses the state to find the speed the speedMotor should go and the angle the angleMotor
+	 * should turn to then sets the motor to those values so the robot works!
 	 * 
 	 * @param state
 	 */
 	public void drive(SwerveModuleState state) {
 		if (turnPercentHelper(state)) {
-			speedMotor.set(ControlMode.PercentOutput, -state.speedMetersPerSecond * .5);
+			speedMotor.set(
+				ControlMode.PercentOutput,
+				-state.speedMetersPerSecond * .5
+			);
 		} else {
-			speedMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond * .5);
+			speedMotor.set(
+				ControlMode.PercentOutput,
+				state.speedMetersPerSecond * .5
+			);
 		}
 	}
 
 	/**
-	 * Takes in a target amount of rotations, moves the robot forward that many
-	 * rotations
+	 * Takes in a target amount of rotations, moves the robot forward that many rotations
 	 * 
 	 * @param rotations number of times the wheel should rotate
 	 */
 	public void drive(double rotations, double angle) {
 		// give us the current position of the wheel
-		if (speedMotor.getSelectedSensorPosition() < rotations * 2048 * Constants.GEAR_RATIO) {
+		if (speedMotor.getSelectedSensorPosition() < rotations
+			* 2048
+			* Constants.GEAR_RATIO) {
 			speedMotor.set(ControlMode.PercentOutput, .2);
 		} else {
 			speedMotor.set(ControlMode.PercentOutput, 0);
 		}
-		if (angleMotor.getSelectedSensorPosition() < angle * Constants.DEGREES_TO_ENCODER_TICKS) {
+		if (angleMotor.getSelectedSensorPosition() < angle
+			* Constants.DEGREES_TO_ENCODER_TICKS) {
 			angleMotor.set(ControlMode.PercentOutput, -.1);
 		} else {
 			angleMotor.set(ControlMode.PercentOutput, 0);
@@ -111,7 +116,8 @@ public class SwerveWheel extends SubsystemBase {
 		int id = angleMotor.getDeviceID();
 		double target = state.angle.getDegrees();
 		// target = target + SwerveDrive.getYaw();
-		double currentPosition = angleMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_TO_DEGREES;
+		double currentPosition = angleMotor.getSelectedSensorPosition()
+			* Constants.ENCODER_TICKS_TO_DEGREES;
 
 		// reduces currentPosition to be a value between (-360, 360)
 		currentPosition = currentPosition % 360;
@@ -159,13 +165,15 @@ public class SwerveWheel extends SubsystemBase {
 	}
 
 	/**
-	 * Prints out data to Shuffleboard based on the ID of the device that is passed
-	 * through
+	 * Prints out data to Shuffleboard based on the ID of the device that is passed through
 	 * 
 	 * @param ID ID of the device to collect data from
 	 */
 	public void shuffleboard(String ID) {
 		SmartDashboard.putNumber(ID, speedMotor.getSelectedSensorPosition());
-		SmartDashboard.putNumber(ID + "A", angleMotor.getSelectedSensorPosition() % 1024);
+		SmartDashboard.putNumber(
+			ID + "A",
+			angleMotor.getSelectedSensorPosition() % 1024
+		);
 	}
 }

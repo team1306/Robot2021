@@ -15,7 +15,7 @@ public interface UserDigital {
 		double threshold,
 		boolean flip
 	) {
-		return () -> { return (analog.get() >= threshold) ^ flip; };
+		return () -> (analog.get() >= threshold) ^ flip;
 	}
 
 	/**
