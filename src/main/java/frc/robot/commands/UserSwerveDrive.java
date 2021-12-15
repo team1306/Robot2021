@@ -16,7 +16,8 @@ import frc.robot.utils.UserAnalog;
 import frc.robot.utils.UserDigital;
 
 /**
- * The UserSwerveDrive command uses the SwerveDrive command to execute actions and gather data
+ * The UserSwerveDrive command uses the SwerveDrive command to execute actions
+ * and gather data
  */
 public class UserSwerveDrive extends CommandBase {
 	public final SwerveDrive m_swerveDrive;
@@ -30,8 +31,8 @@ public class UserSwerveDrive extends CommandBase {
 	private final UserDigital X, Y, A, B;
 
 	/**
-	 * Default constructor for UserSwerveDrive. Passes a SwerveDrive object and assigns the
-	 * UserAnalog controls to each variable.
+	 * Default constructor for UserSwerveDrive. Passes a SwerveDrive object and
+	 * assigns the UserAnalog controls to each variable.
 	 * 
 	 * @param m_swerveDrive
 	 * @param driveX        analog input for left/right movement
@@ -43,17 +44,8 @@ public class UserSwerveDrive extends CommandBase {
 	 * @param a             digital input for A button
 	 * @param b             digital input for B button
 	 */
-	public UserSwerveDrive(
-		SwerveDrive m_swerveDrive,
-		UserAnalog driveX,
-		UserAnalog driveY,
-		UserAnalog turnRight,
-		UserAnalog turnLeft,
-		UserDigital x,
-		UserDigital y,
-		UserDigital a,
-		UserDigital b
-	) {
+	public UserSwerveDrive(SwerveDrive m_swerveDrive, UserAnalog driveX, UserAnalog driveY, UserAnalog turnRight,
+			UserAnalog turnLeft, UserDigital x, UserDigital y, UserDigital a, UserDigital b) {
 		this.m_swerveDrive = m_swerveDrive;
 		this.addRequirements(m_swerveDrive);
 		this.turnRight = turnRight;
@@ -74,7 +66,8 @@ public class UserSwerveDrive extends CommandBase {
 	 * Called when the command is initially scheduled.
 	 */
 	@Override
-	public void initialize() {}
+	public void initialize() {
+	}
 
 	// private boolean frp = false, flp = false, brp = false, blp = false;
 
@@ -90,21 +83,15 @@ public class UserSwerveDrive extends CommandBase {
 
 		double driveXTarget = deadzone(driveX.get());
 		double driveYTarget = deadzone(driveY.get());
-		double r = Math.sqrt(
-			driveXTarget * driveXTarget + driveYTarget * driveYTarget
-		);
+		double r = Math.sqrt(driveXTarget * driveXTarget + driveYTarget * driveYTarget);
 		double theta = Math.atan2(driveYTarget, driveXTarget);
 
 		theta -= SwerveDrive.getYaw() * Math.PI / 180;
-		SmartDashboard.putNumberArray("old <X,Y> : ", new double[] {
-			driveXTarget, driveYTarget
-		});
+		SmartDashboard.putNumberArray("old <X,Y> : ", new double[] { driveXTarget, driveYTarget });
 		driveXTarget = r * Math.cos(theta);
 		driveYTarget = r * Math.sin(theta);
 		SmartDashboard.putNumber("θ : ", theta);
-		SmartDashboard.putNumberArray("new <X,Y> : ", new double[] {
-			driveXTarget, driveYTarget
-		});
+		SmartDashboard.putNumberArray("new <X,Y> : ", new double[] { driveXTarget, driveYTarget });
 
 		// create vector reprersents (drivex, drivey) in polar coors; rotate theta by
 		// yaw degrees,
@@ -154,9 +141,6 @@ public class UserSwerveDrive extends CommandBase {
 		m_swerveDrive.backRight.shuffleboard("Back Right");
 		SmartDashboard.putNumber("X Joystick Value", driveX.get());
 		SmartDashboard.putNumber("Y Joystick Value", driveY.get());
-		SmartDashboard.putNumber(
-			"Turn Value",
-			turnLeft.get() - turnRight.get()
-		);
+		SmartDashboard.putNumber("Turn Value", turnLeft.get() - turnRight.get());
 	}
 }
