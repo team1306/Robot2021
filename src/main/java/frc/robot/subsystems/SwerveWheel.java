@@ -182,6 +182,6 @@ public class SwerveWheel extends SubsystemBase {
 	}
 
 	public double getRotation() {
-		return angleMotor.getSelectedSensorPosition();
+		return speedMotor.getSelectedSensorPosition();
 	}
 }

@@ -84,36 +84,17 @@ public class UserSwerveDrive extends CommandBase {
 	@Override
 	public void execute() {
 		double turnTarget = deadzone(turnLeft.get() - turnRight.get());
-		// turnTarget = deadzone(turnTarget);
 
-		// get cartesian coords
-		double driveXTarget = deadzone(driveX.get());
-		double driveYTarget = deadzone(driveY.get());
-
-		// convert to equivalent polar coords
-		double r = Math.sqrt(
-			driveXTarget * driveXTarget + driveYTarget * driveYTarget
-		);
-		double theta = Math.atan2(driveYTarget, driveXTarget);
-		// rotate
-		theta -= SwerveDrive.getYaw() * Math.PI / 180;
-		SmartDashboard.putNumberArray("old <X,Y> : ", new double[] {
-			driveXTarget, driveYTarget
-		});
-		// convert back to cartesian
-		driveXTarget = r * Math.cos(theta);
-		driveYTarget = r * Math.sin(theta);
-		SmartDashboard.putNumber("theta5 : ", theta);
-		SmartDashboard.putNumberArray("new <X,Y> : ", new double[] {
-			driveXTarget, driveYTarget
-		});
-		// rotate <X,Y> by theta radians to achieve field oriented drive
+		// rotate <X,Y> by yaw to achieve field oriented drive
 		// https://en.wikipedia.org/wiki/Rotation_of_axes#Derivation
-		// double theta = SwerveDrive.getYaw();
-		// double h = Math.cos(theta), v = Math.sin(theta);
+		double x = deadzone(driveX.get());
+		double y = deadzone(driveY.get());
+		double theta = SwerveDrive.getYaw() * Math.PI / 180;
+		double h = Math.cos(theta), v = Math.sin(theta);
 
-		// double driveXTarget = x * h + y * v;
-		// double driveYTarget = y * h - x * v;
+		double driveXTarget = x * h + y * v;
+		double driveYTarget = y * h - x * v;
+
 
 
 		// create vector reprersents (drivex, drivey) in polar coors; rotate theta by

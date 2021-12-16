@@ -46,7 +46,7 @@ public class RobotContainer {
 	private UserDigital x, y, a, b;
 	public UserSwerveDrive userSwerveDrive;
 
-	private final AutonomousCommand.MoveOffLine autoCommand;
+	private final SimpleAutoCommand autoCommand;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -60,8 +60,8 @@ public class RobotContainer {
 		userSwerveDrive = new UserSwerveDrive(
 			driveTrain, driveX, driveY, turnRight, turnLeft, x, y, a, b
 		);
-		autoCommand = new AutonomousCommand().new MoveOffLine(); // new
-																	// SimpleAutoCommand(driveTrain);
+		autoCommand = new SimpleAutoCommand(driveTrain); // new
+		// SimpleAutoCommand(driveTrain);
 	}
 
 	/**
@@ -102,6 +102,6 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		return null;// autoCommand;
+		return autoCommand;// autoCommand;
 	}
 }
