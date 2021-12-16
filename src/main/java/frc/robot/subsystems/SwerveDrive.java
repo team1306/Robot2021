@@ -191,4 +191,15 @@ public class SwerveDrive extends SubsystemBase {
 			gyro.reset();
 	}
 
+	public void resetEncoders() {
+		frontLeft.resetEncoder();
+		backLeft.resetEncoder();
+		backRight.resetEncoder();
+		frontRight.resetEncoder();
+	}
+
+	public double getDegress() {
+		return frontLeft.getRotation();
+	}
+
 }

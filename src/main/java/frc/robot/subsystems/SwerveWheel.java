@@ -176,4 +176,12 @@ public class SwerveWheel extends SubsystemBase {
 			angleMotor.getSelectedSensorPosition() % 1024
 		);
 	}
+
+	public void resetEncoder() {
+		angleMotor.setSelectedSensorPosition(0);
+	}
+
+	public double getRotation() {
+		return angleMotor.getSelectedSensorPosition();
+	}
 }

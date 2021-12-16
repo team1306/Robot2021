@@ -21,6 +21,9 @@ public class SimpleAutoCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        m_swerveDrive.driveTrain(5, 0);
+        m_swerveDrive.resetEncoders();
+        while(m_swerveDrive.getDegress() < 25000) {
+            m_swerveDrive.driveTrain(1, 0, 0);
+        }
     }
 }
