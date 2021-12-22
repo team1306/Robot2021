@@ -83,7 +83,7 @@ public class UserSwerveDrive extends CommandBase {
 	 */
 	@Override
 	public void execute() {
-		double turnTarget = deadzone(turnLeft.get() - turnRight.get());
+		double turnTarget = deadzone(turnRight.get() - turnLeft.get());
 
 		// rotate <X,Y> by yaw to achieve field oriented drive
 		// https://en.wikipedia.org/wiki/Rotation_of_axes#Derivation
@@ -149,5 +149,6 @@ public class UserSwerveDrive extends CommandBase {
 			"Turn Value",
 			turnLeft.get() - turnRight.get()
 		);
+		m_swerveDrive.getDegress();
 	}
 }

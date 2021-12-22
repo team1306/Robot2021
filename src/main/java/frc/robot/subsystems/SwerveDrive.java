@@ -202,4 +202,20 @@ public class SwerveDrive extends SubsystemBase {
 		return frontLeft.getRotation();
 	}
 
+	public double getGyroDisplacementX() {
+		// Returns displacement of X axis in meters
+		return gyro.getDisplacementX();
+	}
+
+	public double getGyroDisplacementY() {
+		// Returns displacement of Y axis in meters
+		return gyro.getDisplacementY();
+	}
+
+	public double getGyroDisplacementUseless() {
+		// Returns displacement of Useless axis in meters
+		return gyro.getDisplacementZ();
+	}
+
+
 }

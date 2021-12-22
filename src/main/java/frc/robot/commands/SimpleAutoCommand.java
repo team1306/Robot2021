@@ -10,6 +10,7 @@ public class SimpleAutoCommand extends CommandBase {
 
     public SimpleAutoCommand(SwerveDrive swerveDrive) {
         m_swerveDrive = swerveDrive;
+        addRequirements(m_swerveDrive);
     }
 
     /**
@@ -26,11 +27,40 @@ public class SimpleAutoCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        if (m_swerveDrive.getDegress() < 20000) {
-            m_swerveDrive.driveTrain(1, 0, 0);
-        } else {
+
+        // create vector reprersents (drivex, drivey) in polar coors; rotate theta by
+        // yaw degrees,
+        // then convert back to cartesian coords
+        if (m_swerveDrive.getDegress() < 26214)
+            m_swerveDrive.driveTrain(0, 0, -0);
+        else
             m_swerveDrive.driveTrain(0, 0, 0);
-        }
+        SmartDashboard.putNumber(
+            "Gyro Displacement Y",
+            m_swerveDrive.getGyroDisplacementY()
+        );
+
+        SmartDashboard.putNumber(
+            "Gyro Displacement X",
+            m_swerveDrive.getGyroDisplacementX()
+        );
+        SmartDashboard.putNumber(
+            "Gyro Displacement Z",
+            m_swerveDrive.getGyroDisplacementUseless()
+        );
+
         SmartDashboard.putNumber("Rotation", m_swerveDrive.getDegress());
+    }
+
+    /**
+     * 
+     * @param input the joystick value that should have a deadzone
+     * @return input if the absoluteValue of input is greater than .1 otherwise 0
+     */
+    public double deadzone(double input) {
+        if (Math.abs(input) > .05)
+            return input * Math.abs(input);
+
+        return 0;
     }
 }

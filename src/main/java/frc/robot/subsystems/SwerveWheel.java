@@ -75,12 +75,12 @@ public class SwerveWheel extends SubsystemBase {
 		if (turnPercentHelper(state)) {
 			speedMotor.set(
 				ControlMode.PercentOutput,
-				-state.speedMetersPerSecond * .5
+				-state.speedMetersPerSecond
 			);
 		} else {
 			speedMotor.set(
 				ControlMode.PercentOutput,
-				state.speedMetersPerSecond * .5
+				state.speedMetersPerSecond
 			);
 		}
 	}
@@ -175,10 +175,11 @@ public class SwerveWheel extends SubsystemBase {
 			ID + "A",
 			angleMotor.getSelectedSensorPosition() % 1024
 		);
+		SmartDashboard.putNumber(ID, speedMotor.getBusVoltage());
 	}
 
 	public void resetEncoder() {
-		angleMotor.setSelectedSensorPosition(0);
+		speedMotor.setSelectedSensorPosition(0);
 	}
 
 	public double getRotation() {
