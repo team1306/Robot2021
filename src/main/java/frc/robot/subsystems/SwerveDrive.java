@@ -44,6 +44,9 @@ public class SwerveDrive extends SubsystemBase {
 		Constants.K_ENCODER_BACK_LEFT_ID
 	);
 
+	// center of rotation (middle of the robot)
+	// change the [divided by two] to readjust robot center of rotation (currently also center of
+	// mass because the robot is symmetrical)
 	Translation2d frontLeftWheel = new Translation2d(
 		-Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2,
 		Constants.ROBOT_DISTANCE_BETWEEN_WHEELS / 2
@@ -75,11 +78,16 @@ public class SwerveDrive extends SubsystemBase {
 
 	private SwerveModuleState[] moduleStates;
 
+	public final SwerveDriveOdometry sdo;
+	private double time = System.currentTimeMillis() / 1000;
+
 	/**
 	 * Nothing needs to be done in the default constructor
 	 */
 	public SwerveDrive() {
-
+		sdo = new SwerveDriveOdometry(
+			kinematics, Rotation2d.fromDegrees(getYaw())
+		);
 	}
 
 	/**
@@ -106,6 +114,7 @@ public class SwerveDrive extends SubsystemBase {
 		SwerveModuleState[] modulesStates2 = kinematics.toSwerveModuleStates(
 			chassisSpeeds2
 		);
+
 		// making sure module states have possible values
 		SwerveDriveKinematics.normalizeWheelSpeeds(
 			moduleStates,
@@ -132,6 +141,13 @@ public class SwerveDrive extends SubsystemBase {
 		SwerveModuleState backRightState = modulesStates2[3];
 		// backRight.drive(x,y,turn);
 		backRight.drive(backRightState);
+		double newtime = System.currentTimeMillis() / 1000;
+		sdo.updateWithTime(
+			newtime - time,
+			Rotation2d.fromDegrees(getYaw()),
+			moduleStates
+		);
+		time = newtime;
 
 		/*
 		 * frontLeft.drive(FROn, FLOn, BROn, BLOn); frontRight.drive(FROn, FLOn, BROn, BLOn);
@@ -183,7 +199,27 @@ public class SwerveDrive extends SubsystemBase {
 	}
 
 	private void shuffleboard() {
+		/**
+		 * as of 12/28: There are two problems with the robot! *three now* - The angle (gyro yaw)
+		 * GIVEN that the robot is broken (inverted) the graph climbs up both when the robot is
+		 * turning left and when the robot is turning right. - The robot is denoted Broken when at
+		 * some point after the Yaw Reset, it just confuses backwards and forwards. The exact
+		 * behavior being that it thinks the back of the robot (with the battery side) is forwards
+		 * instead of the PDP side being forwards - Yaw does not match a tangent graph. even if it
+		 * is very close.
+		 */
+		// TODO temporarily changed getYaw() to getAngle()
 		SmartDashboard.putNumber("Gryo Yaw", gyro.getYaw());
+		SmartDashboard.putNumber(
+			"swervedriveodo X pos",
+			sdo.getPoseMeters().getX()
+		);
+		SmartDashboard.putNumber(
+			"swervedriveodo Y pos",
+			sdo.getPoseMeters().getY()
+		);
+		// gyro.getAngle();
+
 	}
 
 	public void resetGyro(boolean A) {

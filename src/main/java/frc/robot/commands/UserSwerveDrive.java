@@ -83,13 +83,19 @@ public class UserSwerveDrive extends CommandBase {
 	 */
 	@Override
 	public void execute() {
-		double turnTarget = deadzone(turnRight.get() - turnLeft.get());
+
+		// previous changed from turnLeft.get() - turnRight.get() TO turnRight.get() -
+		// turnLeft.get()
+		// temporarily changing it back to turnLeft.get()-turnRight.get() FOR TESTING PURPOSES
+		// TODO FIGURE OUT WHICH ONE WORKS
+		double turnTarget = deadzone(turnLeft.get() - turnRight.get());
 
 		// rotate <X,Y> by yaw to achieve field oriented drive
 		// https://en.wikipedia.org/wiki/Rotation_of_axes#Derivation
 		double x = deadzone(driveX.get());
 		double y = deadzone(driveY.get());
 		double theta = SwerveDrive.getYaw() * Math.PI / 180;
+
 		double h = Math.cos(theta), v = Math.sin(theta);
 
 		double driveXTarget = x * h + y * v;
@@ -100,7 +106,7 @@ public class UserSwerveDrive extends CommandBase {
 		// create vector reprersents (drivex, drivey) in polar coors; rotate theta by
 		// yaw degrees,
 		// then convert back to cartesian coords
-		m_swerveDrive.driveTrain(driveXTarget, -driveYTarget, -turnTarget);
+		m_swerveDrive.driveTrain(driveXTarget, driveYTarget, -turnTarget);
 		m_swerveDrive.resetGyro(A.get());
 
 		smartdashboard();
@@ -151,4 +157,6 @@ public class UserSwerveDrive extends CommandBase {
 		);
 		m_swerveDrive.getDegress();
 	}
+
+
 }

@@ -32,7 +32,7 @@ public final class Constants {
 	public static final double DEGREES_TO_ENCODER_TICKS = 2048.0 / 360.0;
 
 	// fastest speed percent output
-	public static final double FASTEST_SPEED_METERS = 0.5;
+	public static final double FASTEST_SPEED_METERS = 0.2;
 
 	public static final double SENSOR_UNIT_TO_DEG = 360 / (12.8 * 2048);
 

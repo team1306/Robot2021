@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,6 +16,8 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.motorcontrol.*;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 import com.kauailabs.navx.frc.*;
 
 /**
@@ -184,5 +189,17 @@ public class SwerveWheel extends SubsystemBase {
 
 	public double getRotation() {
 		return speedMotor.getSelectedSensorPosition();
+	}
+
+	/**
+	 * moot code; don't touch or use
+	 */
+	public void testingFindingWheelVectors() {
+		// given that we're trying to find movement vectors of each wheel:
+		speedMotor.getActiveTrajectoryVelocity(); // gets active trajectory target from pid0
+		speedMotor.getActiveTrajectoryPosition();
+		speedMotor.getMotorOutputPercent(); // POSSIBLY what i'm looking for
+		speedMotor.getSelectedSensorVelocity(); // could be the whole vector i need instead of
+												// trying to calculate it raw
 	}
 }
