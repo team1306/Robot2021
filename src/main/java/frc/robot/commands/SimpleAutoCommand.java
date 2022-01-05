@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -62,5 +63,28 @@ public class SimpleAutoCommand extends CommandBase {
             return input * Math.abs(input);
 
         return 0;
+    }
+
+    /**
+     * Method for moving robot to the target position
+     */
+    public void move() {
+        Pose2d target = getGoalPose();
+        double targetRotation = target.getRotation().getDegrees();
+        double targetXOrientation = target.getX();
+        double targetYOrientation = target.getY();
+        
+        double currentRotation = 0;
+        double currentXOrientation = 0;
+        double currentYOrientation = 0;
+
+        m_swerveDrive.driveTrain(targetXOrientation, targetYOrientation, targetRotation);
+    }
+
+    /**
+     * 
+     */
+    public Pose2d getGoalPose() {
+        return null;
     }
 }
