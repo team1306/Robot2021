@@ -133,8 +133,8 @@ public class DriveTrain extends SubsystemBase {
 
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
     
+    //bounding input from joystick between -1 and 1
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-
     zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
 
     // Square the inputs (while preserving the sign) to increase fine control
